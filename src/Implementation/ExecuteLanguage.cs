@@ -1,19 +1,17 @@
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Text;
 
-    public class ExecuteLanguage
+public class ExecuteLanguage
 {
         public List<object> eita = new List<object>();
+
         private readonly IParseTree _defaultParserTree;
 
         public ExecuteLanguage(string executionCode)
         {
             _defaultParserTree = DefaultParserTree(executionCode);
-          
         }
 
         private static IParseTree DefaultParserTree(string executionCode)
@@ -23,16 +21,13 @@ using System.Text;
             return parser.rule_set();
         }
 
-        public Object Execute()
+        public object Execute(Dictionary<string, GenericValueLanguage> values = null)
         {
-           
-
-           
-            
-
             var visitor = new VisitorLanguage();
-            
-            
+
+            if (visitor != null)
+            foreach (var item in values)
+                visitor.memory.Add(item.Key, item.Value);
 
             try
             {
@@ -41,12 +36,7 @@ using System.Text;
             }
             catch (Exception e)
             {
-              
-
-                throw new Exception();
-
+                throw e;
             }
-
-            
         }
     }

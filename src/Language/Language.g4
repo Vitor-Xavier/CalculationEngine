@@ -3,8 +3,8 @@ grammar Language;
 
 /* Lexical rules */
 
-IF   : 'if' ;
-ELSE : 'else';
+IF   : 'se' ;
+ELSE : 'senao';
 SWITCH: 'switch';
 CASE: 'case';
 DEFAULT: 'default';
@@ -68,7 +68,8 @@ QUOTE : '"' ;
 
 DECIMAL : '-'?[0-9]+('.'[0-9]+)? ;
 DATE : ([0-9])+'/'([0-9])+'/'([0-9])+;
-IDENTIFIER : [@]?[a-zA-Z_][a-zA-Z_0-9]* ;
+IDENTIFIER : [a-zA-Z_][a-zA-Z_0-9]* ;
+VAR_GLOBAL : [@][a-zA-Z_][a-zA-Z_0-9]* ;
 
 SEMI : ';';
 COLON : ':';
@@ -86,19 +87,60 @@ rule_set
 rule_block
     : assignment
     | arithmetic_expression
+    | conditional
     ;
 
-    assignment
-    : (CONST)? (VAR)? IDENTIFIER ATRIB arithmetic_expression SEMI
+assignment
+    : (CONST)? (VAR)? IDENTIFIER ATRIB arithmetic_expression SEMI #arithmeticAssignment
+    | (CONST)? (VAR)? IDENTIFIER ATRIB comparison_expression SEMI #comparisonAssignment
 	;
 
 return_value
-	: RETURN (IDENTIFIER)? SEMI
+	: RETURN arithmetic_expression? SEMI #returnValue
 	;
 
+
+conditional
+    : IF if_expression RBRACES then_block LBRACES (ELSE RBRACES else_block LBRACES)?
+    ;
+
+then_block
+	: rule_block* #thenBlock
+    ;
+
+else_block
+	: rule_block* #elseBlock
+    ;
+
+if_expression
+    : if_expression AND if_expression   #andExpression
+    | if_expression OR if_expression    #orExpression
+    | comparison_expression             #ifComparisonExpression
+    | LPAREN if_expression RPAREN       #parenthesisIfExpression
+    | entity                            #ifEntity
+    ;
+
+comparison_expression
+    : arithmetic_expression comparison_operator arithmetic_expression   #comparisonExpression
+    | LPAREN comparison_expression RPAREN                               #parenthesisComparisonExpression
+    ;
+
+comparison_operator
+    : GT
+    | GE
+    | LT
+    | LE
+    | EQ
+    | NEQ
+    ;
+
 arithmetic_expression
-    : arithmetic_expression PLUS arithmetic_expression	#plusExpression
-    | entity																	          #entityExpression
+    : arithmetic_expression MULT arithmetic_expression							#multExpression
+    | arithmetic_expression DIV arithmetic_expression							#divExpression
+    | arithmetic_expression PLUS arithmetic_expression							#plusExpression
+    | arithmetic_expression MINUS arithmetic_expression							#minusExpression
+    | LPAREN arithmetic_expression RPAREN										#parenthesisExpression
+    | entity																	#entityExpression
     ;
 
 entity
@@ -107,5 +149,6 @@ entity
 	| DATE						          #dateEntity
     | QUOTE IDENTIFIER QUOTE    #stringEntity
     | IDENTIFIER                #variableEntity
+    | VAR_GLOBAL                #globalEntity
     | NULL                      #nullEntity
     ;

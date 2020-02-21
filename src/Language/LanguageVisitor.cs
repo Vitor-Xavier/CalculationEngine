@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from .\Language.g4 by ANTLR 4.8
+// Generated from Language.g4 by ANTLR 4.8
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -44,17 +44,129 @@ public interface ILanguageVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitRule_block([NotNull] LanguageParser.Rule_blockContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="LanguageParser.assignment"/>.
+	/// Visit a parse tree produced by the <c>arithmeticAssignment</c>
+	/// labeled alternative in <see cref="LanguageParser.assignment"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitAssignment([NotNull] LanguageParser.AssignmentContext context);
+	Result VisitArithmeticAssignment([NotNull] LanguageParser.ArithmeticAssignmentContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="LanguageParser.return_value"/>.
+	/// Visit a parse tree produced by the <c>comparisonAssignment</c>
+	/// labeled alternative in <see cref="LanguageParser.assignment"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitReturn_value([NotNull] LanguageParser.Return_valueContext context);
+	Result VisitComparisonAssignment([NotNull] LanguageParser.ComparisonAssignmentContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>returnValue</c>
+	/// labeled alternative in <see cref="LanguageParser.return_value"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitReturnValue([NotNull] LanguageParser.ReturnValueContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="LanguageParser.conditional"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitConditional([NotNull] LanguageParser.ConditionalContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>thenBlock</c>
+	/// labeled alternative in <see cref="LanguageParser.then_block"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitThenBlock([NotNull] LanguageParser.ThenBlockContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>elseBlock</c>
+	/// labeled alternative in <see cref="LanguageParser.else_block"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitElseBlock([NotNull] LanguageParser.ElseBlockContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>orExpression</c>
+	/// labeled alternative in <see cref="LanguageParser.if_expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitOrExpression([NotNull] LanguageParser.OrExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>ifComparisonExpression</c>
+	/// labeled alternative in <see cref="LanguageParser.if_expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIfComparisonExpression([NotNull] LanguageParser.IfComparisonExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>andExpression</c>
+	/// labeled alternative in <see cref="LanguageParser.if_expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAndExpression([NotNull] LanguageParser.AndExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>parenthesisIfExpression</c>
+	/// labeled alternative in <see cref="LanguageParser.if_expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitParenthesisIfExpression([NotNull] LanguageParser.ParenthesisIfExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>ifEntity</c>
+	/// labeled alternative in <see cref="LanguageParser.if_expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIfEntity([NotNull] LanguageParser.IfEntityContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>comparisonExpression</c>
+	/// labeled alternative in <see cref="LanguageParser.comparison_expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitComparisonExpression([NotNull] LanguageParser.ComparisonExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>parenthesisComparisonExpression</c>
+	/// labeled alternative in <see cref="LanguageParser.comparison_expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitParenthesisComparisonExpression([NotNull] LanguageParser.ParenthesisComparisonExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="LanguageParser.comparison_operator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitComparison_operator([NotNull] LanguageParser.Comparison_operatorContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>minusExpression</c>
+	/// labeled alternative in <see cref="LanguageParser.arithmetic_expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMinusExpression([NotNull] LanguageParser.MinusExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>parenthesisExpression</c>
+	/// labeled alternative in <see cref="LanguageParser.arithmetic_expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitParenthesisExpression([NotNull] LanguageParser.ParenthesisExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>multExpression</c>
+	/// labeled alternative in <see cref="LanguageParser.arithmetic_expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMultExpression([NotNull] LanguageParser.MultExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>divExpression</c>
+	/// labeled alternative in <see cref="LanguageParser.arithmetic_expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDivExpression([NotNull] LanguageParser.DivExpressionContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>plusExpression</c>
 	/// labeled alternative in <see cref="LanguageParser.arithmetic_expression"/>.
@@ -104,6 +216,13 @@ public interface ILanguageVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitVariableEntity([NotNull] LanguageParser.VariableEntityContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>globalEntity</c>
+	/// labeled alternative in <see cref="LanguageParser.entity"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitGlobalEntity([NotNull] LanguageParser.GlobalEntityContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>nullEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.entity"/>.
