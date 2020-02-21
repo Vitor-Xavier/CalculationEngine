@@ -56,13 +56,17 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage> {
     public override GenericValueLanguage VisitReturn_value(LanguageParser.Return_valueContext ctx)
     {
 
-        var id = ctx.IDENTIFIER().GetText();
+        var id = ctx.IDENTIFIER() != null ? ctx.IDENTIFIER().GetText() : null;
+
+        
         GenericValueLanguage retono;
 
+        if(id == null) return new GenericValueLanguage(string.Empty, false);
+        
         memory.TryGetValue(id, out retono);
 
         if(retono == null)
-        return new GenericValueLanguage(id, false);;
+        return new GenericValueLanguage(id, false);
 
         return retono;
     }

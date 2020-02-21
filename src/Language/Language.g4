@@ -80,13 +80,12 @@ WS : [ \r\t\u000C\n]+ -> skip ;
 
 
 rule_set
-	: rule_block*
+	: rule_block*return_value
 	;
 
 rule_block
     : assignment
     | arithmetic_expression
-    | return_value
     ;
 
     assignment
@@ -94,7 +93,7 @@ rule_block
 	;
 
 return_value
-	: (RETURN) (IDENTIFIER | DECIMAL) SEMI
+	: RETURN (IDENTIFIER)? SEMI
 	;
 
 arithmetic_expression
