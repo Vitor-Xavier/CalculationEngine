@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from Language.g4 by ANTLR 4.8
+// Generated from .\Language.g4 by ANTLR 4.8
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -81,7 +81,7 @@ public partial class LanguageLexer : Lexer {
 		"'roundFunction'", "'clearValuesFunction'", "'clearDiscountsFunction'", 
 		"'clearPaymentsFunction'", "'getDay'", "'getMonth'", "'getYear'", "'addDay'", 
 		"'addMonth'", "'addYear'", "'getDayDiff'", "'getMonthDiff'", "'getYearDiff'", 
-		"'getDate'", "'lastDayProcess'", "'desprezar'", "'{'", "'}'", "'('", "')'", 
+		"'getDate'", "'lastDayProcess'", "'desprezar'", "'}'", "'{'", "'('", "')'", 
 		"'*'", "'/'", "'+'", "'-'", "'>'", "'>='", "'<'", "'<='", "'=='", "'!='", 
 		"'='", "'var'", "'const'", "'retorno'", "','", "'\"'", null, null, null, 
 		null, "';'", "':'"
@@ -541,8 +541,8 @@ public partial class LanguageLexer : Lexer {
 		'\a', 'g', '\x2', '\x2', '\x1DE', '\x1DF', '\a', '|', '\x2', '\x2', '\x1DF', 
 		'\x1E0', '\a', '\x63', '\x2', '\x2', '\x1E0', '\x1E1', '\a', 't', '\x2', 
 		'\x2', '\x1E1', '\x44', '\x3', '\x2', '\x2', '\x2', '\x1E2', '\x1E3', 
-		'\a', '}', '\x2', '\x2', '\x1E3', '\x46', '\x3', '\x2', '\x2', '\x2', 
-		'\x1E4', '\x1E5', '\a', '\x7F', '\x2', '\x2', '\x1E5', 'H', '\x3', '\x2', 
+		'\a', '\x7F', '\x2', '\x2', '\x1E3', '\x46', '\x3', '\x2', '\x2', '\x2', 
+		'\x1E4', '\x1E5', '\a', '}', '\x2', '\x2', '\x1E5', 'H', '\x3', '\x2', 
 		'\x2', '\x2', '\x1E6', '\x1E7', '\a', '*', '\x2', '\x2', '\x1E7', 'J', 
 		'\x3', '\x2', '\x2', '\x2', '\x1E8', '\x1E9', '\a', '+', '\x2', '\x2', 
 		'\x1E9', 'L', '\x3', '\x2', '\x2', '\x2', '\x1EA', '\x1EB', '\a', ',', 

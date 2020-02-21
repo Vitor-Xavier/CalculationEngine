@@ -40,8 +40,8 @@ GET_DATE: 'getDate';
 LAST_DAY_PROCESS: 'lastDayProcess';
 DESPREZAR: 'desprezar';
 
-RBRACES: '{';
-LBRACES: '}';
+RBRACES: '}';
+LBRACES: '{';
 
 LPAREN : '(' ;
 RPAREN : ')' ;
@@ -81,7 +81,7 @@ WS : [ \r\t\u000C\n]+ -> skip ;
 
 
 rule_set
-	: rule_block*return_value
+	: rule_block* return_value 
 	;
 
 rule_block
@@ -101,7 +101,7 @@ return_value
 
 
 conditional
-    : IF if_expression RBRACES then_block LBRACES (ELSE RBRACES else_block LBRACES)?
+    : IF if_expression LBRACES then_block RBRACES (ELSE LBRACES else_block RBRACES)?
     ;
 
 then_block

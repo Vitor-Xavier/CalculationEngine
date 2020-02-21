@@ -48,7 +48,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
 
     public override GenericValueLanguage VisitThenBlock([NotNull] LanguageParser.ThenBlockContext context)
     {
-        for (var index = 0; index < context.rule_block().Count(); index++)
+    for (var index = 0; index < context.rule_block().Count(); index++)
         {
             Visit(context.rule_block(index));
         }
@@ -110,7 +110,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
                     else if (DateTime.TryParseExact(left, "dd/MM/yyyy hh:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime leftDate) &&
                         DateTime.TryParseExact(right, "dd/MM/yyyy hh:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime rightDate))
                         return new GenericValueLanguage(leftDate > rightDate);
-                    throw new Exception("Não é possível comparar o tipo informado");
+                    throw new Exception("Nï¿½o ï¿½ possï¿½vel comparar o tipo informado");
                 }
             case ">=":
                 {
@@ -119,7 +119,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
                     else if (DateTime.TryParseExact(left, "dd/MM/yyyy hh:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime leftDate) &&
                         DateTime.TryParseExact(right, "dd/MM/yyyy hh:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime rightDate))
                         return new GenericValueLanguage(leftDate >= rightDate);
-                    throw new Exception("Não é possível comparar o tipo informado");
+                    throw new Exception("Nï¿½o ï¿½ possï¿½vel comparar o tipo informado");
                 }
             case "<":
                 {
@@ -128,7 +128,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
                     else if (DateTime.TryParseExact(left, "dd/MM/yyyy hh:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime leftDate) &&
                         DateTime.TryParseExact(right, "dd/MM/yyyy hh:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime rightDate))
                         return new GenericValueLanguage(leftDate < rightDate);
-                    throw new Exception("Não é possível comparar o tipo informado");
+                    throw new Exception("Nï¿½o ï¿½ possï¿½vel comparar o tipo informado");
                 }
             case "<=":
                 {
@@ -137,10 +137,10 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
                     else if (DateTime.TryParseExact(left, "dd/MM/yyyy hh:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime leftDate) &&
                         DateTime.TryParseExact(right, "dd/MM/yyyy hh:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime rightDate))
                         return new GenericValueLanguage(leftDate <= rightDate);
-                    throw new Exception("Não é possível comparar o tipo informado");
+                    throw new Exception("Nï¿½o ï¿½ possï¿½vel comparar o tipo informado");
                 }
             default:
-                throw new Exception("Comparaçãp não suportada");
+                throw new Exception("Comparaï¿½ï¿½p nï¿½o suportada");
         }
     }
 
@@ -177,7 +177,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         var right = Visit(context.arithmetic_expression(1));
 
         if (!double.TryParse(right?.Value?.ToString(), out double rightDouble) || rightDouble == 0)
-            throw new Exception("Não é possível dividir por zero.");
+            throw new Exception("Nï¿½o ï¿½ possï¿½vel dividir por zero.");
 
         return new GenericValueLanguage(left.AsDouble() / right.AsDouble());
     }
@@ -189,7 +189,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
     {
         var id = context.VAR_GLOBAL()?.GetText();
 
-        if (id is null) throw new Exception("Nome do parâmetro esperado não enconrtado");
+        if (id is null) throw new Exception("Nome do parï¿½metro esperado nï¿½o enconrtado");
 
         memory.TryGetValue(id, out GenericValueLanguage retono);
 
@@ -200,7 +200,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
     {
         // if(_blockRule && context.marker() == null)
         // return GenericValueLanguage.VOID;
-
+        
         return base.VisitRule_block(context);
     }
 
@@ -249,6 +249,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
 
     public override GenericValueLanguage VisitReturnValue([NotNull] LanguageParser.ReturnValueContext context)
     {
+        
         return Visit(context.arithmetic_expression());
     }
 
@@ -275,10 +276,10 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
     {
         var id = context.GetText();
 
-        if (id is null) throw new Exception("Variável não informada");
+        if (id is null) throw new Exception("Variï¿½vel nï¿½o informada");
 
         if (memory.TryGetValue(id, out GenericValueLanguage value))
             return value;
-        else throw new Exception("Variável não informada");
+        else throw new Exception("Variï¿½vel nï¿½o informada");
     }
 }

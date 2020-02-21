@@ -15,10 +15,12 @@ namespace Api
                 var c = a + b;
                 se (c == @m2) {
                     a = 1;
-                    retorno b;
-                }
+                    retorno 10;
+                    var r = 9.56;
+                    }
+                var t = 10;
                 retorno a;");
-
+            Console.WriteLine("---");
             Console.WriteLine(execute.Execute(new Dictionary<string, GenericValueLanguage> { { "@m2", new GenericValueLanguage(189.56, false) } }));
         }
     }

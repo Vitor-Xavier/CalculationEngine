@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from Language.g4 by ANTLR 4.8
+// Generated from .\Language.g4 by ANTLR 4.8
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -64,7 +64,7 @@ public partial class LanguageParser : Parser {
 		"'roundFunction'", "'clearValuesFunction'", "'clearDiscountsFunction'", 
 		"'clearPaymentsFunction'", "'getDay'", "'getMonth'", "'getYear'", "'addDay'", 
 		"'addMonth'", "'addYear'", "'getDayDiff'", "'getMonthDiff'", "'getYearDiff'", 
-		"'getDate'", "'lastDayProcess'", "'desprezar'", "'{'", "'}'", "'('", "')'", 
+		"'getDate'", "'lastDayProcess'", "'desprezar'", "'}'", "'{'", "'('", "')'", 
 		"'*'", "'/'", "'+'", "'-'", "'>'", "'>='", "'<'", "'<='", "'=='", "'!='", 
 		"'='", "'var'", "'const'", "'retorno'", "','", "'\"'", null, null, null, 
 		null, "';'", "':'"
@@ -458,16 +458,16 @@ public partial class LanguageParser : Parser {
 		public If_expressionContext if_expression() {
 			return GetRuleContext<If_expressionContext>(0);
 		}
-		public ITerminalNode[] RBRACES() { return GetTokens(LanguageParser.RBRACES); }
-		public ITerminalNode RBRACES(int i) {
-			return GetToken(LanguageParser.RBRACES, i);
+		public ITerminalNode[] LBRACES() { return GetTokens(LanguageParser.LBRACES); }
+		public ITerminalNode LBRACES(int i) {
+			return GetToken(LanguageParser.LBRACES, i);
 		}
 		public Then_blockContext then_block() {
 			return GetRuleContext<Then_blockContext>(0);
 		}
-		public ITerminalNode[] LBRACES() { return GetTokens(LanguageParser.LBRACES); }
-		public ITerminalNode LBRACES(int i) {
-			return GetToken(LanguageParser.LBRACES, i);
+		public ITerminalNode[] RBRACES() { return GetTokens(LanguageParser.RBRACES); }
+		public ITerminalNode RBRACES(int i) {
+			return GetToken(LanguageParser.RBRACES, i);
 		}
 		public ITerminalNode ELSE() { return GetToken(LanguageParser.ELSE, 0); }
 		public Else_blockContext else_block() {
@@ -503,18 +503,18 @@ public partial class LanguageParser : Parser {
 			{
 			State = 67; Match(IF);
 			State = 68; if_expression(0);
-			State = 69; Match(RBRACES);
+			State = 69; Match(LBRACES);
 			State = 70; then_block();
-			State = 71; Match(LBRACES);
+			State = 71; Match(RBRACES);
 			State = 77;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			if (_la==ELSE) {
 				{
 				State = 72; Match(ELSE);
-				State = 73; Match(RBRACES);
+				State = 73; Match(LBRACES);
 				State = 74; else_block();
-				State = 75; Match(LBRACES);
+				State = 75; Match(RBRACES);
 				}
 			}
 
@@ -1628,10 +1628,10 @@ public partial class LanguageParser : Parser {
 		'\x3', '\x2', '\x2', '\x2', '\x42', '\x43', '\x3', '\x2', '\x2', '\x2', 
 		'\x43', '\x44', '\a', '<', '\x2', '\x2', '\x44', '\t', '\x3', '\x2', '\x2', 
 		'\x2', '\x45', '\x46', '\a', '\x3', '\x2', '\x2', '\x46', 'G', '\x5', 
-		'\x10', '\t', '\x2', 'G', 'H', '\a', '$', '\x2', '\x2', 'H', 'I', '\x5', 
-		'\f', '\a', '\x2', 'I', 'O', '\a', '%', '\x2', '\x2', 'J', 'K', '\a', 
-		'\x4', '\x2', '\x2', 'K', 'L', '\a', '$', '\x2', '\x2', 'L', 'M', '\x5', 
-		'\xE', '\b', '\x2', 'M', 'N', '\a', '%', '\x2', '\x2', 'N', 'P', '\x3', 
+		'\x10', '\t', '\x2', 'G', 'H', '\a', '%', '\x2', '\x2', 'H', 'I', '\x5', 
+		'\f', '\a', '\x2', 'I', 'O', '\a', '$', '\x2', '\x2', 'J', 'K', '\a', 
+		'\x4', '\x2', '\x2', 'K', 'L', '\a', '%', '\x2', '\x2', 'L', 'M', '\x5', 
+		'\xE', '\b', '\x2', 'M', 'N', '\a', '$', '\x2', '\x2', 'N', 'P', '\x3', 
 		'\x2', '\x2', '\x2', 'O', 'J', '\x3', '\x2', '\x2', '\x2', 'O', 'P', '\x3', 
 		'\x2', '\x2', '\x2', 'P', '\v', '\x3', '\x2', '\x2', '\x2', 'Q', 'S', 
 		'\x5', '\x4', '\x3', '\x2', 'R', 'Q', '\x3', '\x2', '\x2', '\x2', 'S', 
