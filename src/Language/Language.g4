@@ -81,7 +81,7 @@ WS : [ \r\t\u000C\n]+ -> skip ;
 
 
 rule_set
-	: rule_block* return_value 
+	: rule_block* return_value? 
 	;
 
 rule_block

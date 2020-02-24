@@ -1,42 +1,42 @@
-using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
 using System;
 using System.Collections.Generic;
+using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
 
-public class ExecuteLanguage
-{
-        public List<object> eita = new List<object>();
+public class ExecuteLanguage {
+    public List<object> eita = new List<object> ();
 
-        private readonly IParseTree _defaultParserTree;
+    private IParseTree _defaultParserTree;
 
-        public ExecuteLanguage(string executionCode)
-        {
-            _defaultParserTree = DefaultParserTree(executionCode);
-        }
+    public ExecuteLanguage () {
+        // _defaultParserTree = DefaultParserTree(executionCode);
+    }
 
-        private static IParseTree DefaultParserTree(string executionCode)
-        {
-            var lexer = new LanguageLexer(new AntlrInputStream(executionCode));
-            var parser = new LanguageParser(new CommonTokenStream(lexer));
-            return parser.rule_set();
-        }
+    public IParseTree DefaultParserTree (string executionCode) {
+        var lexer = new LanguageLexer (new AntlrInputStream (executionCode));
+        var commonToken = new CommonTokenStream (lexer);
+        var parser = new LanguageParser (commonToken);
 
-        public object Execute(Dictionary<string, GenericValueLanguage> values = null)
-        {
-            var visitor = new VisitorLanguage();
+        _defaultParserTree = parser.rule_set ();
+        return parser.rule_set ();
+    }
 
-            if (visitor != null)
-            foreach (var item in values)
-                visitor.memory.Add(item.Key, item.Value);
+    public object Execute (Dictionary<string, GenericValueLanguage> values = null) {
+        var visitor = new VisitorLanguage ();
 
-            try
-            {
-                var teste = visitor.Visit(_defaultParserTree);
-                return teste; 
+        if (visitor != null)
+
+            if (values != null) {
+                foreach (var item in values)
+                    visitor.memory.Add (item.Key, item.Value);
             }
-            catch (Exception e)
-            {
-                throw e;
-            }
+
+        try {
+            var teste = visitor.Visit (_defaultParserTree);
+
+            return teste;
+        } catch (Exception e) {
+            throw e;
         }
     }
+}
