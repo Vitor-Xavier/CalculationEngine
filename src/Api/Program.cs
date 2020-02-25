@@ -114,9 +114,11 @@ namespace Api {
 
             ExecuteLanguage execute = new ExecuteLanguage ();
 
-            var teste222 = execute.DefaultParserTree ("var aya = 10 * 18; var a = 10 * 18 + 10;@teste");
+            var teste222 = execute.DefaultParserTree (string.Format ("_BuscarCaracteristica(\"caracteristica\",\"esgoto\");"));
 
-
+            var claudio = execute.parser.TokenTypeMap;
+            var commonToken = execute.commonToken.;
+            var tokens = execute.parser.TokenStream.tokens;
             // ParseTreeWalker walker = new ParseTreeWalker ();
             // List<string> teste100 = new List < string ();
             // walker.walk(teste100, teste222);

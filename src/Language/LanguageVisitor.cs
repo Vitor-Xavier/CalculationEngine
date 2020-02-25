@@ -44,6 +44,12 @@ public interface ILanguageVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitRule_block([NotNull] LanguageParser.Rule_blockContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="LanguageParser.function"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitFunction([NotNull] LanguageParser.FunctionContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>arithmeticAssignment</c>
 	/// labeled alternative in <see cref="LanguageParser.assignment"/>.
 	/// </summary>
@@ -120,6 +126,13 @@ public interface ILanguageVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitIfEntity([NotNull] LanguageParser.IfEntityContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>ifFunctionSignature</c>
+	/// labeled alternative in <see cref="LanguageParser.if_expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIfFunctionSignature([NotNull] LanguageParser.IfFunctionSignatureContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>comparisonExpression</c>
 	/// labeled alternative in <see cref="LanguageParser.comparison_expression"/>.
 	/// </summary>
@@ -139,6 +152,13 @@ public interface ILanguageVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitComparison_operator([NotNull] LanguageParser.Comparison_operatorContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>buscarCaracteristica</c>
+	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitBuscarCaracteristica([NotNull] LanguageParser.BuscarCaracteristicaContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>minusExpression</c>
 	/// labeled alternative in <see cref="LanguageParser.arithmetic_expression"/>.
@@ -182,6 +202,31 @@ public interface ILanguageVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitEntityExpression([NotNull] LanguageParser.EntityExpressionContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="LanguageParser.tabela_caracteristica"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitTabela_caracteristica([NotNull] LanguageParser.Tabela_caracteristicaContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="LanguageParser.descricao_caracteristica"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDescricao_caracteristica([NotNull] LanguageParser.Descricao_caracteristicaContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="LanguageParser.exercicio_caracteristica"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitExercicio_caracteristica([NotNull] LanguageParser.Exercicio_caracteristicaContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>stringEntity</c>
+	/// labeled alternative in <see cref="LanguageParser.text"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitStringEntity([NotNull] LanguageParser.StringEntityContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>boolEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.entity"/>.
 	/// </summary>
@@ -202,13 +247,6 @@ public interface ILanguageVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitDateEntity([NotNull] LanguageParser.DateEntityContext context);
-	/// <summary>
-	/// Visit a parse tree produced by the <c>stringEntity</c>
-	/// labeled alternative in <see cref="LanguageParser.entity"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitStringEntity([NotNull] LanguageParser.StringEntityContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>variableEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.entity"/>.

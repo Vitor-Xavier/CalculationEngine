@@ -165,6 +165,15 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage> {
         return new GenericValueLanguage (left.AsDouble () / right.AsDouble ());
     }
 
+    public override GenericValueLanguage VisitBuscarCaracteristica(LanguageParser.BuscarCaracteristicaContext context){
+        
+        var tabelaCaracteristica = Visit (context.tabela_caracteristica ());
+        var descricaoCaracteristica = Visit (context.descricao_caracteristica ());
+        
+        return new GenericValueLanguage (10, false);
+    }
+
+
     public override GenericValueLanguage VisitParenthesisExpression ([NotNull] LanguageParser.ParenthesisExpressionContext context) =>
     Visit (context.arithmetic_expression ());
 

@@ -51,6 +51,16 @@ public interface ILanguageListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitRule_block([NotNull] LanguageParser.Rule_blockContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="LanguageParser.function"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFunction([NotNull] LanguageParser.FunctionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LanguageParser.function"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFunction([NotNull] LanguageParser.FunctionContext context);
+	/// <summary>
 	/// Enter a parse tree produced by the <c>arithmeticAssignment</c>
 	/// labeled alternative in <see cref="LanguageParser.assignment"/>.
 	/// </summary>
@@ -181,6 +191,18 @@ public interface ILanguageListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitIfEntity([NotNull] LanguageParser.IfEntityContext context);
 	/// <summary>
+	/// Enter a parse tree produced by the <c>ifFunctionSignature</c>
+	/// labeled alternative in <see cref="LanguageParser.if_expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterIfFunctionSignature([NotNull] LanguageParser.IfFunctionSignatureContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>ifFunctionSignature</c>
+	/// labeled alternative in <see cref="LanguageParser.if_expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitIfFunctionSignature([NotNull] LanguageParser.IfFunctionSignatureContext context);
+	/// <summary>
 	/// Enter a parse tree produced by the <c>comparisonExpression</c>
 	/// labeled alternative in <see cref="LanguageParser.comparison_expression"/>.
 	/// </summary>
@@ -214,6 +236,18 @@ public interface ILanguageListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitComparison_operator([NotNull] LanguageParser.Comparison_operatorContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>buscarCaracteristica</c>
+	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBuscarCaracteristica([NotNull] LanguageParser.BuscarCaracteristicaContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>buscarCaracteristica</c>
+	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBuscarCaracteristica([NotNull] LanguageParser.BuscarCaracteristicaContext context);
 	/// <summary>
 	/// Enter a parse tree produced by the <c>minusExpression</c>
 	/// labeled alternative in <see cref="LanguageParser.arithmetic_expression"/>.
@@ -287,6 +321,48 @@ public interface ILanguageListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitEntityExpression([NotNull] LanguageParser.EntityExpressionContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="LanguageParser.tabela_caracteristica"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterTabela_caracteristica([NotNull] LanguageParser.Tabela_caracteristicaContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LanguageParser.tabela_caracteristica"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitTabela_caracteristica([NotNull] LanguageParser.Tabela_caracteristicaContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="LanguageParser.descricao_caracteristica"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDescricao_caracteristica([NotNull] LanguageParser.Descricao_caracteristicaContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LanguageParser.descricao_caracteristica"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDescricao_caracteristica([NotNull] LanguageParser.Descricao_caracteristicaContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="LanguageParser.exercicio_caracteristica"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterExercicio_caracteristica([NotNull] LanguageParser.Exercicio_caracteristicaContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LanguageParser.exercicio_caracteristica"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitExercicio_caracteristica([NotNull] LanguageParser.Exercicio_caracteristicaContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>stringEntity</c>
+	/// labeled alternative in <see cref="LanguageParser.text"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterStringEntity([NotNull] LanguageParser.StringEntityContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>stringEntity</c>
+	/// labeled alternative in <see cref="LanguageParser.text"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitStringEntity([NotNull] LanguageParser.StringEntityContext context);
+	/// <summary>
 	/// Enter a parse tree produced by the <c>boolEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.entity"/>.
 	/// </summary>
@@ -322,18 +398,6 @@ public interface ILanguageListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitDateEntity([NotNull] LanguageParser.DateEntityContext context);
-	/// <summary>
-	/// Enter a parse tree produced by the <c>stringEntity</c>
-	/// labeled alternative in <see cref="LanguageParser.entity"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterStringEntity([NotNull] LanguageParser.StringEntityContext context);
-	/// <summary>
-	/// Exit a parse tree produced by the <c>stringEntity</c>
-	/// labeled alternative in <see cref="LanguageParser.entity"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitStringEntity([NotNull] LanguageParser.StringEntityContext context);
 	/// <summary>
 	/// Enter a parse tree produced by the <c>variableEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.entity"/>.

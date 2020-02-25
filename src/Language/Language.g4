@@ -17,6 +17,7 @@ FALSE : 'false' ;
 NULL : 'null';
 MARKER: 'marker';
 
+BUSCAR_CARACTERISTICA: '_BuscarCaracteristica';
 LOOKUP_FUNC: 'lookupFunction';
 BASE_FUNC: 'baseFunction';
 TOTAL_PAYMENTS: 'totalPayments';
@@ -69,7 +70,9 @@ QUOTE : '"' ;
 DECIMAL : '-'?[0-9]+('.'[0-9]+)? ;
 DATE : ([0-9])+'/'([0-9])+'/'([0-9])+;
 IDENTIFIER : [a-zA-Z_][a-zA-Z_0-9]* ;
-VAR_GLOBAL : [@][a-zA-Z_][a-zA-Z_0-9]* ;
+VAR_GLOBAL : [@][a-zA-Z_][a-zA-Z_0-9]*[.][a-zA-Z_][a-zA-Z_0-9]* ;
+
+
 
 SEMI : ';';
 COLON : ':';
@@ -86,9 +89,14 @@ rule_set
 
 rule_block
     : assignment
+    | function
     | arithmetic_expression
     | conditional
     ;
+
+function
+	: function_signature SEMI
+	;
 
 assignment
     : (CONST)? (VAR)? IDENTIFIER ATRIB arithmetic_expression SEMI #arithmeticAssignment
@@ -116,6 +124,7 @@ if_expression
     : if_expression AND if_expression   #andExpression
     | if_expression OR if_expression    #orExpression
     | comparison_expression             #ifComparisonExpression
+    | function_signature                #ifFunctionSignature
     | LPAREN if_expression RPAREN       #parenthesisIfExpression
     | entity                            #ifEntity
     ;
@@ -134,6 +143,11 @@ comparison_operator
     | NEQ
     ;
 
+
+function_signature
+	: BUSCAR_CARACTERISTICA LPAREN tabela_caracteristica COMMA descricao_caracteristica (COMMA exercicio_caracteristica)? RPAREN  #buscarCaracteristica
+    ;
+
 arithmetic_expression
     : arithmetic_expression MULT arithmetic_expression							#multExpression
     | arithmetic_expression DIV arithmetic_expression							#divExpression
@@ -143,11 +157,27 @@ arithmetic_expression
     | entity																	#entityExpression
     ;
 
+tabela_caracteristica
+    : text
+    ;
+
+descricao_caracteristica
+    : text
+    ;
+
+exercicio_caracteristica
+    : DECIMAL
+    ;
+
+    text
+    : QUOTE IDENTIFIER QUOTE #stringEntity
+    ;
+
+
 entity
     : (TRUE | FALSE)            #boolEntity
     | DECIMAL                   #numberEntity
 	| DATE						          #dateEntity
-    | QUOTE IDENTIFIER QUOTE    #stringEntity
     | IDENTIFIER                #variableEntity
     | VAR_GLOBAL                #globalEntity
     | NULL                      #nullEntity

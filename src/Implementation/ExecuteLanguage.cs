@@ -7,6 +7,8 @@ public class ExecuteLanguage {
     public List<object> eita = new List<object> ();
 
     private IParseTree _defaultParserTree;
+    public CommonTokenStream commonToken;
+    public LanguageParser parser;
 
     public ExecuteLanguage () {
         // _defaultParserTree = DefaultParserTree(executionCode);
@@ -14,8 +16,8 @@ public class ExecuteLanguage {
 
     public IParseTree DefaultParserTree (string executionCode) {
         var lexer = new LanguageLexer (new AntlrInputStream (executionCode));
-        var commonToken = new CommonTokenStream (lexer);
-        var parser = new LanguageParser (commonToken);
+        commonToken = new CommonTokenStream (lexer);
+        parser = new LanguageParser (commonToken);
 
         _defaultParserTree = parser.rule_set ();
         return parser.rule_set ();
