@@ -481,19 +481,19 @@ public partial class LanguageBaseListener : ILanguageListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitVariableEntity([NotNull] LanguageParser.VariableEntityContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by the <c>globalEntity</c>
+	/// Enter a parse tree produced by the <c>varTableColunaEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.entity"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterGlobalEntity([NotNull] LanguageParser.GlobalEntityContext context) { }
+	public virtual void EnterVarTableColunaEntity([NotNull] LanguageParser.VarTableColunaEntityContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by the <c>globalEntity</c>
+	/// Exit a parse tree produced by the <c>varTableColunaEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.entity"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitGlobalEntity([NotNull] LanguageParser.GlobalEntityContext context) { }
+	public virtual void ExitVarTableColunaEntity([NotNull] LanguageParser.VarTableColunaEntityContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by the <c>nullEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.entity"/>.

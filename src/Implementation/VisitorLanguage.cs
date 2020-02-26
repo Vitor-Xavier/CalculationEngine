@@ -177,8 +177,8 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage> {
     public override GenericValueLanguage VisitParenthesisExpression ([NotNull] LanguageParser.ParenthesisExpressionContext context) =>
     Visit (context.arithmetic_expression ());
 
-    public override GenericValueLanguage VisitGlobalEntity ([NotNull] LanguageParser.GlobalEntityContext context) {
-        var id = context.VAR_GLOBAL ()?.GetText ();
+    public override GenericValueLanguage VisitVarTableColunaEntity ([NotNull] LanguageParser.VarTableColunaEntityContext context) {
+        var id = context.VAR_TABLE_COLUNA ()?.GetText ();
         
         if (id is null) throw new Exception ("Nome do par�metro esperado n�o enconrtado");
 

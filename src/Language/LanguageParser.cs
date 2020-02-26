@@ -45,7 +45,7 @@ public partial class LanguageParser : Parser {
 		GET_DATE=32, LAST_DAY_PROCESS=33, DESPREZAR=34, RBRACES=35, LBRACES=36, 
 		LPAREN=37, RPAREN=38, MULT=39, DIV=40, PLUS=41, MINUS=42, GT=43, GE=44, 
 		LT=45, LE=46, EQ=47, NEQ=48, ATRIB=49, VAR=50, CONST=51, RETURN=52, COMMA=53, 
-		QUOTE=54, DECIMAL=55, DATE=56, IDENTIFIER=57, VAR_GLOBAL=58, SEMI=59, 
+		QUOTE=54, DECIMAL=55, DATE=56, IDENTIFIER=57, VAR_TABLE_COLUNA=58, SEMI=59, 
 		COLON=60, COMMENT=61, WS=62;
 	public const int
 		RULE_rule_set = 0, RULE_rule_block = 1, RULE_function = 2, RULE_assignment = 3, 
@@ -84,7 +84,8 @@ public partial class LanguageParser : Parser {
 		"GET_DATE", "LAST_DAY_PROCESS", "DESPREZAR", "RBRACES", "LBRACES", "LPAREN", 
 		"RPAREN", "MULT", "DIV", "PLUS", "MINUS", "GT", "GE", "LT", "LE", "EQ", 
 		"NEQ", "ATRIB", "VAR", "CONST", "RETURN", "COMMA", "QUOTE", "DECIMAL", 
-		"DATE", "IDENTIFIER", "VAR_GLOBAL", "SEMI", "COLON", "COMMENT", "WS"
+		"DATE", "IDENTIFIER", "VAR_TABLE_COLUNA", "SEMI", "COLON", "COMMENT", 
+		"WS"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -159,7 +160,7 @@ public partial class LanguageParser : Parser {
 			State = 39;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << IF) | (1L << TRUE) | (1L << FALSE) | (1L << NULL) | (1L << BUSCAR_CARACTERISTICA) | (1L << LPAREN) | (1L << VAR) | (1L << CONST) | (1L << DECIMAL) | (1L << DATE) | (1L << IDENTIFIER) | (1L << VAR_GLOBAL))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << IF) | (1L << TRUE) | (1L << FALSE) | (1L << NULL) | (1L << BUSCAR_CARACTERISTICA) | (1L << LPAREN) | (1L << VAR) | (1L << CONST) | (1L << DECIMAL) | (1L << DATE) | (1L << IDENTIFIER) | (1L << VAR_TABLE_COLUNA))) != 0)) {
 				{
 				{
 				State = 36; rule_block();
@@ -502,7 +503,7 @@ public partial class LanguageParser : Parser {
 			State = 80;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << TRUE) | (1L << FALSE) | (1L << NULL) | (1L << LPAREN) | (1L << DECIMAL) | (1L << DATE) | (1L << IDENTIFIER) | (1L << VAR_GLOBAL))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << TRUE) | (1L << FALSE) | (1L << NULL) | (1L << LPAREN) | (1L << DECIMAL) | (1L << DATE) | (1L << IDENTIFIER) | (1L << VAR_TABLE_COLUNA))) != 0)) {
 				{
 				State = 79; arithmetic_expression(0);
 				}
@@ -647,7 +648,7 @@ public partial class LanguageParser : Parser {
 			State = 99;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << IF) | (1L << TRUE) | (1L << FALSE) | (1L << NULL) | (1L << BUSCAR_CARACTERISTICA) | (1L << LPAREN) | (1L << VAR) | (1L << CONST) | (1L << DECIMAL) | (1L << DATE) | (1L << IDENTIFIER) | (1L << VAR_GLOBAL))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << IF) | (1L << TRUE) | (1L << FALSE) | (1L << NULL) | (1L << BUSCAR_CARACTERISTICA) | (1L << LPAREN) | (1L << VAR) | (1L << CONST) | (1L << DECIMAL) | (1L << DATE) | (1L << IDENTIFIER) | (1L << VAR_TABLE_COLUNA))) != 0)) {
 				{
 				{
 				State = 96; rule_block();
@@ -717,7 +718,7 @@ public partial class LanguageParser : Parser {
 			State = 105;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << IF) | (1L << TRUE) | (1L << FALSE) | (1L << NULL) | (1L << BUSCAR_CARACTERISTICA) | (1L << LPAREN) | (1L << VAR) | (1L << CONST) | (1L << DECIMAL) | (1L << DATE) | (1L << IDENTIFIER) | (1L << VAR_GLOBAL))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << IF) | (1L << TRUE) | (1L << FALSE) | (1L << NULL) | (1L << BUSCAR_CARACTERISTICA) | (1L << LPAREN) | (1L << VAR) | (1L << CONST) | (1L << DECIMAL) | (1L << DATE) | (1L << IDENTIFIER) | (1L << VAR_TABLE_COLUNA))) != 0)) {
 				{
 				{
 				State = 102; rule_block();
@@ -1404,7 +1405,7 @@ public partial class LanguageParser : Parser {
 			case DECIMAL:
 			case DATE:
 			case IDENTIFIER:
-			case VAR_GLOBAL:
+			case VAR_TABLE_COLUNA:
 				{
 				_localctx = new EntityExpressionContext(_localctx);
 				Context = _localctx;
@@ -1726,23 +1727,6 @@ public partial class LanguageParser : Parser {
 			else return visitor.VisitChildren(this);
 		}
 	}
-	public partial class GlobalEntityContext : EntityContext {
-		public ITerminalNode VAR_GLOBAL() { return GetToken(LanguageParser.VAR_GLOBAL, 0); }
-		public GlobalEntityContext(EntityContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterGlobalEntity(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitGlobalEntity(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitGlobalEntity(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
 	public partial class VariableEntityContext : EntityContext {
 		public ITerminalNode IDENTIFIER() { return GetToken(LanguageParser.IDENTIFIER, 0); }
 		public VariableEntityContext(EntityContext context) { CopyFrom(context); }
@@ -1774,6 +1758,23 @@ public partial class LanguageParser : Parser {
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitNumberEntity(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class VarTableColunaEntityContext : EntityContext {
+		public ITerminalNode VAR_TABLE_COLUNA() { return GetToken(LanguageParser.VAR_TABLE_COLUNA, 0); }
+		public VarTableColunaEntityContext(EntityContext context) { CopyFrom(context); }
+		public override void EnterRule(IParseTreeListener listener) {
+			ILanguageListener typedListener = listener as ILanguageListener;
+			if (typedListener != null) typedListener.EnterVarTableColunaEntity(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			ILanguageListener typedListener = listener as ILanguageListener;
+			if (typedListener != null) typedListener.ExitVarTableColunaEntity(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitVarTableColunaEntity(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
@@ -1841,11 +1842,11 @@ public partial class LanguageParser : Parser {
 				State = 190; Match(IDENTIFIER);
 				}
 				break;
-			case VAR_GLOBAL:
-				_localctx = new GlobalEntityContext(_localctx);
+			case VAR_TABLE_COLUNA:
+				_localctx = new VarTableColunaEntityContext(_localctx);
 				EnterOuterAlt(_localctx, 5);
 				{
-				State = 191; Match(VAR_GLOBAL);
+				State = 191; Match(VAR_TABLE_COLUNA);
 				}
 				break;
 			case NULL:

@@ -389,7 +389,7 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// <return>The visitor result.</return>
 	public virtual Result VisitVariableEntity([NotNull] LanguageParser.VariableEntityContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by the <c>globalEntity</c>
+	/// Visit a parse tree produced by the <c>varTableColunaEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.entity"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -398,7 +398,7 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitGlobalEntity([NotNull] LanguageParser.GlobalEntityContext context) { return VisitChildren(context); }
+	public virtual Result VisitVarTableColunaEntity([NotNull] LanguageParser.VarTableColunaEntityContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by the <c>nullEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.entity"/>.

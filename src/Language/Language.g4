@@ -70,7 +70,7 @@ QUOTE : '"' ;
 DECIMAL : '-'?[0-9]+('.'[0-9]+)? ;
 DATE : ([0-9])+'/'([0-9])+'/'([0-9])+;
 IDENTIFIER : [a-zA-Z_][a-zA-Z_0-9]* ;
-VAR_GLOBAL : [@][a-zA-Z_][a-zA-Z_0-9]*[.][a-zA-Z_][a-zA-Z_0-9]* ;
+VAR_TABLE_COLUNA : [@][a-zA-Z_][a-zA-Z_0-9]*[.][a-zA-Z_][a-zA-Z_0-9]* ;
 
 
 
@@ -179,6 +179,6 @@ entity
     | DECIMAL                   #numberEntity
 	| DATE						          #dateEntity
     | IDENTIFIER                #variableEntity
-    | VAR_GLOBAL                #globalEntity
+    | VAR_TABLE_COLUNA                #varTableColunaEntity
     | NULL                      #nullEntity
     ;

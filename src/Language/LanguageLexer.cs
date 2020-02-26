@@ -42,7 +42,7 @@ public partial class LanguageLexer : Lexer {
 		GET_DATE=32, LAST_DAY_PROCESS=33, DESPREZAR=34, RBRACES=35, LBRACES=36, 
 		LPAREN=37, RPAREN=38, MULT=39, DIV=40, PLUS=41, MINUS=42, GT=43, GE=44, 
 		LT=45, LE=46, EQ=47, NEQ=48, ATRIB=49, VAR=50, CONST=51, RETURN=52, COMMA=53, 
-		QUOTE=54, DECIMAL=55, DATE=56, IDENTIFIER=57, VAR_GLOBAL=58, SEMI=59, 
+		QUOTE=54, DECIMAL=55, DATE=56, IDENTIFIER=57, VAR_TABLE_COLUNA=58, SEMI=59, 
 		COLON=60, COMMENT=61, WS=62;
 	public static string[] channelNames = {
 		"DEFAULT_TOKEN_CHANNEL", "HIDDEN"
@@ -62,7 +62,8 @@ public partial class LanguageLexer : Lexer {
 		"GET_DATE", "LAST_DAY_PROCESS", "DESPREZAR", "RBRACES", "LBRACES", "LPAREN", 
 		"RPAREN", "MULT", "DIV", "PLUS", "MINUS", "GT", "GE", "LT", "LE", "EQ", 
 		"NEQ", "ATRIB", "VAR", "CONST", "RETURN", "COMMA", "QUOTE", "DECIMAL", 
-		"DATE", "IDENTIFIER", "VAR_GLOBAL", "SEMI", "COLON", "COMMENT", "WS"
+		"DATE", "IDENTIFIER", "VAR_TABLE_COLUNA", "SEMI", "COLON", "COMMENT", 
+		"WS"
 	};
 
 
@@ -97,7 +98,8 @@ public partial class LanguageLexer : Lexer {
 		"GET_DATE", "LAST_DAY_PROCESS", "DESPREZAR", "RBRACES", "LBRACES", "LPAREN", 
 		"RPAREN", "MULT", "DIV", "PLUS", "MINUS", "GT", "GE", "LT", "LE", "EQ", 
 		"NEQ", "ATRIB", "VAR", "CONST", "RETURN", "COMMA", "QUOTE", "DECIMAL", 
-		"DATE", "IDENTIFIER", "VAR_GLOBAL", "SEMI", "COLON", "COMMENT", "WS"
+		"DATE", "IDENTIFIER", "VAR_TABLE_COLUNA", "SEMI", "COLON", "COMMENT", 
+		"WS"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 

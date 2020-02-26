@@ -255,12 +255,12 @@ public interface ILanguageVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitVariableEntity([NotNull] LanguageParser.VariableEntityContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>globalEntity</c>
+	/// Visit a parse tree produced by the <c>varTableColunaEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.entity"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitGlobalEntity([NotNull] LanguageParser.GlobalEntityContext context);
+	Result VisitVarTableColunaEntity([NotNull] LanguageParser.VarTableColunaEntityContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>nullEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.entity"/>.

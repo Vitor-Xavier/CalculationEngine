@@ -411,17 +411,17 @@ public interface ILanguageListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitVariableEntity([NotNull] LanguageParser.VariableEntityContext context);
 	/// <summary>
-	/// Enter a parse tree produced by the <c>globalEntity</c>
+	/// Enter a parse tree produced by the <c>varTableColunaEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.entity"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterGlobalEntity([NotNull] LanguageParser.GlobalEntityContext context);
+	void EnterVarTableColunaEntity([NotNull] LanguageParser.VarTableColunaEntityContext context);
 	/// <summary>
-	/// Exit a parse tree produced by the <c>globalEntity</c>
+	/// Exit a parse tree produced by the <c>varTableColunaEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.entity"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitGlobalEntity([NotNull] LanguageParser.GlobalEntityContext context);
+	void ExitVarTableColunaEntity([NotNull] LanguageParser.VarTableColunaEntityContext context);
 	/// <summary>
 	/// Enter a parse tree produced by the <c>nullEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.entity"/>.
