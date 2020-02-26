@@ -134,8 +134,8 @@ namespace Api {
 
       grupo = tokensTypeVarTableColuna.Select(x => new
       {
-        tabela = x.Text.Remove("@").SubstringWithIndexOf('.'),
-        coluna = x.Text.Remove("@").SubstringWithIndexOf('.', true).Remove('.')
+        tabela = x.Text.RemoveCaracter("@").SubstringWithIndexOf('.'),
+        coluna = x.Text.RemoveCaracter("@").SubstringWithIndexOf('.', true).RemoveCaracter(".")
       })
           .GroupBy(u => u.tabela)
           .Select(y => new TabelaColuna()

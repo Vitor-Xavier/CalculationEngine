@@ -177,8 +177,8 @@ exercicio_caracteristica
 entity
     : (TRUE | FALSE)            #boolEntity
     | DECIMAL                   #numberEntity
-	| DATE						          #dateEntity
+	| DATE						#dateEntity
     | IDENTIFIER                #variableEntity
-    | VAR_TABLE_COLUNA                #varTableColunaEntity
+    | VAR_TABLE_COLUNA          #varTableColunaEntity
     | NULL                      #nullEntity
     ;

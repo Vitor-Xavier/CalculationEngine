@@ -14,10 +14,10 @@ namespace Api {
             if(!isFinal)
                 return str.Substring (0, position).Trim ();
             else
-                return str.Substring (position, (str.Length-position)).Trim ();
+                return str.Substring ((position), (str.Length-position)).Trim ();
         }
 
-        public static string Remove (this String str, string caracter) {
+        public static string RemoveCaracter (this String str, string caracter) {
 
                 return str.Replace (caracter, string.Empty).Trim ();
         }
