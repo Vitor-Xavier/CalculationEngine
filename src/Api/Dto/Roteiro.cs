@@ -9,6 +9,6 @@ namespace Api.Dto
       public int Id { get; set; }
       public string NomeRoteiro { get; set; }
       public List<Evento> Eventos { get; set; }
-
-    }
+    public string SetorOrigem { get; internal set; }
+  }
 }

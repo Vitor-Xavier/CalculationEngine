@@ -20,13 +20,14 @@ namespace Api {
             Roteiro roteiro = new Roteiro () {
                 Id = 1,
                 NomeRoteiro = "IPTU",
+                SetorOrigem = "Imobiliario",
                 Eventos = new List<Evento> ()
             };
 
             Evento fatorG = new Evento () {
                 Id = 1,
                     Nome = "FatorG",
-                    Formula = @"(@AreaTerreno * @Testada)/30;"
+                    Formula = @"retorno (@Fisico.AreaTerreno * @Fisico.Testada)/30;"
             };
 
             Evento fatorK = new Evento () {
@@ -37,20 +38,20 @@ namespace Api {
 
             Evento vvt = new Evento () {
                 Id = 3,
-                    Nome = "VVT",
-                    Formula = @"@FatorG * @FatorK * @Pedologia * @NumeroFrentes * @FatorPosicaoQuadra * @CaracteristicaEspecial * @FracaoIdeal;"
+                    Nome = "vvt",
+                    Formula = @"retorno @FatorG * @FatorK * @Fisico.AreaTotalConstruida;"
             };
 
             Evento vvp = new Evento () {
                 Id = 4,
-                    Nome = "VVP",
-                    Formula = @"@AreaEdificada + @ValorM + (@Pontos/100) * @Conservacao * @LocalPropriedadeLote;"
+                    Nome = "vvp",
+                    Formula = @"retorno @Fisico.AreaEdificada + 200;"
             };
 
             Evento iptu = new Evento () {
                 Id = 5,
                     Nome = "IPTU",
-                    Formula = @"@vvp + @vvt;"
+                    Formula = @"retorno @vvp + @vvt;"
             };
 
             vvt.Eventos = new List<Evento> ();
@@ -68,7 +69,7 @@ namespace Api {
 
             List<ExemploFisico> listaFisico = new List<ExemploFisico> ();
 
-            for (int i = 0; i < 1; i++) {
+            for (int i = 0; i < 100; i++) {
                 var novoFisico = new ExemploFisico () {
                     Id = 0,
                     AreaEdificada = GerarDecimal (),
@@ -98,34 +99,16 @@ namespace Api {
                 listaFisico.Add (novoFisico);
             }
 
-            Dictionary<string, GenericValueLanguage> dic = new Dictionary<string, GenericValueLanguage> ();
-            // for (int i = 0; i < teste3.Count (); i++) {
 
-            //var eita = teste.GetType ().GetProperties ();
-            //  var teste3 = novoFisico.GetType ().GetProperties ();
-            //  var teste8 = novoFisico.GetType().GetProperty(teste3[i].Name).GetValue(novoFisico, null);
-            // GenericValueLanguage outroteste = new GenericValueLanguage (teste8, false);
+            
+            
 
-            // dic.Add(string.Concat ("@", teste3[i].Name), outroteste);
-            // }
-
-            //foreach (var item in roteiro.Eventos) {
-            //            ExecuteLanguage execute = new ExecuteLanguage ("var a = 10 * 18 + @Topografia;");
 
             ExecuteLanguage execute = new ExecuteLanguage ();
 
-            var teste222 = execute.DefaultParserTree (string.Format ("_BuscarCaracteristica(\"caracteristica\",\"esgoto\");"));
+            execute.DefaultParserTree (string.Format ("_BuscarCaracteristica(\"caracteristica\",\"esgoto\");"));
 
-            var claudio = execute.parser.TokenTypeMap;
-            var commonToken = execute.commonToken.;
-            var tokens = execute.parser.TokenStream.tokens;
-            // ParseTreeWalker walker = new ParseTreeWalker ();
-            // List<string> teste100 = new List < string ();
-            // walker.walk(teste100, teste222);
-
-            var value = execute.Execute (dic);
-
-            //};
+            var value = execute.Execute ();
 
         }
 
