@@ -214,6 +214,12 @@ public interface ILanguageVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitDescricao_caracteristica([NotNull] LanguageParser.Descricao_caracteristicaContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="LanguageParser.valor_fator_caracteristica"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitValor_fator_caracteristica([NotNull] LanguageParser.Valor_fator_caracteristicaContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="LanguageParser.exercicio_caracteristica"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

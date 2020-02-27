@@ -341,6 +341,16 @@ public interface ILanguageListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitDescricao_caracteristica([NotNull] LanguageParser.Descricao_caracteristicaContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="LanguageParser.valor_fator_caracteristica"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterValor_fator_caracteristica([NotNull] LanguageParser.Valor_fator_caracteristicaContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LanguageParser.valor_fator_caracteristica"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitValor_fator_caracteristica([NotNull] LanguageParser.Valor_fator_caracteristicaContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="LanguageParser.exercicio_caracteristica"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

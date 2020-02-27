@@ -73,7 +73,6 @@ IDENTIFIER : [a-zA-Z_][a-zA-Z_0-9]* ;
 VAR_TABLE_COLUNA : [@][a-zA-Z_][a-zA-Z_0-9]*[.][a-zA-Z_][a-zA-Z_0-9]* ;
 
 
-
 SEMI : ';';
 COLON : ':';
 
@@ -145,7 +144,7 @@ comparison_operator
 
 
 function_signature
-	: BUSCAR_CARACTERISTICA LPAREN tabela_caracteristica COMMA descricao_caracteristica (COMMA exercicio_caracteristica)? RPAREN  #buscarCaracteristica
+	: BUSCAR_CARACTERISTICA LPAREN tabela_caracteristica COMMA descricao_caracteristica COMMA valor_fator_caracteristica (COMMA exercicio_caracteristica)? RPAREN  #buscarCaracteristica
     ;
 
 arithmetic_expression
@@ -157,22 +156,26 @@ arithmetic_expression
     | entity																	#entityExpression
     ;
 
-tabela_caracteristica
+    tabela_caracteristica
     : text
     ;
 
-descricao_caracteristica
+    descricao_caracteristica
     : text
     ;
 
-exercicio_caracteristica
-    : DECIMAL
+    valor_fator_caracteristica
+    : text
+    ;
+    
+    
+    exercicio_caracteristica                                                       
+    : text
     ;
 
     text
     : QUOTE IDENTIFIER QUOTE #stringEntity
     ;
-
 
 entity
     : (TRUE | FALSE)            #boolEntity

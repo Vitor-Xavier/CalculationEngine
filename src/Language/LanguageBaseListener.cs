@@ -399,6 +399,18 @@ public partial class LanguageBaseListener : ILanguageListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitDescricao_caracteristica([NotNull] LanguageParser.Descricao_caracteristicaContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="LanguageParser.valor_fator_caracteristica"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterValor_fator_caracteristica([NotNull] LanguageParser.Valor_fator_caracteristicaContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LanguageParser.valor_fator_caracteristica"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitValor_fator_caracteristica([NotNull] LanguageParser.Valor_fator_caracteristicaContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="LanguageParser.exercicio_caracteristica"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

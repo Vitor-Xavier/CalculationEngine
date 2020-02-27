@@ -165,21 +165,22 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage> {
         return new GenericValueLanguage (left.AsDouble () / right.AsDouble ());
     }
 
-    public override GenericValueLanguage VisitBuscarCaracteristica(LanguageParser.BuscarCaracteristicaContext context){
-        
+    public override GenericValueLanguage VisitBuscarCaracteristica (LanguageParser.BuscarCaracteristicaContext context) {
+
         var tabelaCaracteristica = Visit (context.tabela_caracteristica ());
         var descricaoCaracteristica = Visit (context.descricao_caracteristica ());
-        
+        var valorFatorCaracteristica = Visit (context.descricao_caracteristica ());
+        var exercicioCaracteristica = Visit (context.descricao_caracteristica ());
+
         return new GenericValueLanguage (10, false);
     }
-
 
     public override GenericValueLanguage VisitParenthesisExpression ([NotNull] LanguageParser.ParenthesisExpressionContext context) =>
     Visit (context.arithmetic_expression ());
 
     public override GenericValueLanguage VisitVarTableColunaEntity ([NotNull] LanguageParser.VarTableColunaEntityContext context) {
         var id = context.VAR_TABLE_COLUNA ()?.GetText ();
-        
+
         if (id is null) throw new Exception ("Nome do par�metro esperado n�o enconrtado");
 
         memory.TryGetValue (id, out GenericValueLanguage retono);
@@ -197,7 +198,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage> {
     public override GenericValueLanguage VisitArithmeticAssignment ([NotNull] LanguageParser.ArithmeticAssignmentContext context) {
 
         countTeste++;
-        
+
         var id = context.IDENTIFIER ().GetText ();
 
         var value = Visit (context.arithmetic_expression ());
