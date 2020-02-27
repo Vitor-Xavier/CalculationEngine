@@ -7,6 +7,5 @@ namespace Api.Dto
       public int Id { get; set; }
       public string Nome { get; set; }
       public string Formula { get; set; }
-      public List<Evento> Eventos { get; set; }
     }
 }
