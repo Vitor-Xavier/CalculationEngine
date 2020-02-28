@@ -81,38 +81,7 @@ namespace Api {
             roteiro.Eventos.Add (vvp);
             roteiro.Eventos.Add (iptu);
 
-            var listaFisico = new List<ExemploFisico> ();
-
-            for (int i = 0; i < 100; i++) {
-                var novoFisico = new ExemploFisico () {
-                    Id = 0,
-                    AreaEdificada = GerarDecimal (),
-                    AreaTerreno = GerarDecimal (),
-                    Caracteristica = GerarDecimal (),
-                    CaracteristicaEspecial = GerarDecimal (),
-                    Conservacao = GerarDecimal (),
-                    FatorPosicaoQuadra = GerarDecimal (),
-                    FracaoIdeal = GerarDecimal (),
-                    LocalPropriedadeLote = GerarDecimal (),
-                    NumeroFrentes = GerarDecimal (),
-                    Pedologia = GerarDecimal (),
-                    Pontos = GerarDecimal (),
-                    Testada = GerarDecimal (),
-                    Topografia = GerarDecimal (),
-                    ValorM = GerarDecimal (),
-
-                    Teste01 = GerarDecimal (),
-                    Teste02 = GerarDecimal (),
-                    Teste03 = GerarDecimal (),
-                    Teste04 = GerarDecimal (),
-                    Teste05 = GerarDecimal (),
-                    Teste06 = GerarDecimal (),
-                    Teste07 = GerarDecimal (),
-
-                };
-                listaFisico.Add (novoFisico);
-            }
-
+        
             // Diagnostic tools
             var process = Process.GetCurrentProcess ();
             var stopwatch = new Stopwatch ();
@@ -120,22 +89,30 @@ namespace Api {
 
             // Pré-Processamento
             Console.WriteLine ("..Pré-Processamento");
+            
             var grupo = new List<TabelaColuna> ();
             List<CaracteristicaParametros> caracteristicaParametros = new List<CaracteristicaParametros> ();
 
             foreach (var evento in roteiro.Eventos) {
+               
                 ExecuteLanguage execute = new ExecuteLanguage ();
+                
                 execute.DefaultParserTree (evento.Formula);
 
                 var tokens = execute.commonToken.GetTokens ();
                 var tokenTypeMap = execute.parser.TokenTypeMap;
-                caracteristicaParametros = ListaCaracteristicaParametros (tokens, tokenTypeMap);
 
+                // Separa Massa de Dados para Buscar no Banco de Dados
+                caracteristicaParametros = ListaCaracteristicaParametros (tokens, tokenTypeMap);
                 grupo.AddRange (ListaTabelaColuna (tokens, tokenTypeMap));
+
             }
+
             grupo = grupo.GroupBy (t => t.Tabela).Select (x => new TabelaColuna { Tabela = x.Key, Coluna = x.SelectMany (y => y.Coluna).Distinct ().ToList () }).ToList ();
 
             var keyValuePairs = new Dictionary<string, IList<object>> ();
+
+            // Get Massa de Dados
             foreach (var item in grupo) {
                 var sql = GetDefaultSQL (item);
                 keyValuePairs.Add (item.Tabela, await GetData (sql, item.Coluna));
@@ -144,22 +121,34 @@ namespace Api {
             var stopWatchProcessamento = new Stopwatch ();
             stopWatchProcessamento.Start ();
             Console.WriteLine ("..Processamento");
+
             // Processamento
             var exceptions = new ConcurrentQueue<Exception> ();
             var results = new ConcurrentDictionary<int, object> ();
+
+            // Principal 
+            // Setor Origem 
+            // Imobiliario - Principal Fisico
+            // Mobiliario - Principal CCM
+            // Contribuintes - Contribuintes
+            // Remover o First
             var first = keyValuePairs.FirstOrDefault ();
             var last = roteiro.Eventos.LastOrDefault ();
+
             Parallel.ForEach (first.Value, new ParallelOptions { MaxDegreeOfParallelism = 1 }, item => {
                 // Memory
                 (item as IDictionary<string, object>).TryGetValue ("Id", out object objId);
+                
                 int itemId = (int) objId;
                 var memory = (item as IDictionary<string, object>).ToDictionary (x => $"@{first.Key}.{x.Key}", y => new GenericValueLanguage (y.Value));
 
                 // TODO: Itens auxiliares ao Memory
+                // Pensar em buscar no Dictionary o principal do Setor Origem.
                 var auxMemory = keyValuePairs.Skip (1)
                     .Select (x => new { Table = x.Key, Values = x.Value.Where (y => (y as IDictionary<string, object>).TryGetValue ("IdOrigem", out object idOrigem) && ((int) idOrigem) == itemId) });
-                foreach (var m in auxMemory) {
 
+                // Mapear os 'Filhos' jogando na Memory
+                foreach (var m in auxMemory) {
                     int i = 0;
                     foreach (var v in m.Values) {
                         (v as IDictionary<string, object>)
@@ -169,9 +158,9 @@ namespace Api {
                             });
                             i++;
                     }
-                    
                 }
 
+                // Execucao das Formulas do Roteiro
                 roteiro.Eventos.ForEach (evento => {
                     try {
                         // Execução
@@ -253,9 +242,9 @@ namespace Api {
         private static string GetDefaultSQL (TabelaColuna tabela) =>
             tabela.Tabela
         switch {
-            "Fisico" => $"SELECT IdFisico as Id, {string.Join(", ", tabela.Coluna)} FROM Fisico Where idFisico = 7 ORDER BY IdFisico",
-            "FisicoOutros" => $"SELECT IdFisicoOutro as Id, IdFisico as IdOrigem, {string.Join(", ", tabela.Coluna)} FROM FisicoOutros ORDER BY IdFisico",
-            "FisicoRural" => $"SELECT TOP 10 IdFisicoRural as Id, {string.Join(", ", tabela.Coluna)} FROM FisicoRural ORDER BY IdFisicoRural",
+            "Fisico" => $"SELECT IdFisico as Id, {string.Join(", ", tabela.Coluna)} FROM Fisico ORDER BY IdFisico",
+            "FisicoOutros" => $"SELECT TOP 10 IdFisicoOutro as Id, IdFisico as IdOrigem, {string.Join(", ", tabela.Coluna)} FROM FisicoOutros ORDER BY IdFisico",
+            "FisicoRural" => $"SELECT TOP 10 IdFisicoArea as Id, {string.Join(", ", tabela.Coluna)} FROM FisicoAreas ORDER BY IdFisicoArea",
             _ =>
             throw new Exception ("Tabela não configurado para o cálculo")
         };
