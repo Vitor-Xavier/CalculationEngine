@@ -17,6 +17,7 @@ FALSE : 'false' ;
 NULL : 'null';
 MARKER: 'marker';
 
+COALESCE: '_COALESCE';
 BUSCAR_CARACTERISTICA: '_BuscarCaracteristica';
 LOOKUP_FUNC: 'lookupFunction';
 BASE_FUNC: 'baseFunction';
@@ -147,12 +148,17 @@ function_signature
 	: BUSCAR_CARACTERISTICA LPAREN tabela_caracteristica COMMA descricao_caracteristica  COMMA valor_fator_caracteristica (COMMA exercicio_caracteristica)? RPAREN  #buscarCaracteristica
     ;
 
+coalesce_function
+    : COALESCE LPAREN entity (COMMA entity)* RPAREN #coalesceFunction
+    ;
+
 arithmetic_expression
     : arithmetic_expression MULT arithmetic_expression							#multExpression
     | arithmetic_expression DIV arithmetic_expression							#divExpression
     | arithmetic_expression PLUS arithmetic_expression							#plusExpression
     | arithmetic_expression MINUS arithmetic_expression							#minusExpression
     | LPAREN arithmetic_expression RPAREN										#parenthesisExpression
+    | coalesce_function                                                         #coalesceExpression
     | entity																	#entityExpression
     ;
 

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from .\Language.g4 by ANTLR 4.8
+// Generated from Language.g4 by ANTLR 4.8
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -290,6 +290,34 @@ public partial class LanguageBaseListener : ILanguageListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitBuscarCaracteristica([NotNull] LanguageParser.BuscarCaracteristicaContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>coalesceFunction</c>
+	/// labeled alternative in <see cref="LanguageParser.coalesce_function"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterCoalesceFunction([NotNull] LanguageParser.CoalesceFunctionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>coalesceFunction</c>
+	/// labeled alternative in <see cref="LanguageParser.coalesce_function"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitCoalesceFunction([NotNull] LanguageParser.CoalesceFunctionContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>coalesceExpression</c>
+	/// labeled alternative in <see cref="LanguageParser.arithmetic_expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterCoalesceExpression([NotNull] LanguageParser.CoalesceExpressionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>coalesceExpression</c>
+	/// labeled alternative in <see cref="LanguageParser.arithmetic_expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitCoalesceExpression([NotNull] LanguageParser.CoalesceExpressionContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by the <c>minusExpression</c>
 	/// labeled alternative in <see cref="LanguageParser.arithmetic_expression"/>.

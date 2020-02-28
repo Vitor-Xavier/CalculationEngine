@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from .\Language.g4 by ANTLR 4.8
+// Generated from Language.g4 by ANTLR 4.8
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -248,6 +248,30 @@ public interface ILanguageListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitBuscarCaracteristica([NotNull] LanguageParser.BuscarCaracteristicaContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>coalesceFunction</c>
+	/// labeled alternative in <see cref="LanguageParser.coalesce_function"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCoalesceFunction([NotNull] LanguageParser.CoalesceFunctionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>coalesceFunction</c>
+	/// labeled alternative in <see cref="LanguageParser.coalesce_function"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCoalesceFunction([NotNull] LanguageParser.CoalesceFunctionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>coalesceExpression</c>
+	/// labeled alternative in <see cref="LanguageParser.arithmetic_expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCoalesceExpression([NotNull] LanguageParser.CoalesceExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>coalesceExpression</c>
+	/// labeled alternative in <see cref="LanguageParser.arithmetic_expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCoalesceExpression([NotNull] LanguageParser.CoalesceExpressionContext context);
 	/// <summary>
 	/// Enter a parse tree produced by the <c>minusExpression</c>
 	/// labeled alternative in <see cref="LanguageParser.arithmetic_expression"/>.

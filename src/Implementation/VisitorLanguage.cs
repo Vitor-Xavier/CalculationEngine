@@ -264,4 +264,19 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage> {
             return value;
         else throw new Exception ("Vari�vel n�o informada");
     }
+
+    public override GenericValueLanguage VisitCoalesceFunction([NotNull] LanguageParser.CoalesceFunctionContext context)
+    {
+        int parameters = context.GetText().Count(x => x == ',') + 1;
+        for (int i = 0; i < parameters; i++)
+        {
+            var value = Visit(context.entity(i));
+            if (value != null && value.Value != null)
+                return value;
+        }
+        return new GenericValueLanguage(null);
+    }
+
+    public override GenericValueLanguage VisitCoalesceExpression([NotNull] LanguageParser.CoalesceExpressionContext context) =>
+        Visit(context.coalesce_function());
 }
