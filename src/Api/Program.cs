@@ -64,12 +64,12 @@ namespace Api
             {
                 // Memory
                 stopWatchMemory.Start();
-                int itemId = (int) (item as IDictionary<string, object>)["Id"];
+                int itemId = (int)(item as IDictionary<string, object>)["Id"];
                 var memory = (item as IDictionary<string, object>).ToDictionary(x => $"@{listaPrincipal.Key}.{x.Key}", y => new GenericValueLanguage(y.Value));
 
                 // TODO: Itens auxiliares ao Memory
                 var itemAuxiliares = listasAuxiliares
-                    .ToDictionary(x => x.Key, x => x.Value.Where(y => (int) (y as IDictionary<string, object>)["IdOrigem"] == itemId));
+                    .ToDictionary(x => x.Key, x => x.Value.Where(y => (int)(y as IDictionary<string, object>)["IdOrigem"] == itemId));
 
                 // Mapear os 'Filhos' jogando na Memory
                 foreach (var aux in itemAuxiliares)
@@ -224,11 +224,15 @@ namespace Api
                 var tokenTypeMap = execute.parser.TokenTypeMap;
 
                 // Separa Massa de Dados para Buscar no Banco de Dados
-                caracteristicaParametros = ListaCaracteristicaParametros(tokens, tokenTypeMap);
+                caracteristicaParametros.AddRange(ListaCaracteristicaParametros(tokens, tokenTypeMap));
                 grupo.AddRange(ListaTabelaColuna(tokens, tokenTypeMap));
 
             }
             grupo = grupo.GroupBy(t => t.Tabela).Select(x => new TabelaColuna { Tabela = x.Key, Coluna = x.SelectMany(y => y.Coluna).Distinct().ToList() }).ToList();
+
+            // TODO BuscaCaracteristica GroupBy
+
+
             if (!SetorOrigemHelper.ValidarTabelasSetor(setor, grupo.Select(g => g.Tabela)))
                 throw new Exception($"Erro ao validar tabelas utilizadas para o setor {setor.GetDescription()}");
 
@@ -241,10 +245,68 @@ namespace Api
 
             var keyValuePairs = await database.GetAllData(grupo.Select(x => x.Tabela).ToArray(), sql);
 
+
+            // Get Tabela Principal 
+            //string tabelaPrincipal = SetorOrigemHelper.GetTabelaPrincipal(SetorOrigem);
+            //var listaPrincipal = keyValuePairs.FirstOrDefault(x => x.Key == tabelaPrincipal);
+
+            // Extrair Id`s da Lista Principal
+            // Criar SQL usando Metodo GetDefaultBuscaCaracteristicaSQL
+            // Executar SQL e atribuir para cada Tabela Caracterista os Valores Correspondente
+            // Resultado Salvar keyValuePairs
+            // keyValuePairs:
+            // <{
+            //  Fisico, {
+            //      {Id: 1, Area: 10, Valor: 23},
+            //      {Id: 2, Area: 13, Valor: 24},
+            //      {Id: 2, Area: 14, Valor: 25},
+            //  },
+            //  {FisicoCaracteristica, 
+            //      <{
+            //          Bairro, {
+            //              {IdOritem: 1, Valor: 31},
+            //              {IdOritem: 3, Valor: 01},
+            //          },
+            //          Esgoto, {
+            //              {IdOritem: 1, Valor: 21},
+            //              {IdOritem: 2, Valor: 11},
+            //          },
+            //      }>
+            //  },
+            //  {FisicoAreaCaracteristica, 
+            //      <{
+            //          Frente, {
+            //              {IdOritem: 1, Valor: 31},
+            //              {IdOritem: 3, Valor: 01},
+            //          },
+            //          Lado, {
+            //              {IdOritem: 1, Valor: 21},
+            //              {IdOritem: 2, Valor: 11},
+            //          },
+            //      }>
+            //  }>
+
+
             stopwatchPre.Stop();
             Console.WriteLine($"Tempo Total Pré-Processamento: {stopwatchPre.Elapsed}");
 
             return keyValuePairs;
+        }
+
+
+        private static string GetDefaultBuscaCaracteristicaSQL(string ids, CaracteristicaParametros carac)
+        {
+
+            return $@"SELECT IdFisico as IdOrigem, 
+                             DescrCaracteristica as DescricaoCaracteristica, 
+                             (case when '{carac.ValorFatorCaracteristica ?? "DiferenteTabela"}' = 'Valor' and b.TpCaracteristica = 'Tabela' then c.Valor
+		                           when '{carac.ValorFatorCaracteristica ?? "DiferenteTabela"}' = 'Fator' and b.TpCaracteristica = 'Tabela' then c.Fator
+                                   when b.TpCaracteristica <> 'Tabela' then a.Vlr end) as Valor
+                             from  {carac.TabelaCaracteristica} a
+                             inner join Caracteristicas b on a.IdCaracteristica = b.IdCaracteristica
+                             inner join CaracteristicaVlrs c on c.IdCaracteristica = b.IdCaracteristica and c.Exercicio = {carac.ExercicioCaracteristica} and a.vlr = c.CodItem
+                             WHERE DescrCaracteristica = '{carac.DescricaoCaracteristica}' and {carac.ColunaCaracteristica} in ({ids})";
+
         }
 
         private static List<CaracteristicaParametros> ListaCaracteristicaParametros(IList<IToken> Tokens, IDictionary<string, int> TokenTypeMap)
@@ -252,6 +314,7 @@ namespace Api
             var tokenBuscarCaracteristica = TokenTypeMap.Where(x => x.Key == "BUSCAR_CARACTERISTICA").FirstOrDefault();
             var tokenRParen = TokenTypeMap.Where(x => x.Key == "RPAREN").FirstOrDefault();
             var valueTokenTableCaracteristica = TokenTypeMap.Where(x => x.Key == "IDENTIFIER").Select(x => x.Value).FirstOrDefault();
+            var valueTokenNumber = TokenTypeMap.Where(x => x.Key == "NUMBER").Select(x => x.Value).FirstOrDefault();
             bool tokensEOF = true;
             int tokenIndex = 0;
             List<CaracteristicaParametros> caracteristicaParametrosList = new List<CaracteristicaParametros>();
@@ -271,8 +334,9 @@ namespace Api
                 {
                     TabelaCaracteristica = ExtractTextToken(valueTokenTableCaracteristica, rangeTokenBuscaCaracteristica, 0),
                     DescricaoCaracteristica = ExtractTextToken(valueTokenTableCaracteristica, rangeTokenBuscaCaracteristica, 1),
-                    ValorFatorCaracteristica = ExtractTextToken(valueTokenTableCaracteristica, rangeTokenBuscaCaracteristica, 2),
-                    ExercicioCaracteristica = ExtractTextToken(valueTokenTableCaracteristica, rangeTokenBuscaCaracteristica, 3),
+                    ColunaCaracteristica = ExtractTextToken(valueTokenTableCaracteristica, rangeTokenBuscaCaracteristica, 2),
+                    ColunaValorCaracteristica = ExtractTextToken(valueTokenTableCaracteristica, rangeTokenBuscaCaracteristica, 3),
+                    ExercicioCaracteristica = ExtractTextToken(valueTokenNumber, rangeTokenBuscaCaracteristica, 0),
                 };
                 caracteristicaParametrosList.Add(caracteristicaValores);
                 tokenIndex = getTokenRParen.TokenIndex;
