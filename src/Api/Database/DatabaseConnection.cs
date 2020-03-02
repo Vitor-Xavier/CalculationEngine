@@ -33,7 +33,7 @@ namespace Api.Database
                     {
                         var obj = new ExpandoObject() as IDictionary<string, object>;
                         for (int i = 0; i < reader.FieldCount; i++)
-                            obj.Add(reader.GetName(i), reader[reader.GetName(i)]);
+                            obj.Add(reader.GetName(i), await reader.IsDBNullAsync(i) ? null : reader[i]);
                         tableResults.Add(obj);
                     }
                     results.Add(tabelas[j++], tableResults);

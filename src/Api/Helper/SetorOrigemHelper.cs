@@ -38,8 +38,8 @@ namespace Api.Helper
             tabela.Tabela.ToUpper() switch
             {
                 "FISICO" => $"SELECT IdFisico as Id, {string.Join(", ", tabela.Coluna)} FROM Fisico ORDER BY IdFisico;",
-                "FISICOOUTROS" => $"SELECT TOP 100 IdFisicoOutro as Id, IdFisico as IdOrigem, {string.Join(", ", tabela.Coluna)} FROM FisicoOutros ORDER BY IdFisico;",
-                "FISICOAREAS" => $"SELECT TOP 100 IdFisicoArea as Id, IdFisico as IdOrigem, {string.Join(", ", tabela.Coluna)} FROM FisicoAreas ORDER BY IdFisico;",
+                "FISICOOUTROS" => $"SELECT IdFisicoOutro as Id, IdFisico as IdOrigem, {string.Join(", ", tabela.Coluna)} FROM FisicoOutros ORDER BY IdFisico;",
+                "FISICOAREAS" => $"SELECT IdFisicoArea as Id, IdFisico as IdOrigem, {string.Join(", ", tabela.Coluna)} FROM FisicoAreas ORDER BY IdFisico;",
                 _ =>
                 throw new Exception("Tabela não configurado para o cálculo")
             };
