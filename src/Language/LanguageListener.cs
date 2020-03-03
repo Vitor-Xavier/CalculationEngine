@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from Language.g4 by ANTLR 4.8
+// Generated from .\Language.g4 by ANTLR 4.8
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -405,30 +405,6 @@ public interface ILanguageListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitColuna_valor_caracteristica([NotNull] LanguageParser.Coluna_valor_caracteristicaContext context);
 	/// <summary>
-	/// Enter a parse tree produced by the <c>stringEntity</c>
-	/// labeled alternative in <see cref="LanguageParser.text"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterStringEntity([NotNull] LanguageParser.StringEntityContext context);
-	/// <summary>
-	/// Exit a parse tree produced by the <c>stringEntity</c>
-	/// labeled alternative in <see cref="LanguageParser.text"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitStringEntity([NotNull] LanguageParser.StringEntityContext context);
-	/// <summary>
-	/// Enter a parse tree produced by the <c>inteiroEntity</c>
-	/// labeled alternative in <see cref="LanguageParser.number"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterInteiroEntity([NotNull] LanguageParser.InteiroEntityContext context);
-	/// <summary>
-	/// Exit a parse tree produced by the <c>inteiroEntity</c>
-	/// labeled alternative in <see cref="LanguageParser.number"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitInteiroEntity([NotNull] LanguageParser.InteiroEntityContext context);
-	/// <summary>
 	/// Enter a parse tree produced by the <c>boolEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.entity"/>.
 	/// </summary>
@@ -441,17 +417,29 @@ public interface ILanguageListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitBoolEntity([NotNull] LanguageParser.BoolEntityContext context);
 	/// <summary>
-	/// Enter a parse tree produced by the <c>numberEntity</c>
+	/// Enter a parse tree produced by the <c>numberDecimalEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.entity"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterNumberEntity([NotNull] LanguageParser.NumberEntityContext context);
+	void EnterNumberDecimalEntity([NotNull] LanguageParser.NumberDecimalEntityContext context);
 	/// <summary>
-	/// Exit a parse tree produced by the <c>numberEntity</c>
+	/// Exit a parse tree produced by the <c>numberDecimalEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.entity"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitNumberEntity([NotNull] LanguageParser.NumberEntityContext context);
+	void ExitNumberDecimalEntity([NotNull] LanguageParser.NumberDecimalEntityContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>numberIntegerEntity</c>
+	/// labeled alternative in <see cref="LanguageParser.entity"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterNumberIntegerEntity([NotNull] LanguageParser.NumberIntegerEntityContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>numberIntegerEntity</c>
+	/// labeled alternative in <see cref="LanguageParser.entity"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitNumberIntegerEntity([NotNull] LanguageParser.NumberIntegerEntityContext context);
 	/// <summary>
 	/// Enter a parse tree produced by the <c>dateEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.entity"/>.
@@ -500,4 +488,36 @@ public interface ILanguageListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitNullEntity([NotNull] LanguageParser.NullEntityContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>stringEntity</c>
+	/// labeled alternative in <see cref="LanguageParser.text"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterStringEntity([NotNull] LanguageParser.StringEntityContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>stringEntity</c>
+	/// labeled alternative in <see cref="LanguageParser.text"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitStringEntity([NotNull] LanguageParser.StringEntityContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="LanguageParser.number_integer"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterNumber_integer([NotNull] LanguageParser.Number_integerContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LanguageParser.number_integer"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitNumber_integer([NotNull] LanguageParser.Number_integerContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="LanguageParser.number_decimal"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterNumber_decimal([NotNull] LanguageParser.Number_decimalContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LanguageParser.number_decimal"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitNumber_decimal([NotNull] LanguageParser.Number_decimalContext context);
 }

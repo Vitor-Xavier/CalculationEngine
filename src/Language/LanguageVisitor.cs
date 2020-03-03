@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from Language.g4 by ANTLR 4.8
+// Generated from .\Language.g4 by ANTLR 4.8
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -252,20 +252,6 @@ public interface ILanguageVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitColuna_valor_caracteristica([NotNull] LanguageParser.Coluna_valor_caracteristicaContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>stringEntity</c>
-	/// labeled alternative in <see cref="LanguageParser.text"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitStringEntity([NotNull] LanguageParser.StringEntityContext context);
-	/// <summary>
-	/// Visit a parse tree produced by the <c>inteiroEntity</c>
-	/// labeled alternative in <see cref="LanguageParser.number"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitInteiroEntity([NotNull] LanguageParser.InteiroEntityContext context);
-	/// <summary>
 	/// Visit a parse tree produced by the <c>boolEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.entity"/>.
 	/// </summary>
@@ -273,12 +259,19 @@ public interface ILanguageVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitBoolEntity([NotNull] LanguageParser.BoolEntityContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>numberEntity</c>
+	/// Visit a parse tree produced by the <c>numberDecimalEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.entity"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitNumberEntity([NotNull] LanguageParser.NumberEntityContext context);
+	Result VisitNumberDecimalEntity([NotNull] LanguageParser.NumberDecimalEntityContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>numberIntegerEntity</c>
+	/// labeled alternative in <see cref="LanguageParser.entity"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitNumberIntegerEntity([NotNull] LanguageParser.NumberIntegerEntityContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>dateEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.entity"/>.
@@ -307,4 +300,23 @@ public interface ILanguageVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitNullEntity([NotNull] LanguageParser.NullEntityContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>stringEntity</c>
+	/// labeled alternative in <see cref="LanguageParser.text"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitStringEntity([NotNull] LanguageParser.StringEntityContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="LanguageParser.number_integer"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitNumber_integer([NotNull] LanguageParser.Number_integerContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="LanguageParser.number_decimal"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitNumber_decimal([NotNull] LanguageParser.Number_decimalContext context);
 }

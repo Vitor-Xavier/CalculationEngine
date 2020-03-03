@@ -69,9 +69,10 @@ COMMA: ',';
 QUOTE : '"' ;
 
 NUMBER : '-'?[0-9]+;
-DECIMAL : '-'?[0-9]+('.'[0-9]+)? ;
+DECIMAL : '-'?[0-9]+'.'[0-9]+ ;
 DATE : ([0-9])+'/'([0-9])+'/'([0-9])+;
 IDENTIFIER : [a-zA-Z_][a-zA-Z_0-9]* ;
+TEXT : '"' .*? '"' ;
 VAR_TABLE_COLUNA : [@][a-zA-Z_][a-zA-Z_0-9]*('['[0-9]+']')?[.][a-zA-Z_][a-zA-Z_0-9]* ;
 
 
@@ -146,7 +147,7 @@ comparison_operator
 
 
 function_signature
-	: BUSCAR_CARACTERISTICA LPAREN tabela_caracteristica COMMA descricao_caracteristica COMMA coluna_caracteristica COMMA coluna_valor_caracteristica COMMA exercicio_caracteristica (COMMA valor_fator_caracteristica)? RPAREN  #buscarCaracteristica
+	: BUSCAR_CARACTERISTICA LPAREN tabela_caracteristica COMMA descricao_caracteristica COMMA coluna_caracteristica COMMA exercicio_caracteristica (COMMA valor_fator_caracteristica)? RPAREN  #buscarCaracteristica
     ;
 
 coalesce_function
@@ -176,7 +177,7 @@ arithmetic_expression
     ;
     
     exercicio_caracteristica                                                       
-    : number
+    : number_integer
     ;
 
     coluna_caracteristica                                                       
@@ -187,19 +188,27 @@ arithmetic_expression
     : text
     ;
 
-    text
-    : QUOTE IDENTIFIER QUOTE #stringEntity
-    ;
-
-    number
-    : NUMBER #inteiroEntity
-    ;
-
-entity
+    entity
     : (TRUE | FALSE)            #boolEntity
-    | DECIMAL                   #numberEntity
+    | number_decimal            #numberDecimalEntity
+    | number_integer            #numberIntegerEntity
 	| DATE						#dateEntity
     | IDENTIFIER                #variableEntity
     | VAR_TABLE_COLUNA          #varTableColunaEntity
     | NULL                      #nullEntity
     ;
+
+    text
+    : TEXT #stringEntity
+    ;
+
+    number_integer
+    : NUMBER 
+    ;
+
+    number_decimal
+    : DECIMAL 
+    ;
+
+    
+
