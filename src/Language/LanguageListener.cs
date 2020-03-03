@@ -385,6 +385,26 @@ public interface ILanguageListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitExercicio_caracteristica([NotNull] LanguageParser.Exercicio_caracteristicaContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="LanguageParser.coluna_caracteristica"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterColuna_caracteristica([NotNull] LanguageParser.Coluna_caracteristicaContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LanguageParser.coluna_caracteristica"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitColuna_caracteristica([NotNull] LanguageParser.Coluna_caracteristicaContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="LanguageParser.coluna_valor_caracteristica"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterColuna_valor_caracteristica([NotNull] LanguageParser.Coluna_valor_caracteristicaContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LanguageParser.coluna_valor_caracteristica"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitColuna_valor_caracteristica([NotNull] LanguageParser.Coluna_valor_caracteristicaContext context);
+	/// <summary>
 	/// Enter a parse tree produced by the <c>stringEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.text"/>.
 	/// </summary>
@@ -396,6 +416,18 @@ public interface ILanguageListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitStringEntity([NotNull] LanguageParser.StringEntityContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>inteiroEntity</c>
+	/// labeled alternative in <see cref="LanguageParser.number"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterInteiroEntity([NotNull] LanguageParser.InteiroEntityContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>inteiroEntity</c>
+	/// labeled alternative in <see cref="LanguageParser.number"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitInteiroEntity([NotNull] LanguageParser.InteiroEntityContext context);
 	/// <summary>
 	/// Enter a parse tree produced by the <c>boolEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.entity"/>.

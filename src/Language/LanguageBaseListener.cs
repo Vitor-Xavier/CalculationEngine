@@ -451,6 +451,30 @@ public partial class LanguageBaseListener : ILanguageListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitExercicio_caracteristica([NotNull] LanguageParser.Exercicio_caracteristicaContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="LanguageParser.coluna_caracteristica"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterColuna_caracteristica([NotNull] LanguageParser.Coluna_caracteristicaContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LanguageParser.coluna_caracteristica"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitColuna_caracteristica([NotNull] LanguageParser.Coluna_caracteristicaContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="LanguageParser.coluna_valor_caracteristica"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterColuna_valor_caracteristica([NotNull] LanguageParser.Coluna_valor_caracteristicaContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LanguageParser.coluna_valor_caracteristica"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitColuna_valor_caracteristica([NotNull] LanguageParser.Coluna_valor_caracteristicaContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by the <c>stringEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.text"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -464,6 +488,20 @@ public partial class LanguageBaseListener : ILanguageListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitStringEntity([NotNull] LanguageParser.StringEntityContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>inteiroEntity</c>
+	/// labeled alternative in <see cref="LanguageParser.number"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterInteiroEntity([NotNull] LanguageParser.InteiroEntityContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>inteiroEntity</c>
+	/// labeled alternative in <see cref="LanguageParser.number"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitInteiroEntity([NotNull] LanguageParser.InteiroEntityContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by the <c>boolEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.entity"/>.

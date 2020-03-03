@@ -12,7 +12,7 @@ namespace Api.Services
             {
                 Id = 1,
                 NomeRoteiro = "IPTU",
-                SetorOrigem = "Imobiliario",
+                SetorOrigem = SetorOrigem.Imobiliario,
                 Eventos = new List<Evento>()
             };
 
@@ -57,7 +57,7 @@ namespace Api.Services
             {
                 Id = 4,
                 Nome = "vvp",
-                Formula = @"retorno @Fisico.AreaTerreno * 100;"
+                Formula = @"retorno @Fisico.AreaTerreno * 100.0;"
             };
 
             Evento iptu = new Evento

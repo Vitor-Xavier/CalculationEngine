@@ -18,16 +18,12 @@ namespace Api
     {
         public static readonly int _maxDegreeOfParallelism = 100;
 
-        public static SetorOrigem SetorOrigem { get; set; }
-
         public static Lazy<ConcurrentQueue<Exception>> Exceptions { get; } = new Lazy<ConcurrentQueue<Exception>>(() => new ConcurrentQueue<Exception>());
 
         public static ConcurrentDictionary<int, object> Resultados { get; } = new ConcurrentDictionary<int, object>();
 
         static async Task Main(string[] args)
         {
-            SetorOrigem = SetorOrigem.Imobiliario;
-
             Console.WriteLine("-- Roteiro");
             var roteiroService = new RoteiroService();
             var roteiro = await roteiroService.GetRoteiro();
@@ -40,7 +36,7 @@ namespace Api
 
             Console.WriteLine("\n-- Pré-Processamento");
             var tabelas = TabelaColunaHelper.GetTabelaColunas(roteiro.Eventos);
-            var dados = await CarregarDados(SetorOrigem, tabelas);
+            var dados = await CarregarDados(roteiro.SetorOrigem, tabelas);
 
             #region Processamento
             Console.WriteLine("\n-- Processamento");
@@ -49,7 +45,7 @@ namespace Api
             stopWatchProcessamento.Start();
 
             // Principal 
-            string tabelaPrincipal = SetorOrigemHelper.GetTabelaPrincipal(SetorOrigem);
+            string tabelaPrincipal = SetorOrigemHelper.GetTabelaPrincipal(roteiro.SetorOrigem);
             Parallel.ForEach(dados, new ParallelOptions { MaxDegreeOfParallelism = _maxDegreeOfParallelism }, item =>
             {
                 var memory = new Dictionary<string, GenericValueLanguage>();

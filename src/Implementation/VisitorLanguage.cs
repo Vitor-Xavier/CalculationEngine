@@ -67,7 +67,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
     }
 
     public override GenericValueLanguage VisitParenthesisIfExpression([NotNull] LanguageParser.ParenthesisIfExpressionContext context) =>
-    Visit(context.if_expression());
+        Visit(context.if_expression());
 
     public override GenericValueLanguage VisitIfEntity([NotNull] LanguageParser.IfEntityContext context)
     {
@@ -179,7 +179,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         var right = Visit(context.arithmetic_expression(1));
 
         if (!double.TryParse(right?.Value?.ToString(), out double rightDouble) || rightDouble == 0)
-            throw new Exception("N�o � poss�vel dividir por zero.");
+            throw new Exception("Nao e possivel dividir por zero.");
 
         return new GenericValueLanguage(left.AsDouble() / right.AsDouble());
     }
@@ -197,13 +197,13 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
     }
 
     public override GenericValueLanguage VisitParenthesisExpression([NotNull] LanguageParser.ParenthesisExpressionContext context) =>
-    Visit(context.arithmetic_expression());
+        Visit(context.arithmetic_expression());
 
     public override GenericValueLanguage VisitVarTableColunaEntity([NotNull] LanguageParser.VarTableColunaEntityContext context)
     {
         var id = context.VAR_TABLE_COLUNA()?.GetText();
 
-        if (id is null) throw new Exception("Nome do par�metro esperado n�o enconrtado");
+        if (id is null) throw new Exception("Nome da variavel global nao encontrado");
 
         memory.TryGetValue(id, out GenericValueLanguage retono);
 
@@ -264,17 +264,14 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         return value;
     }
 
-    public override GenericValueLanguage VisitReturnValue([NotNull] LanguageParser.ReturnValueContext context)
-    {
-
-        return Visit(context.arithmetic_expression());
-    }
+    public override GenericValueLanguage VisitReturnValue([NotNull] LanguageParser.ReturnValueContext context) =>
+        Visit(context.arithmetic_expression());
 
     public override GenericValueLanguage VisitBoolEntity(LanguageParser.BoolEntityContext context) =>
-    new GenericValueLanguage(bool.Parse(context.GetText()));
+        new GenericValueLanguage(bool.Parse(context.GetText()));
 
     public override GenericValueLanguage VisitNumberEntity(LanguageParser.NumberEntityContext context) =>
-    new GenericValueLanguage(double.Parse(context.GetText(), CultureInfo.InvariantCulture));
+        new GenericValueLanguage(double.Parse(context.GetText(), CultureInfo.InvariantCulture));
 
     public override GenericValueLanguage VisitDateEntity(LanguageParser.DateEntityContext context)
     {

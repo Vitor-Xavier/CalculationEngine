@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Antlr4.Runtime.Tree;
-using Api.Dto;
 
-namespace Api {
+namespace Api
+{
     public static class StringExtension {
 
         public static string SubstringWithIndexOf (this String str, char caracter, bool isFinal = false) {

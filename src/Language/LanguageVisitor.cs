@@ -240,12 +240,31 @@ public interface ILanguageVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitExercicio_caracteristica([NotNull] LanguageParser.Exercicio_caracteristicaContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="LanguageParser.coluna_caracteristica"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitColuna_caracteristica([NotNull] LanguageParser.Coluna_caracteristicaContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="LanguageParser.coluna_valor_caracteristica"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitColuna_valor_caracteristica([NotNull] LanguageParser.Coluna_valor_caracteristicaContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>stringEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.text"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitStringEntity([NotNull] LanguageParser.StringEntityContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>inteiroEntity</c>
+	/// labeled alternative in <see cref="LanguageParser.number"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitInteiroEntity([NotNull] LanguageParser.InteiroEntityContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>boolEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.entity"/>.
