@@ -72,7 +72,7 @@ NUMBER : '-'?[0-9]+;
 DECIMAL : '-'?[0-9]+'.'[0-9]+ ;
 DATE : ([0-9])+'/'([0-9])+'/'([0-9])+;
 IDENTIFIER : [a-zA-Z_][a-zA-Z_0-9]* ;
-TEXT : '"' .*? '"' ;
+TEXT : [a-zA-Z_][a-zA-Z_0-9]* ;
 VAR_TABLE_COLUNA : [@][a-zA-Z_][a-zA-Z_0-9]*('['[0-9]+']')?[.][a-zA-Z_][a-zA-Z_0-9]* ;
 
 
@@ -199,7 +199,7 @@ arithmetic_expression
     ;
 
     text
-    : TEXT #stringEntity
+    : QUOTE TEXT QUOTE #stringEntity
     ;
 
     number_integer

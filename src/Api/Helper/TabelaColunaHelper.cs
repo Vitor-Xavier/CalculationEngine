@@ -113,6 +113,7 @@ namespace Api.Helper
           TabelaCaracteristica = AntlrHelper.ExtractTextToken(valueTokenTableCaracteristica, rangeTokenBuscaCaracteristica, 0),
           DescricaoCaracteristica = AntlrHelper.ExtractTextToken(valueTokenTableCaracteristica, rangeTokenBuscaCaracteristica, 1),
           ColunaCaracteristica = AntlrHelper.ExtractTextToken(valueTokenTableCaracteristica, rangeTokenBuscaCaracteristica, 2),
+          ValorFatorCaracteristica = AntlrHelper.ExtractTextToken(valueTokenTableCaracteristica, rangeTokenBuscaCaracteristica, 3),
           ExercicioCaracteristica = AntlrHelper.ExtractTextToken(valueTokenNumber, rangeTokenBuscaCaracteristica, 0),
         };
         caracteristicaParametrosList.Add(caracteristicaValores);
