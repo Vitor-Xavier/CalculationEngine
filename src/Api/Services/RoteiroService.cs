@@ -1,5 +1,4 @@
 ﻿using Api.Dto;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Api.Services
@@ -10,10 +9,9 @@ namespace Api.Services
         {
             Roteiro roteiro = new Roteiro
             {
-                Id = 1,
-                NomeRoteiro = "IPTU",
-                SetorOrigem = SetorOrigem.Imobiliario,
-                Eventos = new List<Evento>()
+                RoteiroId = 1,
+                Nome = "IPTU",
+                SetorOrigem = SetorOrigem.Imobiliario
             };
 
             Evento fatorG = new Evento
@@ -22,7 +20,7 @@ namespace Api.Services
                 Nome = "FatorG",
                 Formula = @"
                     var valor = 0.0;
-                    var area = _COALESCE(@FisicoAreas[0].Area, @FisicoOutros[0].Percentual, 9.0);
+                    var area = _COALESCE(@FisicoAreas[0].Area, @FisicoOutros[0].Percentual, @FacesdaQuadra.LarguraRua, 9.0);
                     var percentual = @FisicoOutros[0].Percentual;
                     se (@Fisico.AreaEdificada > 0.0) {
                         valor = @Fisico.AreaEdificada * 1.05;
