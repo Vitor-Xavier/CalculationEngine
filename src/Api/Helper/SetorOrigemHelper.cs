@@ -7,6 +7,11 @@ namespace Api.Helper
 {
     public static class SetorOrigemHelper
     {
+        public static readonly IEnumerable<TabelaRelacionada> TabelaRelacionadas = new List<TabelaRelacionada>
+        {
+            { new TabelaRelacionada { Tabela = "Fisico", Relacionadas = new string[] { "FacesdaQuadra" } } }
+        };
+
         public static string GetTabelaPrincipal(SetorOrigem setor) =>
             setor switch
             {
@@ -34,14 +39,33 @@ namespace Api.Helper
         public static bool ValidarTabelasSetor(SetorOrigem setor, IEnumerable<string> tabelas) =>
             tabelas.All(GetTabelasSetor(setor).Contains);
 
-        public static string GetDefaultSQL(TabelaColuna tabela) =>
-            tabela.Tabela.ToUpper() switch
+        public static string GetDefaultSQL(string tabela) =>
+            tabela.ToUpper() switch
             {
-                "FISICO" => $"SELECT IdFisico as Id, {string.Join(", ", tabela.Coluna)} FROM Fisico ORDER BY IdFisico;",
-                "FISICOOUTROS" => $"SELECT IdFisicoOutro as Id, IdFisico as IdOrigem, {string.Join(", ", tabela.Coluna)} FROM FisicoOutros ORDER BY IdFisico;",
-                "FISICOAREAS" => $"SELECT IdFisicoArea as Id, IdFisico as IdOrigem, {string.Join(", ", tabela.Coluna)} FROM FisicoAreas ORDER BY IdFisico;",
+                "FISICO" => "SELECT IdFisico as [Fisico.Id], {0} FROM Fisico",
+                "FACESDAQUADRA" => " LEFT JOIN FacesdaQuadra ON Fisico.IdFacedaQuadra = FacesdaQuadra.IdFacedaQuadra",
+                "FISICOOUTROS" => "SELECT IdFisicoOutro as [FisicoOutros.Id], IdFisico as [FisicoOutros.IdOrigem], {0} FROM FisicoOutros ORDER BY IdFisico",
+                "FISICOAREAS" => "SELECT IdFisicoArea as [FisicoAreas.Id], IdFisico as [FisicoAreas.IdOrigem], {0} FROM FisicoAreas ORDER BY IdFisico",
                 _ =>
-                throw new Exception("Tabela não configurado para o cálculo")
+                throw new Exception("Tabela não configurada para o cálculo")
             };
+
+        public static IEnumerable<TabelaQuery> GetQueries(SetorOrigem setor, IEnumerable<TabelaColuna> tabelas)
+        {
+            string tabelaPrincipal = GetTabelaPrincipal(setor);
+            var principal = tabelas.FirstOrDefault(x => x.Tabela == GetTabelaPrincipal(setor));
+
+            var relacionados = tabelas.Where(x => TabelaRelacionadas.First(y => y.Tabela == tabelaPrincipal).Relacionadas.Contains(x.Tabela));
+            principal.Coluna = principal.Coluna.Union(relacionados.SelectMany(x => x.Coluna.Select(y => $"{x.Tabela}.{y}"))).ToList();
+            string sqlRelacionados = string.Join("\\s", relacionados.Select(x => GetDefaultSQL(x.Tabela)));
+
+            foreach (var tabela in tabelas.Except(relacionados))
+            {
+                string sql = string.Format(GetDefaultSQL(tabela.Tabela), string.Join(",", tabela.Coluna));
+                if (tabela.Tabela == tabelaPrincipal)
+                    sql += sqlRelacionados + $" ORDER BY [{tabela.Tabela}.Id];";
+                yield return new TabelaQuery { Tabela = tabela.Tabela, Consulta = sql };
+            }
+        }
     }
 }

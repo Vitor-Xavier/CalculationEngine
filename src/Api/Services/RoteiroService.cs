@@ -1,5 +1,4 @@
 ﻿using Api.Dto;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Api.Services
@@ -10,10 +9,9 @@ namespace Api.Services
     {
       Roteiro roteiro = new Roteiro
       {
-        Id = 1,
-        NomeRoteiro = "IPTU",
+        RoteiroId = 1,
+        Nome = "IPTU",
         SetorOrigem = SetorOrigem.Imobiliario,
-        Eventos = new List<Evento>()
       };
 
       Evento fatorG = new Evento

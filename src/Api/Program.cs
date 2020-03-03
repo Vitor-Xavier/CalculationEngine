@@ -28,7 +28,7 @@ namespace Api
       Console.WriteLine("-- Roteiro");
       var roteiroService = new RoteiroService();
       var roteiro = await roteiroService.GetRoteiro();
-      Console.WriteLine($"Roteiro: {roteiro.NomeRoteiro}\nQuantidade de Fórmulas: {roteiro.Eventos.Count}");
+      Console.WriteLine($"Roteiro: {roteiro.Nome}\nQuantidade de Fórmulas: {roteiro.Eventos.Count}");
 
       // Ferramentas Diagnóstico
       var process = Process.GetCurrentProcess();
@@ -80,7 +80,7 @@ namespace Api
         }
 
         // Execucao das Formulas do Roteiro
-        roteiro.Eventos.ForEach(evento =>
+        roteiro.Eventos.ToList().ForEach(evento =>
         {
           try
           {
@@ -142,13 +142,10 @@ namespace Api
 
       var database = new DatabaseConnection();
 
-      // Get Massa de Dados
-      string sql = null;
-      foreach (var item in tabelas)
-        sql += SetorOrigemHelper.GetDefaultSQL(item);
+      var consultas = SetorOrigemHelper.GetQueries(setor, tabelas);
 
       // Busca por todas as listas de dados requisitadas.
-      var keyValuePairs = await database.GetAllData(tabelas.Select(x => x.Tabela).ToArray(), sql);
+      var keyValuePairs = await database.GetAllData(consultas);
 
       // Separa as massas de dados em principal, para a tabela principal do setor informado e suas auxiliares.
       string tabelaPrincipal = SetorOrigemHelper.GetTabelaPrincipal(setor);
