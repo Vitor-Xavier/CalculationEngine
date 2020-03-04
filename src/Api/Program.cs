@@ -17,11 +17,9 @@ namespace Api
 {
     public class Program
     {
-        public static readonly int _maxDegreeOfParallelism = 100;
-
         public static Lazy<ConcurrentQueue<Exception>> Exceptions { get; } = new Lazy<ConcurrentQueue<Exception>>(() => new ConcurrentQueue<Exception>());
 
-        public static ConcurrentDictionary<int, object> Resultados { get; set; }
+        public static ConcurrentDictionary<int, object> Resultados { get; } = new ConcurrentDictionary<int, object>();
 
         static async Task Main(string[] args)
         {
@@ -50,8 +48,7 @@ namespace Api
 
             // Principal 
             string tabelaPrincipal = SetorOrigemHelper.GetTabelaPrincipal(roteiro.SetorOrigem);
-            Resultados = new ConcurrentDictionary<int, object>(_maxDegreeOfParallelism, dados.Count);
-            Parallel.ForEach(dados, new ParallelOptions { MaxDegreeOfParallelism = _maxDegreeOfParallelism }, item =>
+            Parallel.ForEach(dados, item =>
             {
                 var memory = new Dictionary<string, GenericValueLanguage>();
                 foreach (var props in (item.Value as IDictionary<string, object>))
@@ -60,9 +57,9 @@ namespace Api
                     {
                         for (int k = 0; k < lista.Length; k++)
                         {
-                            foreach (var itemLista in lista[k] as IDictionary<string, object>)
+                            foreach (var obj in lista[k] as IDictionary<string, object>)
                             {
-                                memory.Add($"@{props.Key}[{k}].{itemLista.Key}", new GenericValueLanguage(itemLista.Value));
+                                memory.Add($"@{props.Key}[{k}].{obj.Key}", new GenericValueLanguage(obj.Value));
                             };
                         }
                     }
@@ -127,8 +124,6 @@ namespace Api
 
         public static async Task<IDictionary<int, IDictionary<string, object>>> CarregarDados(SetorOrigem setor, IEnumerable<TabelaColuna> tabelas, IEnumerable<CaracteristicaParametros> caracteristica)
         {
-
-
             int idSelecao = 1;
             
             // Diagnóstico
@@ -142,12 +137,11 @@ namespace Api
 
             var database = new DatabaseConnection();
 
-            var consultas = SetorOrigemHelper.GetQueries(setor, tabelas);
+            var consultas = SetorOrigemHelper.GetQueries(setor, tabelas, idSelecao);
             var consultasBuscaCaracteristicas = BuscaCaracteristicaHelper.GetQueries(caracteristica, idSelecao);
 
             // Busca por todas as listas de dados requisitadas.
-            var keyValuePairs = await database.GetAllData(consultas);
-            var keyValuePairsBuscaCaracteristica = await database.GetAllDataCaracteristica(consultasBuscaCaracteristicas);
+            var keyValuePairs = await database.GetAllData(consultas.Union(consultasBuscaCaracteristicas));
 
             // Separa as massas de dados em principal, para a tabela principal do setor informado e suas auxiliares.
             string tabelaPrincipal = SetorOrigemHelper.GetTabelaPrincipal(setor);
@@ -155,20 +149,8 @@ namespace Api
             var principal = keyValuePairs.FirstOrDefault(x => x.Key == tabelaPrincipal)
                 .Value.ToDictionary(x => (int)(x as IDictionary<string, object>)["Id"], x => (x as IDictionary<string, object>));
 
-            var auxiliares = keyValuePairs.Where(x => x.Key != tabelaPrincipal).ToList();
-
-
-            // Stop Watch para contar Registro para analise
-            stopwatchPre.Stop();
-            var totalTabelasAuxiliares = auxiliares.Count();
-            var totalRegistroTabelasAuxiliares = auxiliares.Select(x => x.Value.Select(y => y).Count()).Sum();
-
-            var totalCaracteristicas = keyValuePairsBuscaCaracteristica.Count();
-            var totalRegistrosCaracteristicas = keyValuePairsBuscaCaracteristica.Select(x => x.Value.Select(y => y).Count()).Sum();
-            stopwatchPre.Start();
-
             // Associa as listas de dados a lista da tabela principal.
-            foreach (var aux in auxiliares)
+            foreach (var aux in keyValuePairs.Where(x => x.Key != tabelaPrincipal))
             {
                 foreach( var x in aux.Value.GroupBy(x => (int)(x as IDictionary<string, object>)["IdOrigem"]))
                 {
@@ -177,22 +159,7 @@ namespace Api
                 };
             }
 
-            foreach (var keyValueCaracteristica in keyValuePairsBuscaCaracteristica)
-            {
-                foreach( var x in keyValueCaracteristica.Value.GroupBy(x => (int)(x as IDictionary<string, object>)["IdOrigem"]))
-                {
-                    if (principal.TryGetValue(x.Key, out IDictionary<string, object> principalValue))
-                        principalValue[keyValueCaracteristica.Key] = x.ToArray();
-                };
-            }
-
             stopwatchPre.Stop();
-
-            Console.WriteLine($"Quantidade tabelas auxiliares: {totalTabelasAuxiliares}");
-            Console.WriteLine($"Quantidade registros tabelas auxiliares: {totalRegistroTabelasAuxiliares}");
-
-            Console.WriteLine($"Quantidade caracteristica: {totalCaracteristicas}");
-            Console.WriteLine($"Quantidade registros caracteristica: {totalRegistrosCaracteristicas}");
 
             Console.WriteLine($"Tempo Total Pré-Processamento: {stopwatchPre.Elapsed}");
 
