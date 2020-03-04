@@ -46,7 +46,7 @@ public partial class LanguageParser : Parser {
 		LBRACES=37, LPAREN=38, RPAREN=39, MULT=40, DIV=41, PLUS=42, MINUS=43, 
 		GT=44, GE=45, LT=46, LE=47, EQ=48, NEQ=49, ATRIB=50, VAR=51, CONST=52, 
 		RETURN=53, COMMA=54, QUOTE=55, NUMBER=56, DECIMAL=57, DATE=58, IDENTIFIER=59, 
-		TEXT=60, VAR_TABLE_COLUNA=61, SEMI=62, COLON=63, COMMENT=64, WS=65;
+		VAR_TABLE_COLUNA=60, SEMI=61, COLON=62, COMMENT=63, WS=64;
 	public const int
 		RULE_rule_set = 0, RULE_rule_block = 1, RULE_function = 2, RULE_assignment = 3, 
 		RULE_return_value = 4, RULE_conditional = 5, RULE_then_block = 6, RULE_else_block = 7, 
@@ -74,8 +74,7 @@ public partial class LanguageParser : Parser {
 		"'getDayDiff'", "'getMonthDiff'", "'getYearDiff'", "'getDate'", "'lastDayProcess'", 
 		"'desprezar'", "'}'", "'{'", "'('", "')'", "'*'", "'/'", "'+'", "'-'", 
 		"'>'", "'>='", "'<'", "'<='", "'=='", "'!='", "'='", "'var'", "'const'", 
-		"'retorno'", "','", "'\"'", null, null, null, null, null, null, "';'", 
-		"':'"
+		"'retorno'", "','", "'\"'", null, null, null, null, null, "';'", "':'"
 	};
 	private static readonly string[] _SymbolicNames = {
 		null, "IF", "ELSE", "SWITCH", "CASE", "DEFAULT", "AND", "OR", "TRUE", 
@@ -87,8 +86,8 @@ public partial class LanguageParser : Parser {
 		"GET_YEAR_DIFF", "GET_DATE", "LAST_DAY_PROCESS", "DESPREZAR", "RBRACES", 
 		"LBRACES", "LPAREN", "RPAREN", "MULT", "DIV", "PLUS", "MINUS", "GT", "GE", 
 		"LT", "LE", "EQ", "NEQ", "ATRIB", "VAR", "CONST", "RETURN", "COMMA", "QUOTE", 
-		"NUMBER", "DECIMAL", "DATE", "IDENTIFIER", "TEXT", "VAR_TABLE_COLUNA", 
-		"SEMI", "COLON", "COMMENT", "WS"
+		"NUMBER", "DECIMAL", "DATE", "IDENTIFIER", "VAR_TABLE_COLUNA", "SEMI", 
+		"COLON", "COMMENT", "WS"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -2118,7 +2117,7 @@ public partial class LanguageParser : Parser {
 		public ITerminalNode QUOTE(int i) {
 			return GetToken(LanguageParser.QUOTE, i);
 		}
-		public ITerminalNode TEXT() { return GetToken(LanguageParser.TEXT, 0); }
+		public ITerminalNode IDENTIFIER() { return GetToken(LanguageParser.IDENTIFIER, 0); }
 		public StringEntityContext(TextContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
 			ILanguageListener typedListener = listener as ILanguageListener;
@@ -2144,7 +2143,7 @@ public partial class LanguageParser : Parser {
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 227; Match(QUOTE);
-			State = 228; Match(TEXT);
+			State = 228; Match(IDENTIFIER);
 			State = 229; Match(QUOTE);
 			}
 		}
@@ -2271,7 +2270,7 @@ public partial class LanguageParser : Parser {
 
 	private static char[] _serializedATN = {
 		'\x3', '\x608B', '\xA72A', '\x8133', '\xB9ED', '\x417C', '\x3BE7', '\x7786', 
-		'\x5964', '\x3', '\x43', '\xEE', '\x4', '\x2', '\t', '\x2', '\x4', '\x3', 
+		'\x5964', '\x3', '\x42', '\xEE', '\x4', '\x2', '\t', '\x2', '\x4', '\x3', 
 		'\t', '\x3', '\x4', '\x4', '\t', '\x4', '\x4', '\x5', '\t', '\x5', '\x4', 
 		'\x6', '\t', '\x6', '\x4', '\a', '\t', '\a', '\x4', '\b', '\t', '\b', 
 		'\x4', '\t', '\t', '\t', '\x4', '\n', '\t', '\n', '\x4', '\v', '\t', '\v', 
@@ -2347,26 +2346,26 @@ public partial class LanguageParser : Parser {
 		'?', ';', '\x3', '\x2', '\x2', '\x2', '?', '<', '\x3', '\x2', '\x2', '\x2', 
 		'?', '=', '\x3', '\x2', '\x2', '\x2', '?', '>', '\x3', '\x2', '\x2', '\x2', 
 		'@', '\x5', '\x3', '\x2', '\x2', '\x2', '\x41', '\x42', '\x5', '\x18', 
-		'\r', '\x2', '\x42', '\x43', '\a', '@', '\x2', '\x2', '\x43', '\a', '\x3', 
+		'\r', '\x2', '\x42', '\x43', '\a', '?', '\x2', '\x2', '\x43', '\a', '\x3', 
 		'\x2', '\x2', '\x2', '\x44', '\x46', '\a', '\x36', '\x2', '\x2', '\x45', 
 		'\x44', '\x3', '\x2', '\x2', '\x2', '\x45', '\x46', '\x3', '\x2', '\x2', 
 		'\x2', '\x46', 'H', '\x3', '\x2', '\x2', '\x2', 'G', 'I', '\a', '\x35', 
 		'\x2', '\x2', 'H', 'G', '\x3', '\x2', '\x2', '\x2', 'H', 'I', '\x3', '\x2', 
 		'\x2', '\x2', 'I', 'J', '\x3', '\x2', '\x2', '\x2', 'J', 'K', '\a', '=', 
 		'\x2', '\x2', 'K', 'L', '\a', '\x34', '\x2', '\x2', 'L', 'M', '\x5', '\x1C', 
-		'\xF', '\x2', 'M', 'N', '\a', '@', '\x2', '\x2', 'N', '[', '\x3', '\x2', 
+		'\xF', '\x2', 'M', 'N', '\a', '?', '\x2', '\x2', 'N', '[', '\x3', '\x2', 
 		'\x2', '\x2', 'O', 'Q', '\a', '\x36', '\x2', '\x2', 'P', 'O', '\x3', '\x2', 
 		'\x2', '\x2', 'P', 'Q', '\x3', '\x2', '\x2', '\x2', 'Q', 'S', '\x3', '\x2', 
 		'\x2', '\x2', 'R', 'T', '\a', '\x35', '\x2', '\x2', 'S', 'R', '\x3', '\x2', 
 		'\x2', '\x2', 'S', 'T', '\x3', '\x2', '\x2', '\x2', 'T', 'U', '\x3', '\x2', 
 		'\x2', '\x2', 'U', 'V', '\a', '=', '\x2', '\x2', 'V', 'W', '\a', '\x34', 
-		'\x2', '\x2', 'W', 'X', '\x5', '\x14', '\v', '\x2', 'X', 'Y', '\a', '@', 
+		'\x2', '\x2', 'W', 'X', '\x5', '\x14', '\v', '\x2', 'X', 'Y', '\a', '?', 
 		'\x2', '\x2', 'Y', '[', '\x3', '\x2', '\x2', '\x2', 'Z', '\x45', '\x3', 
 		'\x2', '\x2', '\x2', 'Z', 'P', '\x3', '\x2', '\x2', '\x2', '[', '\t', 
 		'\x3', '\x2', '\x2', '\x2', '\\', '^', '\a', '\x37', '\x2', '\x2', ']', 
 		'_', '\x5', '\x1C', '\xF', '\x2', '^', ']', '\x3', '\x2', '\x2', '\x2', 
 		'^', '_', '\x3', '\x2', '\x2', '\x2', '_', '`', '\x3', '\x2', '\x2', '\x2', 
-		'`', '\x61', '\a', '@', '\x2', '\x2', '\x61', '\v', '\x3', '\x2', '\x2', 
+		'`', '\x61', '\a', '?', '\x2', '\x2', '\x61', '\v', '\x3', '\x2', '\x2', 
 		'\x2', '\x62', '\x63', '\a', '\x3', '\x2', '\x2', '\x63', '\x64', '\x5', 
 		'\x12', '\n', '\x2', '\x64', '\x65', '\a', '\'', '\x2', '\x2', '\x65', 
 		'\x66', '\x5', '\xE', '\b', '\x2', '\x66', 'l', '\a', '&', '\x2', '\x2', 
@@ -2450,14 +2449,14 @@ public partial class LanguageParser : Parser {
 		'\xDB', ')', '\x3', '\x2', '\x2', '\x2', '\xDC', '\xE4', '\t', '\x3', 
 		'\x2', '\x2', '\xDD', '\xE4', '\x5', '\x30', '\x19', '\x2', '\xDE', '\xE4', 
 		'\x5', '.', '\x18', '\x2', '\xDF', '\xE4', '\a', '<', '\x2', '\x2', '\xE0', 
-		'\xE4', '\a', '=', '\x2', '\x2', '\xE1', '\xE4', '\a', '?', '\x2', '\x2', 
+		'\xE4', '\a', '=', '\x2', '\x2', '\xE1', '\xE4', '\a', '>', '\x2', '\x2', 
 		'\xE2', '\xE4', '\a', '\f', '\x2', '\x2', '\xE3', '\xDC', '\x3', '\x2', 
 		'\x2', '\x2', '\xE3', '\xDD', '\x3', '\x2', '\x2', '\x2', '\xE3', '\xDE', 
 		'\x3', '\x2', '\x2', '\x2', '\xE3', '\xDF', '\x3', '\x2', '\x2', '\x2', 
 		'\xE3', '\xE0', '\x3', '\x2', '\x2', '\x2', '\xE3', '\xE1', '\x3', '\x2', 
 		'\x2', '\x2', '\xE3', '\xE2', '\x3', '\x2', '\x2', '\x2', '\xE4', '+', 
 		'\x3', '\x2', '\x2', '\x2', '\xE5', '\xE6', '\a', '\x39', '\x2', '\x2', 
-		'\xE6', '\xE7', '\a', '>', '\x2', '\x2', '\xE7', '\xE8', '\a', '\x39', 
+		'\xE6', '\xE7', '\a', '=', '\x2', '\x2', '\xE7', '\xE8', '\a', '\x39', 
 		'\x2', '\x2', '\xE8', '-', '\x3', '\x2', '\x2', '\x2', '\xE9', '\xEA', 
 		'\a', ':', '\x2', '\x2', '\xEA', '/', '\x3', '\x2', '\x2', '\x2', '\xEB', 
 		'\xEC', '\a', ';', '\x2', '\x2', '\xEC', '\x31', '\x3', '\x2', '\x2', 

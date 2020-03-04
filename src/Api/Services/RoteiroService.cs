@@ -115,7 +115,7 @@ namespace Api.Services
       };
 
       FisicoCaracteristicas = "\"FisicoCaracteristicas\"";
-      DescricaoCaracteristica = "\" CARTORIO Teste\"";
+      DescricaoCaracteristica = "\" CARTORIO\"";
       ColunaCaracteristica = "\"IdFisico\"";
       ExercicioCaracteristica = 2019;
       ValorFatorCaracteristica = "\"DiferenteTabela\"";
@@ -140,6 +140,205 @@ namespace Api.Services
       roteiro.Eventos.Add(iptu);
       roteiro.Eventos.Add(iptu2);
       roteiro.Eventos.Add(iptu3);
+
+
+      FisicoCaracteristicas = "\"FisicoCaracteristicas\"";
+      DescricaoCaracteristica = "\" ZONA\"";
+      ColunaCaracteristica = "\"IdFisico\"";
+      ExercicioCaracteristica = 2019;
+      ValorFatorCaracteristica = "\"DiferenteTabela\"";
+
+      Evento iptu5 = new Evento
+      {
+        Id = 5,
+        Nome = "IPTU5",
+        Formula = string.Format("var teste = 1.0; _BuscarCaracteristica({0},{1},{2},{3}, {4}); retorno 15;"
+        , FisicoCaracteristicas
+        , DescricaoCaracteristica
+        , ColunaCaracteristica
+        , ExercicioCaracteristica
+        , ValorFatorCaracteristica)
+      };
+
+
+      FisicoCaracteristicas = "\"FisicoCaracteristicas\"";
+      DescricaoCaracteristica = "\" CATEGORIA\"";
+      ColunaCaracteristica = "\"IdFisico\"";
+      ExercicioCaracteristica = 2019;
+      ValorFatorCaracteristica = "\"DiferenteTabela\"";
+
+      Evento iptu6 = new Evento
+      {
+        Id = 5,
+        Nome = "IPTU6",
+        Formula = string.Format("var teste = 1.0; _BuscarCaracteristica({0},{1},{2},{3}, {4}); retorno 15;"
+        , FisicoCaracteristicas
+        , DescricaoCaracteristica
+        , ColunaCaracteristica
+        , ExercicioCaracteristica
+        , ValorFatorCaracteristica)
+      };
+
+
+      FisicoCaracteristicas = "\"FisicoCaracteristicas\"";
+      DescricaoCaracteristica = "\" TIPO\"";
+      ColunaCaracteristica = "\"IdFisico\"";
+      ExercicioCaracteristica = 2019;
+      ValorFatorCaracteristica = "\"DiferenteTabela\"";
+
+      Evento iptu7 = new Evento
+      {
+        Id = 5,
+        Nome = "IPTU7",
+        Formula = string.Format("var teste = 1.0; _BuscarCaracteristica({0},{1},{2},{3}, {4}); retorno 15;"
+        , FisicoCaracteristicas
+        , DescricaoCaracteristica
+        , ColunaCaracteristica
+        , ExercicioCaracteristica
+        , ValorFatorCaracteristica)
+      };
+
+      FisicoCaracteristicas = "\"FisicoCaracteristicas\"";
+      DescricaoCaracteristica = "\" REFLORESTAMENTO\"";
+      ColunaCaracteristica = "\"IdFisico\"";
+      ExercicioCaracteristica = 2019;
+      ValorFatorCaracteristica = "\"DiferenteTabela\"";
+
+      Evento iptu8 = new Evento
+      {
+        Id = 5,
+        Nome = "IPTU8",
+        Formula = string.Format("var teste = 1.0; _BuscarCaracteristica({0},{1},{2},{3}, {4}); retorno 15;"
+        , FisicoCaracteristicas
+        , DescricaoCaracteristica
+        , ColunaCaracteristica
+        , ExercicioCaracteristica
+        , ValorFatorCaracteristica)
+      };
+
+      FisicoCaracteristicas = "\"FisicoCaracteristicas\"";
+      DescricaoCaracteristica = "\" REFORMADO\"";
+      ColunaCaracteristica = "\"IdFisico\"";
+      ExercicioCaracteristica = 2019;
+      ValorFatorCaracteristica = "\"DiferenteTabela\"";
+
+      Evento iptu9 = new Evento
+      {
+        Id = 5,
+        Nome = "IPTU9",
+        Formula = string.Format("var teste = 1.0; _BuscarCaracteristica({0},{1},{2},{3}, {4}); retorno 15;"
+        , FisicoCaracteristicas
+        , DescricaoCaracteristica
+        , ColunaCaracteristica
+        , ExercicioCaracteristica
+        , ValorFatorCaracteristica)
+      };
+
+      FisicoCaracteristicas = "\"FisicoCaracteristicas\"";
+      DescricaoCaracteristica = "\" LIXO\"";
+      ColunaCaracteristica = "\"IdFisico\"";
+      ExercicioCaracteristica = 2019;
+      ValorFatorCaracteristica = "\"DiferenteTabela\"";
+
+      Evento iptu10 = new Evento
+      {
+        Id = 5,
+        Nome = "IPTU10",
+        Formula = string.Format("var teste = 1.0; _BuscarCaracteristica({0},{1},{2},{3}, {4}); retorno 15;"
+        , FisicoCaracteristicas
+        , DescricaoCaracteristica
+        , ColunaCaracteristica
+        , ExercicioCaracteristica
+        , ValorFatorCaracteristica)
+      };
+
+      FisicoCaracteristicas = "\"FisicoCaracteristicas\"";
+      DescricaoCaracteristica = "\" MURO\"";
+      ColunaCaracteristica = "\"IdFisico\"";
+      ExercicioCaracteristica = 2019;
+      ValorFatorCaracteristica = "\"DiferenteTabela\"";
+
+      Evento iptu11 = new Evento
+      {
+        Id = 5,
+        Nome = "IPTU11",
+        Formula = string.Format("var teste = 1.0; _BuscarCaracteristica({0},{1},{2},{3}, {4}); retorno 15;"
+        , FisicoCaracteristicas
+        , DescricaoCaracteristica
+        , ColunaCaracteristica
+        , ExercicioCaracteristica
+        , ValorFatorCaracteristica)
+      };
+
+      FisicoCaracteristicas = "\"FisicoCaracteristicas\"";
+      DescricaoCaracteristica = "\" ILUMINACAO\"";
+      ColunaCaracteristica = "\"IdFisico\"";
+      ExercicioCaracteristica = 2019;
+      ValorFatorCaracteristica = "\"DiferenteTabela\"";
+
+      Evento iptu12 = new Evento
+      {
+        Id = 5,
+        Nome = "IPTU12",
+        Formula = string.Format("var teste = 1.0; _BuscarCaracteristica({0},{1},{2},{3}, {4}); retorno 15;"
+        , FisicoCaracteristicas
+        , DescricaoCaracteristica
+        , ColunaCaracteristica
+        , ExercicioCaracteristica
+        , ValorFatorCaracteristica)
+      };
+
+      FisicoCaracteristicas = "\"FisicoCaracteristicas\"";
+      DescricaoCaracteristica = "\" ESQUINA\"";
+      ColunaCaracteristica = "\"IdFisico\"";
+      ExercicioCaracteristica = 2019;
+      ValorFatorCaracteristica = "\"DiferenteTabela\"";
+
+      Evento iptu13 = new Evento
+      {
+        Id = 5,
+        Nome = "IPTU13",
+        Formula = string.Format("var teste = 1.0; _BuscarCaracteristica({0},{1},{2},{3}, {4}); retorno 15;"
+        , FisicoCaracteristicas
+        , DescricaoCaracteristica
+        , ColunaCaracteristica
+        , ExercicioCaracteristica
+        , ValorFatorCaracteristica)
+      };
+
+      FisicoCaracteristicas = "\"FisicoCaracteristicas\"";
+      DescricaoCaracteristica = "\" SARJETA\"";
+      ColunaCaracteristica = "\"IdFisico\"";
+      ExercicioCaracteristica = 2019;
+      ValorFatorCaracteristica = "\"DiferenteTabela\"";
+
+      Evento iptu14 = new Evento
+      {
+        Id = 5,
+        Nome = "IPTU14",
+        Formula = string.Format("var teste = 1.0; _BuscarCaracteristica({0},{1},{2},{3}, {4}); retorno 15;"
+        , FisicoCaracteristicas
+        , DescricaoCaracteristica
+        , ColunaCaracteristica
+        , ExercicioCaracteristica
+        , ValorFatorCaracteristica)
+      };
+
+
+
+      roteiro.Eventos.Add(iptu4);
+      roteiro.Eventos.Add(iptu5);
+      roteiro.Eventos.Add(iptu6);
+      roteiro.Eventos.Add(iptu7);
+      roteiro.Eventos.Add(iptu8);
+      roteiro.Eventos.Add(iptu9);
+
+      roteiro.Eventos.Add(iptu10);
+      roteiro.Eventos.Add(iptu11);
+      roteiro.Eventos.Add(iptu12);
+      roteiro.Eventos.Add(iptu13);
+      roteiro.Eventos.Add(iptu14);
+
 
       await Task.Delay(100);
       return roteiro;

@@ -91,7 +91,7 @@ namespace Api.Helper
     {
       var tokenBuscarCaracteristica = TokenTypeMap.Where(x => x.Key == "BUSCAR_CARACTERISTICA").FirstOrDefault();
       var tokenRParen = TokenTypeMap.Where(x => x.Key == "RPAREN").FirstOrDefault();
-      var valueTokenTableCaracteristica = TokenTypeMap.Where(x => x.Key == "TEXT").Select(x => x.Value).FirstOrDefault();
+      var valueTokenTableCaracteristica = TokenTypeMap.Where(x => x.Key == "IDENTIFIER").Select(x => x.Value).FirstOrDefault();
       var valueTokenNumber = TokenTypeMap.Where(x => x.Key == "NUMBER").Select(x => x.Value).FirstOrDefault();
       bool tokensEOF = true;
       int tokenIndex = 0;
