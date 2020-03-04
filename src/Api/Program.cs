@@ -21,7 +21,7 @@ namespace Api
 
         public static Lazy<ConcurrentQueue<Exception>> Exceptions { get; } = new Lazy<ConcurrentQueue<Exception>>(() => new ConcurrentQueue<Exception>());
 
-        public static ConcurrentDictionary<int, object> Resultados { get; } = new ConcurrentDictionary<int, object>();
+        public static ConcurrentDictionary<int, object> Resultados { get; set; }
 
         static async Task Main(string[] args)
         {
@@ -42,7 +42,6 @@ namespace Api
 
             var dados = await CarregarDados(roteiro.SetorOrigem, tabelas, caracteristica);
 
-
             #region Processamento
             Console.WriteLine("\n-- Processamento");
 
@@ -51,22 +50,21 @@ namespace Api
 
             // Principal 
             string tabelaPrincipal = SetorOrigemHelper.GetTabelaPrincipal(roteiro.SetorOrigem);
+            Resultados = new ConcurrentDictionary<int, object>(_maxDegreeOfParallelism, dados.Count);
             Parallel.ForEach(dados, new ParallelOptions { MaxDegreeOfParallelism = _maxDegreeOfParallelism }, item =>
             {
                 var memory = new Dictionary<string, GenericValueLanguage>();
                 foreach (var props in (item.Value as IDictionary<string, object>))
                 {
-                    if (props.Value is List<object> lista)
+                    if (props.Value is object[] lista)
                     {
-                        int j = 0;
-                        lista.ForEach(y =>
+                        for (int k = 0; k < lista.Length; k++)
                         {
-                            foreach (var h in y as IDictionary<string, object>)
+                            foreach (var itemLista in lista[k] as IDictionary<string, object>)
                             {
-                                memory.Add($"@{props.Key}[{j}].{h.Key}", new GenericValueLanguage(h.Value));
+                                memory.Add($"@{props.Key}[{k}].{itemLista.Key}", new GenericValueLanguage(itemLista.Value));
                             };
-                            j++;
-                        });
+                        }
                     }
                     else if (props.Value is ExpandoObject obj)
                     {
@@ -97,7 +95,7 @@ namespace Api
                         Exceptions.Value.Enqueue(e);
                     }
                 };
-                object resultado = memory.Where(m => m.Key.StartsWith("@Roteiro.")).ToDictionary(x => x.Key.Substring(x.Key.LastIndexOf('.')), x => x.Value.Value);
+                object resultado = memory.Where(m => m.Key.StartsWith("@Roteiro.")).ToDictionary(x => x.Key.Substring(x.Key.LastIndexOf('.') + 1), x => x.Value.Value);
                 Resultados.TryAdd(item.Key, resultado);
             });
             stopWatchProcessamento.Stop();
@@ -114,7 +112,7 @@ namespace Api
             #region Erros
             if (Exceptions.Value.Count > 0)
             {
-                Console.WriteLine("\n-- Erros");
+                Console.WriteLine($"\n-- Erros {Exceptions.Value.Count}");
                 foreach (var exception in Exceptions.Value)
                     Console.WriteLine($"Exceção: {exception.Message}");
             }

@@ -11,10 +11,6 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
 {
     private readonly Dictionary<string, GenericValueLanguage> _memory;
 
-    public bool _blockRule { get; set; }
-
-    public int countTeste { get; set; }
-
     public VisitorLanguage(Dictionary<string, GenericValueLanguage> memory)
     {
         _memory = memory ?? new Dictionary<string, GenericValueLanguage>();
@@ -22,7 +18,6 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
 
     public override GenericValueLanguage VisitConditional([NotNull] LanguageParser.ConditionalContext context)
     {
-        // TO DO Tratar If
         if (bool.Parse(Visit(context.if_expression()).Value.ToString()))
         {
             if (context.then_block() != null)
@@ -173,7 +168,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         var left = Visit(context.arithmetic_expression(0));
         var right = Visit(context.arithmetic_expression(1));
 
-        if (!double.TryParse(right?.Value?.ToString(), out double rightDouble) || rightDouble == 0)
+        if (right.AsDouble() == 0)
             throw new Exception("Nao e possivel dividir por zero.");
 
         return new GenericValueLanguage(left.AsDouble() / right.AsDouble());
