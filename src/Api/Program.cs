@@ -131,6 +131,8 @@ namespace Api
         {
 
 
+            int idSelecao = 1;
+            
             // Diagnóstico
             var stopwatchPre = new Stopwatch();
             stopwatchPre.Start();
@@ -143,19 +145,19 @@ namespace Api
             var database = new DatabaseConnection();
 
             var consultas = SetorOrigemHelper.GetQueries(setor, tabelas);
+            var consultasBuscaCaracteristicas = BuscaCaracteristicaHelper.GetQueries(caracteristica, idSelecao);
 
             // Busca por todas as listas de dados requisitadas.
             var keyValuePairs = await database.GetAllData(consultas);
+            var keyValuePairsBuscaCaracteristica = await database.GetAllDataCaracteristica(consultasBuscaCaracteristicas);
 
             // Separa as massas de dados em principal, para a tabela principal do setor informado e suas auxiliares.
             string tabelaPrincipal = SetorOrigemHelper.GetTabelaPrincipal(setor);
+
             var principal = keyValuePairs.FirstOrDefault(x => x.Key == tabelaPrincipal)
                 .Value.ToDictionary(x => (int)(x as IDictionary<string, object>)["Id"], x => (x as IDictionary<string, object>));
+
             var auxiliares = keyValuePairs.Where(x => x.Key != tabelaPrincipal).ToList();
-
-
-            var dados2 = await CarregarDadosCaracteristica(caracteristica, 1);
-            var aux2 = dados2.Where(x => x.Key != tabelaPrincipal).ToList();
 
 
             // Stop Watch para contar Registro para analise
@@ -163,27 +165,27 @@ namespace Api
             var totalTabelasAuxiliares = auxiliares.Count();
             var totalRegistroTabelasAuxiliares = auxiliares.Select(x => x.Value.Select(y => y).Count()).Sum();
 
-            var totalCaracteristicas = aux2.Count();
-            var totalRegistrosCaracteristicas = aux2.Select(x => x.Value.Select(y => y).Count()).Sum();
+            var totalCaracteristicas = keyValuePairsBuscaCaracteristica.Count();
+            var totalRegistrosCaracteristicas = keyValuePairsBuscaCaracteristica.Select(x => x.Value.Select(y => y).Count()).Sum();
             stopwatchPre.Start();
 
             // Associa as listas de dados a lista da tabela principal.
             foreach (var aux in auxiliares)
             {
-                aux.Value.GroupBy(x => (int)(x as IDictionary<string, object>)["IdOrigem"]).ToList().ForEach(x =>
+                foreach( var x in aux.Value.GroupBy(x => (int)(x as IDictionary<string, object>)["IdOrigem"]))
                 {
                     if (principal.TryGetValue(x.Key, out IDictionary<string, object> principalValue))
-                        principalValue[aux.Key] = x.ToList();
-                });
+                        principalValue[aux.Key] = x.ToArray();
+                };
             }
 
-            foreach (var aux in aux2)
+            foreach (var keyValueCaracteristica in keyValuePairsBuscaCaracteristica)
             {
-                aux.Value.GroupBy(x => (int)(x as IDictionary<string, object>)["IdOrigem"]).ToList().ForEach(x =>
+                foreach( var x in keyValueCaracteristica.Value.GroupBy(x => (int)(x as IDictionary<string, object>)["IdOrigem"]))
                 {
                     if (principal.TryGetValue(x.Key, out IDictionary<string, object> principalValue))
-                        principalValue[aux.Key] = x.ToList();
-                });
+                        principalValue[keyValueCaracteristica.Key] = x.ToArray();
+                };
             }
 
             stopwatchPre.Stop();
@@ -197,40 +199,6 @@ namespace Api
             Console.WriteLine($"Tempo Total Pré-Processamento: {stopwatchPre.Elapsed}");
 
             return principal;
-        }
-
-        public static async Task<IDictionary<string, IEnumerable<object>>> CarregarDadosCaracteristica(IEnumerable<CaracteristicaParametros> tabelas, int idSelecao)
-        {
-            // Diagnóstico
-            var stopwatchPre = new Stopwatch();
-            stopwatchPre.Start();
-
-            var database = new DatabaseConnection();
-
-            // Get Massa de Dados
-            string sql = null;
-
-            foreach (var item in tabelas)
-                sql += GetDefaultBuscaCaracteristicaSQL(idSelecao, item);
-
-            // Busca por todas as listas de dados requisitadas.
-            var keyValuePairs = await database.GetAllDataCaracteristica(tabelas.ToArray(), sql);
-
-            return keyValuePairs;
-        }
-        private static string GetDefaultBuscaCaracteristicaSQL(int idSelecao, CaracteristicaParametros carac)
-        {
-            return $@"SELECT IdFisico as IdOrigem, 
-                             DescrCaracteristica as DescricaoCaracteristica, 
-                             (case when '{carac.ValorFatorCaracteristica ?? "DiferenteTabela"}' = 'Valor' and b.TpCaracteristica = 'Tabela' then c.Valor
-		                           when '{carac.ValorFatorCaracteristica ?? "DiferenteTabela"}' = 'Fator' and b.TpCaracteristica = 'Tabela' then c.Fator
-                                   when b.TpCaracteristica <> 'Tabela' then a.Vlr end) as Valor
-                             from  {carac.TabelaCaracteristica} a
-                             inner join RoteiroSelecaoItens selecao on selecao.IdSelecao = {idSelecao} and a.{carac.ColunaCaracteristica} = selecao.IdSelecionado
-                             inner join Caracteristicas b on a.IdCaracteristica = b.IdCaracteristica
-                             left join CaracteristicaVlrs c on c.IdCaracteristica = b.IdCaracteristica and c.Exercicio = {carac.ExercicioCaracteristica} and a.vlr = c.CodItem
-                             WHERE DescrCaracteristica = '{carac.DescricaoCaracteristica}'";
-
         }
     }
 }

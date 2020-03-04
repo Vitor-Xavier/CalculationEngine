@@ -63,7 +63,7 @@ namespace Api.Database
       return results;
     }
 
-    public async Task<IDictionary<string, IEnumerable<object>>> GetAllDataCaracteristica(CaracteristicaParametros[] tabelas, string sql)
+    public async Task<IDictionary<string, IEnumerable<object>>> GetAllDataCaracteristica(IEnumerable<TabelaQuery> queries)
     {
       var results = new Dictionary<string, IEnumerable<object>>();
       SqlDataReader reader = null;
@@ -71,13 +71,14 @@ namespace Api.Database
       {
         await _connection.OpenAsync();
 
-        SqlCommand command = new SqlCommand(sql, _connection);
+        SqlCommand command = new SqlCommand(string.Join(";", queries.Select(x => x.Consulta)), _connection);
         reader = await command.ExecuteReaderAsync();
-        int w = 0;
+        int j = 0;
         do
         {
           var tableResults = new List<object>();
-
+          var table = queries.ElementAt(j).Tabela;
+          
           while (await reader.ReadAsync())
           {
             var obj = new ExpandoObject() as IDictionary<string, object>;
@@ -86,8 +87,9 @@ namespace Api.Database
             tableResults.Add(obj);
           }
 
-          results.Add((tabelas[w].TabelaCaracteristica + "." + tabelas[w].DescricaoCaracteristica).ToString(), tableResults);
-          w++;
+          j++;
+          results.Add(table, tableResults);
+          
         } while (await reader.NextResultAsync());
       }
       finally

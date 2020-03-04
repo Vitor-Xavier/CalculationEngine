@@ -49,19 +49,19 @@ namespace Api.Helper
       caracteristicaParametros = caracteristicaParametros
           .GroupBy(x => new
           {
-            TabelaCaracteristica = x.TabelaCaracteristica,
-            DescricaoCaracteristica = x.DescricaoCaracteristica,
-            ColunaCaracteristica = x.ColunaCaracteristica,
-            ExercicioCaracteristica = x.ExercicioCaracteristica,
-            ValorFatorCaracteristica = x.ValorFatorCaracteristica
+            TabelaCaracteristica = x.Tabela,
+            DescricaoCaracteristica = x.Descricao,
+            ColunaCaracteristica = x.Coluna,
+            ExercicioCaracteristica = x.Exercicio,
+            ValorFatorCaracteristica = x.ValorFator
           })
           .Select(x => new CaracteristicaParametros
           {
-            TabelaCaracteristica = x.Key.TabelaCaracteristica,
-            DescricaoCaracteristica = x.Key.DescricaoCaracteristica,
-            ColunaCaracteristica = x.Key.ColunaCaracteristica,
-            ExercicioCaracteristica = x.Key.ExercicioCaracteristica,
-            ValorFatorCaracteristica = x.Key.ValorFatorCaracteristica,
+            Tabela = x.Key.TabelaCaracteristica,
+            Descricao = x.Key.DescricaoCaracteristica,
+            Coluna = x.Key.ColunaCaracteristica,
+            Exercicio = x.Key.ExercicioCaracteristica,
+            ValorFator = x.Key.ValorFatorCaracteristica,
           }).ToList();
       return caracteristicaParametros;
     }
@@ -110,11 +110,11 @@ namespace Api.Helper
         var rangeTokenBuscaCaracteristica = Tokens.ToArray()[indexTokenBuscarCaracteristica..indexTokenRParen];
         CaracteristicaParametros caracteristicaValores = new CaracteristicaParametros()
         {
-          TabelaCaracteristica = AntlrHelper.ExtractTextToken(valueTokenTableCaracteristica, rangeTokenBuscaCaracteristica, 0),
-          DescricaoCaracteristica = AntlrHelper.ExtractTextToken(valueTokenTableCaracteristica, rangeTokenBuscaCaracteristica, 1),
-          ColunaCaracteristica = AntlrHelper.ExtractTextToken(valueTokenTableCaracteristica, rangeTokenBuscaCaracteristica, 2),
-          ValorFatorCaracteristica = AntlrHelper.ExtractTextToken(valueTokenTableCaracteristica, rangeTokenBuscaCaracteristica, 3),
-          ExercicioCaracteristica = AntlrHelper.ExtractTextToken(valueTokenNumber, rangeTokenBuscaCaracteristica, 0),
+          Tabela = AntlrHelper.ExtractTextToken(valueTokenTableCaracteristica, rangeTokenBuscaCaracteristica, 0),
+          Descricao = AntlrHelper.ExtractTextToken(valueTokenTableCaracteristica, rangeTokenBuscaCaracteristica, 1),
+          Coluna = AntlrHelper.ExtractTextToken(valueTokenTableCaracteristica, rangeTokenBuscaCaracteristica, 2),
+          ValorFator = AntlrHelper.ExtractTextToken(valueTokenTableCaracteristica, rangeTokenBuscaCaracteristica, 3),
+          Exercicio = AntlrHelper.ExtractTextToken(valueTokenNumber, rangeTokenBuscaCaracteristica, 0),
         };
         caracteristicaParametrosList.Add(caracteristicaValores);
         tokenIndex = getTokenRParen.TokenIndex;
