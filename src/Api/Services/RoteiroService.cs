@@ -60,7 +60,7 @@ namespace Api.Services
 
 
       string FisicoCaracteristicas = "\"FisicoCaracteristicas\"";
-      string DescricaoCaracteristica = "\"AGUA\"";
+      string DescricaoCaracteristica = "\"ÁGUA TESTE \"";
       string ColunaCaracteristica = "\"IdFisico\"";
       int ExercicioCaracteristica = 2019;
       string ValorFatorCaracteristica = "\"DiferenteTabela\"";

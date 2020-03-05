@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from .\Language.g4 by ANTLR 4.8
+// Generated from Language.g4 by ANTLR 4.8
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -46,7 +46,7 @@ public partial class LanguageParser : Parser {
 		LBRACES=37, LPAREN=38, RPAREN=39, MULT=40, DIV=41, PLUS=42, MINUS=43, 
 		GT=44, GE=45, LT=46, LE=47, EQ=48, NEQ=49, ATRIB=50, VAR=51, CONST=52, 
 		RETURN=53, COMMA=54, QUOTE=55, NUMBER=56, DECIMAL=57, DATE=58, IDENTIFIER=59, 
-		VAR_TABLE_COLUNA=60, SEMI=61, COLON=62, COMMENT=63, WS=64;
+		TEXT=60, VAR_TABLE_COLUNA=61, SEMI=62, COLON=63, COMMENT=64, WS=65;
 	public const int
 		RULE_rule_set = 0, RULE_rule_block = 1, RULE_function = 2, RULE_assignment = 3, 
 		RULE_return_value = 4, RULE_conditional = 5, RULE_then_block = 6, RULE_else_block = 7, 
@@ -74,7 +74,8 @@ public partial class LanguageParser : Parser {
 		"'getDayDiff'", "'getMonthDiff'", "'getYearDiff'", "'getDate'", "'lastDayProcess'", 
 		"'desprezar'", "'}'", "'{'", "'('", "')'", "'*'", "'/'", "'+'", "'-'", 
 		"'>'", "'>='", "'<'", "'<='", "'=='", "'!='", "'='", "'var'", "'const'", 
-		"'retorno'", "','", "'\"'", null, null, null, null, null, "';'", "':'"
+		"'retorno'", "','", "'\"'", null, null, null, null, null, null, "';'", 
+		"':'"
 	};
 	private static readonly string[] _SymbolicNames = {
 		null, "IF", "ELSE", "SWITCH", "CASE", "DEFAULT", "AND", "OR", "TRUE", 
@@ -86,8 +87,8 @@ public partial class LanguageParser : Parser {
 		"GET_YEAR_DIFF", "GET_DATE", "LAST_DAY_PROCESS", "DESPREZAR", "RBRACES", 
 		"LBRACES", "LPAREN", "RPAREN", "MULT", "DIV", "PLUS", "MINUS", "GT", "GE", 
 		"LT", "LE", "EQ", "NEQ", "ATRIB", "VAR", "CONST", "RETURN", "COMMA", "QUOTE", 
-		"NUMBER", "DECIMAL", "DATE", "IDENTIFIER", "VAR_TABLE_COLUNA", "SEMI", 
-		"COLON", "COMMENT", "WS"
+		"NUMBER", "DECIMAL", "DATE", "IDENTIFIER", "TEXT", "VAR_TABLE_COLUNA", 
+		"SEMI", "COLON", "COMMENT", "WS"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -136,14 +137,6 @@ public partial class LanguageParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_rule_set; } }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterRule_set(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitRule_set(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitRule_set(this);
@@ -212,14 +205,6 @@ public partial class LanguageParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_rule_block; } }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterRule_block(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitRule_block(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitRule_block(this);
@@ -282,14 +267,6 @@ public partial class LanguageParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_function; } }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterFunction(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitFunction(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitFunction(this);
@@ -341,14 +318,6 @@ public partial class LanguageParser : Parser {
 		public ITerminalNode CONST() { return GetToken(LanguageParser.CONST, 0); }
 		public ITerminalNode VAR() { return GetToken(LanguageParser.VAR, 0); }
 		public ComparisonAssignmentContext(AssignmentContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterComparisonAssignment(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitComparisonAssignment(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitComparisonAssignment(this);
@@ -365,14 +334,6 @@ public partial class LanguageParser : Parser {
 		public ITerminalNode CONST() { return GetToken(LanguageParser.CONST, 0); }
 		public ITerminalNode VAR() { return GetToken(LanguageParser.VAR, 0); }
 		public ArithmeticAssignmentContext(AssignmentContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterArithmeticAssignment(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitArithmeticAssignment(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitArithmeticAssignment(this);
@@ -477,14 +438,6 @@ public partial class LanguageParser : Parser {
 			return GetRuleContext<Arithmetic_expressionContext>(0);
 		}
 		public ReturnValueContext(Return_valueContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterReturnValue(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitReturnValue(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitReturnValue(this);
@@ -550,14 +503,6 @@ public partial class LanguageParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_conditional; } }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterConditional(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitConditional(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitConditional(this);
@@ -623,14 +568,6 @@ public partial class LanguageParser : Parser {
 			return GetRuleContext<Rule_blockContext>(i);
 		}
 		public ThenBlockContext(Then_blockContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterThenBlock(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitThenBlock(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitThenBlock(this);
@@ -693,14 +630,6 @@ public partial class LanguageParser : Parser {
 			return GetRuleContext<Rule_blockContext>(i);
 		}
 		public ElseBlockContext(Else_blockContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterElseBlock(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitElseBlock(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitElseBlock(this);
@@ -764,14 +693,6 @@ public partial class LanguageParser : Parser {
 		}
 		public ITerminalNode OR() { return GetToken(LanguageParser.OR, 0); }
 		public OrExpressionContext(If_expressionContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterOrExpression(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitOrExpression(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitOrExpression(this);
@@ -783,14 +704,6 @@ public partial class LanguageParser : Parser {
 			return GetRuleContext<Comparison_expressionContext>(0);
 		}
 		public IfComparisonExpressionContext(If_expressionContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterIfComparisonExpression(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitIfComparisonExpression(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitIfComparisonExpression(this);
@@ -806,14 +719,6 @@ public partial class LanguageParser : Parser {
 		}
 		public ITerminalNode AND() { return GetToken(LanguageParser.AND, 0); }
 		public AndExpressionContext(If_expressionContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterAndExpression(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitAndExpression(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitAndExpression(this);
@@ -827,14 +732,6 @@ public partial class LanguageParser : Parser {
 		}
 		public ITerminalNode RPAREN() { return GetToken(LanguageParser.RPAREN, 0); }
 		public ParenthesisIfExpressionContext(If_expressionContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterParenthesisIfExpression(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitParenthesisIfExpression(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitParenthesisIfExpression(this);
@@ -846,14 +743,6 @@ public partial class LanguageParser : Parser {
 			return GetRuleContext<EntityContext>(0);
 		}
 		public IfEntityContext(If_expressionContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterIfEntity(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitIfEntity(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitIfEntity(this);
@@ -865,14 +754,6 @@ public partial class LanguageParser : Parser {
 			return GetRuleContext<Function_signatureContext>(0);
 		}
 		public IfFunctionSignatureContext(If_expressionContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterIfFunctionSignature(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitIfFunctionSignature(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitIfFunctionSignature(this);
@@ -1007,14 +888,6 @@ public partial class LanguageParser : Parser {
 		}
 		public ITerminalNode RPAREN() { return GetToken(LanguageParser.RPAREN, 0); }
 		public ParenthesisComparisonExpressionContext(Comparison_expressionContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterParenthesisComparisonExpression(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitParenthesisComparisonExpression(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitParenthesisComparisonExpression(this);
@@ -1032,14 +905,6 @@ public partial class LanguageParser : Parser {
 			return GetRuleContext<Comparison_operatorContext>(0);
 		}
 		public ComparisonExpressionContext(Comparison_expressionContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterComparisonExpression(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitComparisonExpression(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitComparisonExpression(this);
@@ -1098,14 +963,6 @@ public partial class LanguageParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_comparison_operator; } }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterComparison_operator(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitComparison_operator(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitComparison_operator(this);
@@ -1179,14 +1036,6 @@ public partial class LanguageParser : Parser {
 			return GetRuleContext<Valor_fator_caracteristicaContext>(0);
 		}
 		public BuscarCaracteristicaContext(Function_signatureContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterBuscarCaracteristica(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitBuscarCaracteristica(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitBuscarCaracteristica(this);
@@ -1263,14 +1112,6 @@ public partial class LanguageParser : Parser {
 			return GetToken(LanguageParser.COMMA, i);
 		}
 		public CoalesceFunctionContext(Coalesce_functionContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterCoalesceFunction(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitCoalesceFunction(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitCoalesceFunction(this);
@@ -1335,14 +1176,6 @@ public partial class LanguageParser : Parser {
 			return GetRuleContext<Coalesce_functionContext>(0);
 		}
 		public CoalesceExpressionContext(Arithmetic_expressionContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterCoalesceExpression(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitCoalesceExpression(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitCoalesceExpression(this);
@@ -1358,14 +1191,6 @@ public partial class LanguageParser : Parser {
 		}
 		public ITerminalNode MINUS() { return GetToken(LanguageParser.MINUS, 0); }
 		public MinusExpressionContext(Arithmetic_expressionContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterMinusExpression(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitMinusExpression(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitMinusExpression(this);
@@ -1379,14 +1204,6 @@ public partial class LanguageParser : Parser {
 		}
 		public ITerminalNode RPAREN() { return GetToken(LanguageParser.RPAREN, 0); }
 		public ParenthesisExpressionContext(Arithmetic_expressionContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterParenthesisExpression(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitParenthesisExpression(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitParenthesisExpression(this);
@@ -1402,14 +1219,6 @@ public partial class LanguageParser : Parser {
 		}
 		public ITerminalNode MULT() { return GetToken(LanguageParser.MULT, 0); }
 		public MultExpressionContext(Arithmetic_expressionContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterMultExpression(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitMultExpression(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitMultExpression(this);
@@ -1425,14 +1234,6 @@ public partial class LanguageParser : Parser {
 		}
 		public ITerminalNode DIV() { return GetToken(LanguageParser.DIV, 0); }
 		public DivExpressionContext(Arithmetic_expressionContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterDivExpression(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitDivExpression(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitDivExpression(this);
@@ -1448,14 +1249,6 @@ public partial class LanguageParser : Parser {
 		}
 		public ITerminalNode PLUS() { return GetToken(LanguageParser.PLUS, 0); }
 		public PlusExpressionContext(Arithmetic_expressionContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterPlusExpression(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitPlusExpression(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitPlusExpression(this);
@@ -1467,14 +1260,6 @@ public partial class LanguageParser : Parser {
 			return GetRuleContext<EntityContext>(0);
 		}
 		public EntityExpressionContext(Arithmetic_expressionContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterEntityExpression(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitEntityExpression(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitEntityExpression(this);
@@ -1620,14 +1405,6 @@ public partial class LanguageParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_tabela_caracteristica; } }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterTabela_caracteristica(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitTabela_caracteristica(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitTabela_caracteristica(this);
@@ -1665,14 +1442,6 @@ public partial class LanguageParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_descricao_caracteristica; } }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterDescricao_caracteristica(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitDescricao_caracteristica(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitDescricao_caracteristica(this);
@@ -1710,14 +1479,6 @@ public partial class LanguageParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_valor_fator_caracteristica; } }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterValor_fator_caracteristica(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitValor_fator_caracteristica(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitValor_fator_caracteristica(this);
@@ -1755,14 +1516,6 @@ public partial class LanguageParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_exercicio_caracteristica; } }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterExercicio_caracteristica(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitExercicio_caracteristica(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitExercicio_caracteristica(this);
@@ -1800,14 +1553,6 @@ public partial class LanguageParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_coluna_caracteristica; } }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterColuna_caracteristica(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitColuna_caracteristica(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitColuna_caracteristica(this);
@@ -1845,14 +1590,6 @@ public partial class LanguageParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_coluna_valor_caracteristica; } }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterColuna_valor_caracteristica(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitColuna_valor_caracteristica(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitColuna_valor_caracteristica(this);
@@ -1897,14 +1634,6 @@ public partial class LanguageParser : Parser {
 		public ITerminalNode TRUE() { return GetToken(LanguageParser.TRUE, 0); }
 		public ITerminalNode FALSE() { return GetToken(LanguageParser.FALSE, 0); }
 		public BoolEntityContext(EntityContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterBoolEntity(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitBoolEntity(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitBoolEntity(this);
@@ -1914,14 +1643,6 @@ public partial class LanguageParser : Parser {
 	public partial class NullEntityContext : EntityContext {
 		public ITerminalNode NULL() { return GetToken(LanguageParser.NULL, 0); }
 		public NullEntityContext(EntityContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterNullEntity(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitNullEntity(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitNullEntity(this);
@@ -1933,14 +1654,6 @@ public partial class LanguageParser : Parser {
 			return GetRuleContext<Number_decimalContext>(0);
 		}
 		public NumberDecimalEntityContext(EntityContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterNumberDecimalEntity(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitNumberDecimalEntity(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitNumberDecimalEntity(this);
@@ -1950,14 +1663,6 @@ public partial class LanguageParser : Parser {
 	public partial class VariableEntityContext : EntityContext {
 		public ITerminalNode IDENTIFIER() { return GetToken(LanguageParser.IDENTIFIER, 0); }
 		public VariableEntityContext(EntityContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterVariableEntity(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitVariableEntity(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVariableEntity(this);
@@ -1969,14 +1674,6 @@ public partial class LanguageParser : Parser {
 			return GetRuleContext<Number_integerContext>(0);
 		}
 		public NumberIntegerEntityContext(EntityContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterNumberIntegerEntity(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitNumberIntegerEntity(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitNumberIntegerEntity(this);
@@ -1986,14 +1683,6 @@ public partial class LanguageParser : Parser {
 	public partial class VarTableColunaEntityContext : EntityContext {
 		public ITerminalNode VAR_TABLE_COLUNA() { return GetToken(LanguageParser.VAR_TABLE_COLUNA, 0); }
 		public VarTableColunaEntityContext(EntityContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterVarTableColunaEntity(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitVarTableColunaEntity(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVarTableColunaEntity(this);
@@ -2003,14 +1692,6 @@ public partial class LanguageParser : Parser {
 	public partial class DateEntityContext : EntityContext {
 		public ITerminalNode DATE() { return GetToken(LanguageParser.DATE, 0); }
 		public DateEntityContext(EntityContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterDateEntity(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitDateEntity(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitDateEntity(this);
@@ -2113,20 +1794,8 @@ public partial class LanguageParser : Parser {
 		}
 	}
 	public partial class StringEntityContext : TextContext {
-		public ITerminalNode[] QUOTE() { return GetTokens(LanguageParser.QUOTE); }
-		public ITerminalNode QUOTE(int i) {
-			return GetToken(LanguageParser.QUOTE, i);
-		}
-		public ITerminalNode IDENTIFIER() { return GetToken(LanguageParser.IDENTIFIER, 0); }
+		public ITerminalNode TEXT() { return GetToken(LanguageParser.TEXT, 0); }
 		public StringEntityContext(TextContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterStringEntity(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitStringEntity(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitStringEntity(this);
@@ -2142,9 +1811,7 @@ public partial class LanguageParser : Parser {
 			_localctx = new StringEntityContext(_localctx);
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 227; Match(QUOTE);
-			State = 228; Match(IDENTIFIER);
-			State = 229; Match(QUOTE);
+			State = 227; Match(TEXT);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2165,14 +1832,6 @@ public partial class LanguageParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_number_integer; } }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterNumber_integer(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitNumber_integer(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitNumber_integer(this);
@@ -2187,7 +1846,7 @@ public partial class LanguageParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 231; Match(NUMBER);
+			State = 229; Match(NUMBER);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2208,14 +1867,6 @@ public partial class LanguageParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_number_decimal; } }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.EnterNumber_decimal(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILanguageListener typedListener = listener as ILanguageListener;
-			if (typedListener != null) typedListener.ExitNumber_decimal(this);
-		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitNumber_decimal(this);
@@ -2230,7 +1881,7 @@ public partial class LanguageParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 233; Match(DECIMAL);
+			State = 231; Match(DECIMAL);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2270,7 +1921,7 @@ public partial class LanguageParser : Parser {
 
 	private static char[] _serializedATN = {
 		'\x3', '\x608B', '\xA72A', '\x8133', '\xB9ED', '\x417C', '\x3BE7', '\x7786', 
-		'\x5964', '\x3', '\x42', '\xEE', '\x4', '\x2', '\t', '\x2', '\x4', '\x3', 
+		'\x5964', '\x3', '\x43', '\xEC', '\x4', '\x2', '\t', '\x2', '\x4', '\x3', 
 		'\t', '\x3', '\x4', '\x4', '\t', '\x4', '\x4', '\x5', '\t', '\x5', '\x4', 
 		'\x6', '\t', '\x6', '\x4', '\a', '\t', '\a', '\x4', '\b', '\t', '\b', 
 		'\x4', '\t', '\t', '\t', '\x4', '\n', '\t', '\n', '\x4', '\v', '\t', '\v', 
@@ -2315,63 +1966,63 @@ public partial class LanguageParser : Parser {
 		'\x3', '\x13', '\x3', '\x13', '\x3', '\x14', '\x3', '\x14', '\x3', '\x15', 
 		'\x3', '\x15', '\x3', '\x16', '\x3', '\x16', '\x3', '\x16', '\x3', '\x16', 
 		'\x3', '\x16', '\x3', '\x16', '\x3', '\x16', '\x5', '\x16', '\xE4', '\n', 
-		'\x16', '\x3', '\x17', '\x3', '\x17', '\x3', '\x17', '\x3', '\x17', '\x3', 
-		'\x18', '\x3', '\x18', '\x3', '\x19', '\x3', '\x19', '\x3', '\x19', '\x2', 
-		'\x4', '\x12', '\x1C', '\x1A', '\x2', '\x4', '\x6', '\b', '\n', '\f', 
-		'\xE', '\x10', '\x12', '\x14', '\x16', '\x18', '\x1A', '\x1C', '\x1E', 
-		' ', '\"', '$', '&', '(', '*', ',', '.', '\x30', '\x2', '\x4', '\x3', 
-		'\x2', '.', '\x33', '\x3', '\x2', '\n', '\v', '\x2', '\xF7', '\x2', '\x35', 
-		'\x3', '\x2', '\x2', '\x2', '\x4', '?', '\x3', '\x2', '\x2', '\x2', '\x6', 
-		'\x41', '\x3', '\x2', '\x2', '\x2', '\b', 'Z', '\x3', '\x2', '\x2', '\x2', 
-		'\n', '\\', '\x3', '\x2', '\x2', '\x2', '\f', '\x62', '\x3', '\x2', '\x2', 
-		'\x2', '\xE', 'q', '\x3', '\x2', '\x2', '\x2', '\x10', 'w', '\x3', '\x2', 
-		'\x2', '\x2', '\x12', '\x82', '\x3', '\x2', '\x2', '\x2', '\x14', '\x97', 
-		'\x3', '\x2', '\x2', '\x2', '\x16', '\x99', '\x3', '\x2', '\x2', '\x2', 
-		'\x18', '\x9B', '\x3', '\x2', '\x2', '\x2', '\x1A', '\xAA', '\x3', '\x2', 
-		'\x2', '\x2', '\x1C', '\xBD', '\x3', '\x2', '\x2', '\x2', '\x1E', '\xD0', 
-		'\x3', '\x2', '\x2', '\x2', ' ', '\xD2', '\x3', '\x2', '\x2', '\x2', '\"', 
-		'\xD4', '\x3', '\x2', '\x2', '\x2', '$', '\xD6', '\x3', '\x2', '\x2', 
-		'\x2', '&', '\xD8', '\x3', '\x2', '\x2', '\x2', '(', '\xDA', '\x3', '\x2', 
-		'\x2', '\x2', '*', '\xE3', '\x3', '\x2', '\x2', '\x2', ',', '\xE5', '\x3', 
-		'\x2', '\x2', '\x2', '.', '\xE9', '\x3', '\x2', '\x2', '\x2', '\x30', 
-		'\xEB', '\x3', '\x2', '\x2', '\x2', '\x32', '\x34', '\x5', '\x4', '\x3', 
-		'\x2', '\x33', '\x32', '\x3', '\x2', '\x2', '\x2', '\x34', '\x37', '\x3', 
-		'\x2', '\x2', '\x2', '\x35', '\x33', '\x3', '\x2', '\x2', '\x2', '\x35', 
-		'\x36', '\x3', '\x2', '\x2', '\x2', '\x36', '\x39', '\x3', '\x2', '\x2', 
-		'\x2', '\x37', '\x35', '\x3', '\x2', '\x2', '\x2', '\x38', ':', '\x5', 
-		'\n', '\x6', '\x2', '\x39', '\x38', '\x3', '\x2', '\x2', '\x2', '\x39', 
-		':', '\x3', '\x2', '\x2', '\x2', ':', '\x3', '\x3', '\x2', '\x2', '\x2', 
-		';', '@', '\x5', '\b', '\x5', '\x2', '<', '@', '\x5', '\x6', '\x4', '\x2', 
-		'=', '@', '\x5', '\x1C', '\xF', '\x2', '>', '@', '\x5', '\f', '\a', '\x2', 
-		'?', ';', '\x3', '\x2', '\x2', '\x2', '?', '<', '\x3', '\x2', '\x2', '\x2', 
-		'?', '=', '\x3', '\x2', '\x2', '\x2', '?', '>', '\x3', '\x2', '\x2', '\x2', 
-		'@', '\x5', '\x3', '\x2', '\x2', '\x2', '\x41', '\x42', '\x5', '\x18', 
-		'\r', '\x2', '\x42', '\x43', '\a', '?', '\x2', '\x2', '\x43', '\a', '\x3', 
-		'\x2', '\x2', '\x2', '\x44', '\x46', '\a', '\x36', '\x2', '\x2', '\x45', 
-		'\x44', '\x3', '\x2', '\x2', '\x2', '\x45', '\x46', '\x3', '\x2', '\x2', 
-		'\x2', '\x46', 'H', '\x3', '\x2', '\x2', '\x2', 'G', 'I', '\a', '\x35', 
-		'\x2', '\x2', 'H', 'G', '\x3', '\x2', '\x2', '\x2', 'H', 'I', '\x3', '\x2', 
-		'\x2', '\x2', 'I', 'J', '\x3', '\x2', '\x2', '\x2', 'J', 'K', '\a', '=', 
-		'\x2', '\x2', 'K', 'L', '\a', '\x34', '\x2', '\x2', 'L', 'M', '\x5', '\x1C', 
-		'\xF', '\x2', 'M', 'N', '\a', '?', '\x2', '\x2', 'N', '[', '\x3', '\x2', 
-		'\x2', '\x2', 'O', 'Q', '\a', '\x36', '\x2', '\x2', 'P', 'O', '\x3', '\x2', 
-		'\x2', '\x2', 'P', 'Q', '\x3', '\x2', '\x2', '\x2', 'Q', 'S', '\x3', '\x2', 
-		'\x2', '\x2', 'R', 'T', '\a', '\x35', '\x2', '\x2', 'S', 'R', '\x3', '\x2', 
-		'\x2', '\x2', 'S', 'T', '\x3', '\x2', '\x2', '\x2', 'T', 'U', '\x3', '\x2', 
-		'\x2', '\x2', 'U', 'V', '\a', '=', '\x2', '\x2', 'V', 'W', '\a', '\x34', 
-		'\x2', '\x2', 'W', 'X', '\x5', '\x14', '\v', '\x2', 'X', 'Y', '\a', '?', 
-		'\x2', '\x2', 'Y', '[', '\x3', '\x2', '\x2', '\x2', 'Z', '\x45', '\x3', 
-		'\x2', '\x2', '\x2', 'Z', 'P', '\x3', '\x2', '\x2', '\x2', '[', '\t', 
-		'\x3', '\x2', '\x2', '\x2', '\\', '^', '\a', '\x37', '\x2', '\x2', ']', 
-		'_', '\x5', '\x1C', '\xF', '\x2', '^', ']', '\x3', '\x2', '\x2', '\x2', 
-		'^', '_', '\x3', '\x2', '\x2', '\x2', '_', '`', '\x3', '\x2', '\x2', '\x2', 
-		'`', '\x61', '\a', '?', '\x2', '\x2', '\x61', '\v', '\x3', '\x2', '\x2', 
-		'\x2', '\x62', '\x63', '\a', '\x3', '\x2', '\x2', '\x63', '\x64', '\x5', 
-		'\x12', '\n', '\x2', '\x64', '\x65', '\a', '\'', '\x2', '\x2', '\x65', 
-		'\x66', '\x5', '\xE', '\b', '\x2', '\x66', 'l', '\a', '&', '\x2', '\x2', 
-		'g', 'h', '\a', '\x4', '\x2', '\x2', 'h', 'i', '\a', '\'', '\x2', '\x2', 
-		'i', 'j', '\x5', '\x10', '\t', '\x2', 'j', 'k', '\a', '&', '\x2', '\x2', 
-		'k', 'm', '\x3', '\x2', '\x2', '\x2', 'l', 'g', '\x3', '\x2', '\x2', '\x2', 
+		'\x16', '\x3', '\x17', '\x3', '\x17', '\x3', '\x18', '\x3', '\x18', '\x3', 
+		'\x19', '\x3', '\x19', '\x3', '\x19', '\x2', '\x4', '\x12', '\x1C', '\x1A', 
+		'\x2', '\x4', '\x6', '\b', '\n', '\f', '\xE', '\x10', '\x12', '\x14', 
+		'\x16', '\x18', '\x1A', '\x1C', '\x1E', ' ', '\"', '$', '&', '(', '*', 
+		',', '.', '\x30', '\x2', '\x4', '\x3', '\x2', '.', '\x33', '\x3', '\x2', 
+		'\n', '\v', '\x2', '\xF5', '\x2', '\x35', '\x3', '\x2', '\x2', '\x2', 
+		'\x4', '?', '\x3', '\x2', '\x2', '\x2', '\x6', '\x41', '\x3', '\x2', '\x2', 
+		'\x2', '\b', 'Z', '\x3', '\x2', '\x2', '\x2', '\n', '\\', '\x3', '\x2', 
+		'\x2', '\x2', '\f', '\x62', '\x3', '\x2', '\x2', '\x2', '\xE', 'q', '\x3', 
+		'\x2', '\x2', '\x2', '\x10', 'w', '\x3', '\x2', '\x2', '\x2', '\x12', 
+		'\x82', '\x3', '\x2', '\x2', '\x2', '\x14', '\x97', '\x3', '\x2', '\x2', 
+		'\x2', '\x16', '\x99', '\x3', '\x2', '\x2', '\x2', '\x18', '\x9B', '\x3', 
+		'\x2', '\x2', '\x2', '\x1A', '\xAA', '\x3', '\x2', '\x2', '\x2', '\x1C', 
+		'\xBD', '\x3', '\x2', '\x2', '\x2', '\x1E', '\xD0', '\x3', '\x2', '\x2', 
+		'\x2', ' ', '\xD2', '\x3', '\x2', '\x2', '\x2', '\"', '\xD4', '\x3', '\x2', 
+		'\x2', '\x2', '$', '\xD6', '\x3', '\x2', '\x2', '\x2', '&', '\xD8', '\x3', 
+		'\x2', '\x2', '\x2', '(', '\xDA', '\x3', '\x2', '\x2', '\x2', '*', '\xE3', 
+		'\x3', '\x2', '\x2', '\x2', ',', '\xE5', '\x3', '\x2', '\x2', '\x2', '.', 
+		'\xE7', '\x3', '\x2', '\x2', '\x2', '\x30', '\xE9', '\x3', '\x2', '\x2', 
+		'\x2', '\x32', '\x34', '\x5', '\x4', '\x3', '\x2', '\x33', '\x32', '\x3', 
+		'\x2', '\x2', '\x2', '\x34', '\x37', '\x3', '\x2', '\x2', '\x2', '\x35', 
+		'\x33', '\x3', '\x2', '\x2', '\x2', '\x35', '\x36', '\x3', '\x2', '\x2', 
+		'\x2', '\x36', '\x39', '\x3', '\x2', '\x2', '\x2', '\x37', '\x35', '\x3', 
+		'\x2', '\x2', '\x2', '\x38', ':', '\x5', '\n', '\x6', '\x2', '\x39', '\x38', 
+		'\x3', '\x2', '\x2', '\x2', '\x39', ':', '\x3', '\x2', '\x2', '\x2', ':', 
+		'\x3', '\x3', '\x2', '\x2', '\x2', ';', '@', '\x5', '\b', '\x5', '\x2', 
+		'<', '@', '\x5', '\x6', '\x4', '\x2', '=', '@', '\x5', '\x1C', '\xF', 
+		'\x2', '>', '@', '\x5', '\f', '\a', '\x2', '?', ';', '\x3', '\x2', '\x2', 
+		'\x2', '?', '<', '\x3', '\x2', '\x2', '\x2', '?', '=', '\x3', '\x2', '\x2', 
+		'\x2', '?', '>', '\x3', '\x2', '\x2', '\x2', '@', '\x5', '\x3', '\x2', 
+		'\x2', '\x2', '\x41', '\x42', '\x5', '\x18', '\r', '\x2', '\x42', '\x43', 
+		'\a', '@', '\x2', '\x2', '\x43', '\a', '\x3', '\x2', '\x2', '\x2', '\x44', 
+		'\x46', '\a', '\x36', '\x2', '\x2', '\x45', '\x44', '\x3', '\x2', '\x2', 
+		'\x2', '\x45', '\x46', '\x3', '\x2', '\x2', '\x2', '\x46', 'H', '\x3', 
+		'\x2', '\x2', '\x2', 'G', 'I', '\a', '\x35', '\x2', '\x2', 'H', 'G', '\x3', 
+		'\x2', '\x2', '\x2', 'H', 'I', '\x3', '\x2', '\x2', '\x2', 'I', 'J', '\x3', 
+		'\x2', '\x2', '\x2', 'J', 'K', '\a', '=', '\x2', '\x2', 'K', 'L', '\a', 
+		'\x34', '\x2', '\x2', 'L', 'M', '\x5', '\x1C', '\xF', '\x2', 'M', 'N', 
+		'\a', '@', '\x2', '\x2', 'N', '[', '\x3', '\x2', '\x2', '\x2', 'O', 'Q', 
+		'\a', '\x36', '\x2', '\x2', 'P', 'O', '\x3', '\x2', '\x2', '\x2', 'P', 
+		'Q', '\x3', '\x2', '\x2', '\x2', 'Q', 'S', '\x3', '\x2', '\x2', '\x2', 
+		'R', 'T', '\a', '\x35', '\x2', '\x2', 'S', 'R', '\x3', '\x2', '\x2', '\x2', 
+		'S', 'T', '\x3', '\x2', '\x2', '\x2', 'T', 'U', '\x3', '\x2', '\x2', '\x2', 
+		'U', 'V', '\a', '=', '\x2', '\x2', 'V', 'W', '\a', '\x34', '\x2', '\x2', 
+		'W', 'X', '\x5', '\x14', '\v', '\x2', 'X', 'Y', '\a', '@', '\x2', '\x2', 
+		'Y', '[', '\x3', '\x2', '\x2', '\x2', 'Z', '\x45', '\x3', '\x2', '\x2', 
+		'\x2', 'Z', 'P', '\x3', '\x2', '\x2', '\x2', '[', '\t', '\x3', '\x2', 
+		'\x2', '\x2', '\\', '^', '\a', '\x37', '\x2', '\x2', ']', '_', '\x5', 
+		'\x1C', '\xF', '\x2', '^', ']', '\x3', '\x2', '\x2', '\x2', '^', '_', 
+		'\x3', '\x2', '\x2', '\x2', '_', '`', '\x3', '\x2', '\x2', '\x2', '`', 
+		'\x61', '\a', '@', '\x2', '\x2', '\x61', '\v', '\x3', '\x2', '\x2', '\x2', 
+		'\x62', '\x63', '\a', '\x3', '\x2', '\x2', '\x63', '\x64', '\x5', '\x12', 
+		'\n', '\x2', '\x64', '\x65', '\a', '\'', '\x2', '\x2', '\x65', '\x66', 
+		'\x5', '\xE', '\b', '\x2', '\x66', 'l', '\a', '&', '\x2', '\x2', 'g', 
+		'h', '\a', '\x4', '\x2', '\x2', 'h', 'i', '\a', '\'', '\x2', '\x2', 'i', 
+		'j', '\x5', '\x10', '\t', '\x2', 'j', 'k', '\a', '&', '\x2', '\x2', 'k', 
+		'm', '\x3', '\x2', '\x2', '\x2', 'l', 'g', '\x3', '\x2', '\x2', '\x2', 
 		'l', 'm', '\x3', '\x2', '\x2', '\x2', 'm', '\r', '\x3', '\x2', '\x2', 
 		'\x2', 'n', 'p', '\x5', '\x4', '\x3', '\x2', 'o', 'n', '\x3', '\x2', '\x2', 
 		'\x2', 'p', 's', '\x3', '\x2', '\x2', '\x2', 'q', 'o', '\x3', '\x2', '\x2', 
@@ -2449,20 +2100,18 @@ public partial class LanguageParser : Parser {
 		'\xDB', ')', '\x3', '\x2', '\x2', '\x2', '\xDC', '\xE4', '\t', '\x3', 
 		'\x2', '\x2', '\xDD', '\xE4', '\x5', '\x30', '\x19', '\x2', '\xDE', '\xE4', 
 		'\x5', '.', '\x18', '\x2', '\xDF', '\xE4', '\a', '<', '\x2', '\x2', '\xE0', 
-		'\xE4', '\a', '=', '\x2', '\x2', '\xE1', '\xE4', '\a', '>', '\x2', '\x2', 
+		'\xE4', '\a', '=', '\x2', '\x2', '\xE1', '\xE4', '\a', '?', '\x2', '\x2', 
 		'\xE2', '\xE4', '\a', '\f', '\x2', '\x2', '\xE3', '\xDC', '\x3', '\x2', 
 		'\x2', '\x2', '\xE3', '\xDD', '\x3', '\x2', '\x2', '\x2', '\xE3', '\xDE', 
 		'\x3', '\x2', '\x2', '\x2', '\xE3', '\xDF', '\x3', '\x2', '\x2', '\x2', 
 		'\xE3', '\xE0', '\x3', '\x2', '\x2', '\x2', '\xE3', '\xE1', '\x3', '\x2', 
 		'\x2', '\x2', '\xE3', '\xE2', '\x3', '\x2', '\x2', '\x2', '\xE4', '+', 
-		'\x3', '\x2', '\x2', '\x2', '\xE5', '\xE6', '\a', '\x39', '\x2', '\x2', 
-		'\xE6', '\xE7', '\a', '=', '\x2', '\x2', '\xE7', '\xE8', '\a', '\x39', 
-		'\x2', '\x2', '\xE8', '-', '\x3', '\x2', '\x2', '\x2', '\xE9', '\xEA', 
-		'\a', ':', '\x2', '\x2', '\xEA', '/', '\x3', '\x2', '\x2', '\x2', '\xEB', 
-		'\xEC', '\a', ';', '\x2', '\x2', '\xEC', '\x31', '\x3', '\x2', '\x2', 
-		'\x2', '\x18', '\x35', '\x39', '?', '\x45', 'H', 'P', 'S', 'Z', '^', 'l', 
-		'q', 'w', '\x82', '\x8A', '\x8C', '\x97', '\xA6', '\xB1', '\xBD', '\xCB', 
-		'\xCD', '\xE3',
+		'\x3', '\x2', '\x2', '\x2', '\xE5', '\xE6', '\a', '>', '\x2', '\x2', '\xE6', 
+		'-', '\x3', '\x2', '\x2', '\x2', '\xE7', '\xE8', '\a', ':', '\x2', '\x2', 
+		'\xE8', '/', '\x3', '\x2', '\x2', '\x2', '\xE9', '\xEA', '\a', ';', '\x2', 
+		'\x2', '\xEA', '\x31', '\x3', '\x2', '\x2', '\x2', '\x18', '\x35', '\x39', 
+		'?', '\x45', 'H', 'P', 'S', 'Z', '^', 'l', 'q', 'w', '\x82', '\x8A', '\x8C', 
+		'\x97', '\xA6', '\xB1', '\xBD', '\xCB', '\xCD', '\xE3',
 	};
 
 	public static readonly ATN _ATN =

@@ -152,7 +152,7 @@ namespace Api
             // Associa as listas de dados a lista da tabela principal.
             foreach (var aux in keyValuePairs.Where(x => x.Key != tabelaPrincipal))
             {
-                foreach( var x in aux.Value.GroupBy(x => (int)(x as IDictionary<string, object>)["IdOrigem"]))
+                foreach (var x in aux.Value.GroupBy(x => (int)(x as IDictionary<string, object>)["IdOrigem"]))
                 {
                     if (principal.TryGetValue(x.Key, out IDictionary<string, object> principalValue))
                         principalValue[aux.Key] = x.ToArray();
@@ -162,6 +162,12 @@ namespace Api
             stopwatchPre.Stop();
 
             Console.WriteLine($"Tempo Total Pré-Processamento: {stopwatchPre.Elapsed}");
+
+            var auxiliares = keyValuePairs.Where(x => x.Key != tabelaPrincipal);
+            var totalTabelasAuxiliares = auxiliares.Count();
+            var totalRegistroTabelasAuxiliares = auxiliares.Select(x => x.Value.Select(y => y).Count()).Sum();
+            Console.WriteLine($"Quantidade registros principais: {principal.Count}");
+            Console.WriteLine($"Quantidade registros auxiliares: {totalRegistroTabelasAuxiliares}");
 
             return principal;
         }
