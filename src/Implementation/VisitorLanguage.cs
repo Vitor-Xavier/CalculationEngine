@@ -146,9 +146,8 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
     {
         var tabela = Visit(context.tabela_caracteristica());
         var descricao = Visit(context.descricao_caracteristica());
-        var coluna = Visit(context.coluna_caracteristica());
 
-        _memory.TryGetValue($"@{tabela.Value}.{descricao.Value}[0].{coluna.Value}", out GenericValueLanguage value);
+        _memory.TryGetValue($"@{tabela.Value}.{descricao.Value}[0].Valor", out GenericValueLanguage value);
         return value ?? new GenericValueLanguage(null);
     }
 

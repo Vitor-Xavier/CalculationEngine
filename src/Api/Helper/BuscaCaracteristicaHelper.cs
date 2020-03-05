@@ -34,7 +34,7 @@ namespace Api.Helper
                                 inner join RoteiroSelecaoItens selecao on selecao.IdSelecao = {idSelecao} and a.{carac.Coluna} = selecao.IdSelecionado
                                 inner join Caracteristicas b on a.IdCaracteristica = b.IdCaracteristica
                                 left join CaracteristicaVlrs c on c.IdCaracteristica = b.IdCaracteristica and c.Exercicio = {carac.Exercicio} and a.vlr = c.CodItem
-                                WHERE DescrCaracteristica = '{carac.Descricao}'";
+                                WHERE DescrCaracteristica = '{carac.Descricao.Replace("\"","")}'";
 
         }
     }

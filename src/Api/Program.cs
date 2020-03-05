@@ -48,7 +48,7 @@ namespace Api
 
             // Principal 
             string tabelaPrincipal = SetorOrigemHelper.GetTabelaPrincipal(roteiro.SetorOrigem);
-            Parallel.ForEach(dados, item =>
+            Parallel.ForEach(dados, new ParallelOptions { MaxDegreeOfParallelism = 1 }, item =>
             {
                 var memory = new Dictionary<string, GenericValueLanguage>();
                 foreach (var props in (item.Value as IDictionary<string, object>))
@@ -168,6 +168,7 @@ namespace Api
             var totalRegistroTabelasAuxiliares = auxiliares.Select(x => x.Value.Select(y => y).Count()).Sum();
             Console.WriteLine($"Quantidade registros principais: {principal.Count}");
             Console.WriteLine($"Quantidade registros auxiliares: {totalRegistroTabelasAuxiliares}");
+            
 
             return principal;
         }
