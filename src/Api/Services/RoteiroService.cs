@@ -95,7 +95,7 @@ namespace Api.Services
       string DescricaoCaracteristica = "\"Planta de Valor Construção\"";
       string ColunaCaracteristica = "\"IdFisico\"";
       int ExercicioCaracteristica = 2019;
-      string ValorFatorCaracteristica = "\"DiferenteTabela\"";
+      string ValorFatorCaracteristica = "\"Valor\"";
 
       List<Evento> evt = new List<Evento>();
       for (var i = 0; i < 27;i++)

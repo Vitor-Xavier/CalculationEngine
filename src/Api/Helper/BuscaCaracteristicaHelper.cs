@@ -27,8 +27,8 @@ namespace Api.Helper
         {
             return $@"SELECT IdFisico as IdOrigem, 
                                 DescrCaracteristica as DescricaoCaracteristica, 
-                                (case when '{carac.ValorFator ?? "DiferenteTabela"}' = 'Valor' and b.TpCaracteristica = 'Tabela' then c.Valor
-                                    when '{carac.ValorFator ?? "DiferenteTabela"}' = 'Fator' and b.TpCaracteristica = 'Tabela' then c.Fator
+                                (case when '{carac.ValorFator.Replace("\"","") ?? "DiferenteTabela"}' = 'Valor' and b.TpCaracteristica = 'Tabela' then c.Valor
+                                    when '{carac.ValorFator.Replace("\"","") ?? "DiferenteTabela"}' = 'Fator' and b.TpCaracteristica = 'Tabela' then c.Fator
                                     when b.TpCaracteristica <> 'Tabela' then a.Vlr end) as Valor
                                 from  {carac.Tabela} a
                                 inner join RoteiroSelecaoItens selecao on selecao.IdSelecao = {idSelecao} and a.{carac.Coluna} = selecao.IdSelecionado
