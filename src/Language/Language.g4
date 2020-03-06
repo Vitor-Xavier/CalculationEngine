@@ -74,8 +74,9 @@ DECIMAL : '-'?[0-9]+'.'[0-9]+ ;
 DATE : ([0-9])+'/'([0-9])+'/'([0-9])+;
 IDENTIFIER : [a-zA-Z_][a-zA-Z_0-9]* ;
 TEXT: QUOTE (~["\\] | '\\' .)* QUOTE;
-VAR_TABLE_COLUNA : [@][a-zA-Z_][a-zA-Z_0-9]*('['[0-9]+']')?[.][a-zA-Z_][a-zA-Z_0-9]* ;
-
+VAR_PRIMARY: [@][a-zA-Z_][a-zA-Z_0-9]*;
+VAR_OBJECT: [@][a-zA-Z_][a-zA-Z_0-9]*[.][a-zA-Z_][a-zA-Z_0-9]*;
+VAR_ARRAY: [@][a-zA-Z_][a-zA-Z_0-9]*('['[0-9]+']')'.'[a-zA-Z_][a-zA-Z_0-9]+;
 
 SEMI : ';';
 COLON : ':';
@@ -97,7 +98,7 @@ rule_block
     ;
 
 
-    assignment
+assignment
     : (VAR)? IDENTIFIER ATRIB arithmetic_expression SEMI #arithmeticAssignment
     | (VAR)? IDENTIFIER ATRIB comparison_expression SEMI #comparisonAssignment
 	;
@@ -196,7 +197,9 @@ arithmetic_expression
     | number_integer            #numberIntegerEntity
 	| DATE						#dateEntity
     | IDENTIFIER                #variableEntity
-    | VAR_TABLE_COLUNA          #varTableColunaEntity
+    | VAR_PRIMARY               #varPrimaryEntity
+    | VAR_ARRAY                 #varArrayEntity
+    | VAR_OBJECT                #varObjectEntity
     | NULL                      #nullEntity
     ;
 
@@ -211,6 +214,3 @@ arithmetic_expression
     number_decimal
     : DECIMAL 
     ;
-
-    
-

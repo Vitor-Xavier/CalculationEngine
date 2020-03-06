@@ -19,7 +19,7 @@ public class ExecuteLanguage
         return parser.rule_set();
     }
 
-    public object Execute(Dictionary<string, GenericValueLanguage> values = null)
+    public object Execute(IDictionary<string, GenericValueLanguage> values = null)
     {
         try
         {

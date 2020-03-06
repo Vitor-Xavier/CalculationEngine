@@ -106,20 +106,19 @@ namespace Api.Helper
 
     public static IEnumerable<TabelaColuna> ListaTabelaColuna(IList<IToken> Tokens, IDictionary<string, int> TokenTypeMap)
     {
-      List<TabelaColuna> grupo;
-      var tokenVarTableColuna = TokenTypeMap.Where(x => x.Key == "VAR_TABLE_COLUNA").FirstOrDefault();
-      var tokensTypeVarTableColuna = Tokens.Where(x => x.Type == tokenVarTableColuna.Value).ToList();
-      grupo = tokensTypeVarTableColuna.Select(x => new
+      var tokenVarTableColuna = TokenTypeMap.Where(x => x.Key == "VAR_PRIMARY" || x.Key == "VAR_OBJECT" || x.Key == "VAR_ARRAY").Select(x => x.Value).ToList();
+      var tokensTypeVarTableColuna = Tokens.Where(x => tokenVarTableColuna.Contains(x.Type)).ToList();
+      var grupo = tokensTypeVarTableColuna.Select(x => new
       {
         tabela = Regex.Replace(x.Text.RemoveCaracter("@").SubstringWithIndexOf('.'), @"\[[0-9]+\]", string.Empty),
         coluna = x.Text.RemoveCaracter("@").SubstringWithIndexOf('.', true).RemoveCaracter(".")
       })
           .Where(u => u.tabela != "Roteiro")
           .GroupBy(u => u.tabela)
-          .Select(y => new TabelaColuna()
+          .Select(y => new TabelaColuna
           {
             Tabela = y.Select(y => y.tabela).Distinct().FirstOrDefault(),
-            Coluna = y.Select(y => y.coluna).ToList()
+            Coluna = y.Select(y => y.coluna).Distinct().ToList()
           })
           .ToList();
       return grupo;

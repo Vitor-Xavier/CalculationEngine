@@ -59,7 +59,7 @@ namespace Api.Helper
             var principal = tabelas.FirstOrDefault(x => x.Tabela == GetTabelaPrincipal(setor));
 
             var relacionados = tabelas.Where(x => TabelaRelacionadas.First(y => y.Tabela == tabelaPrincipal).Relacionadas.Contains(x.Tabela));
-            principal.Coluna = principal.Coluna.Union(relacionados.SelectMany(x => x.Coluna.Select(y => $"{x.Tabela}.{y}"))).ToList();
+            principal.Coluna = principal.Coluna.Union(relacionados.SelectMany(x => x.Coluna.Select(y => $"{x.Tabela}.{y} as [{x.Tabela}.{y}]"))).ToList();
             string sqlRelacionados = string.Join("\\s", relacionados.Select(x => GetDefaultSQL(x.Tabela, selecaoId)));
 
             foreach (var tabela in tabelas.Except(relacionados))

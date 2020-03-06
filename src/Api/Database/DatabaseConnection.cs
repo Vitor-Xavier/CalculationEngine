@@ -1,20 +1,20 @@
 ﻿using Api.Dto;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
-using Api.Dto;
 
 namespace Api.Database
 {
-  public class DatabaseConnection
+    public class DatabaseConnection
   {
     private readonly SqlConnection _connection;
 
     public DatabaseConnection()
     {
-      _connection = new SqlConnection("Server=192.168.0.132,1433;Database=SMARTB_PMBotucatu;User Id=smar;Password=smarapd");
+      _connection = new SqlConnection("");
     }
 
     public async Task<IDictionary<string, IEnumerable<object>>> GetAllData(IEnumerable<TabelaQuery> queries)
@@ -29,18 +29,18 @@ namespace Api.Database
         int j = 0;
         do
         {
-          var tableResults = new List<object>();
           var table = queries.ElementAt(j).Tabela;
+          var tableResults = new HashSet<object>();
           while (await reader.ReadAsync())
           {
             var obj = new ExpandoObject() as IDictionary<string, object>;
             for (int i = 0; i < reader.FieldCount; i++)
             {
               string aliasName = reader.GetName(i);
-              string columnName = aliasName.Substring(aliasName.LastIndexOf('.') + 1);
-              string tableName = aliasName.Contains('.') ? aliasName.Substring(0, aliasName.LastIndexOf('.')) : table;
+              string columnName = aliasName.Substring(aliasName.LastIndexOf(".", StringComparison.Ordinal) + 1);
+              string tableName = aliasName.Contains('.', StringComparison.Ordinal) ? aliasName.Substring(0, aliasName.LastIndexOf(".", StringComparison.Ordinal)) : table;
               object columnValue = await reader.IsDBNullAsync(i) ? null : reader[i];
-              if (tableName != table)
+              if (!tableName.Equals(table, StringComparison.Ordinal))
               {
                 if (!obj.ContainsKey(tableName))
                   obj.Add(tableName, new ExpandoObject() as IDictionary<string, object>);

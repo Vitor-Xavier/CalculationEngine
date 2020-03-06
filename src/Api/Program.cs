@@ -49,31 +49,13 @@ namespace Api
 
             // Principal 
             string tabelaPrincipal = SetorOrigemHelper.GetTabelaPrincipal(roteiro.SetorOrigem);
-            Parallel.ForEach(dados, new ParallelOptions(){ MaxDegreeOfParallelism = 1}, item =>
+            Parallel.ForEach(dados, item =>
             {
-                var memory = new Dictionary<string, GenericValueLanguage>();
-                foreach (var props in (item.Value as IDictionary<string, object>))
-                {
-                    if (props.Value is object[] lista)
-                    {
-                        for (int k = 0; k < lista.Length; k++)
-                        {
-                            foreach (var obj in lista[k] as IDictionary<string, object>)
-                            {
-                                memory.Add($"@{props.Key}[{k}].{obj.Key}", new GenericValueLanguage(obj.Value));
-                            };
-                        }
-                    }
-                    else if (props.Value is ExpandoObject obj)
-                    {
-                        foreach (var x in obj as IDictionary<string, object>)
-                        {
-                            memory.Add($"@{props.Key}.{x.Key}", new GenericValueLanguage(x.Value));
-                        };
-                    }
-                    else
-                        memory.Add($"@{tabelaPrincipal}.{props.Key}", new GenericValueLanguage(props.Value));
-                }
+                var aux = item.Value.Where(x => x.Value is object[] || x.Value is ExpandoObject);
+                var memory = aux.ToDictionary(x => $"@{x.Key}", x => new GenericValueLanguage(x.Value));
+                var objPrincipal = item.Value.Except(aux).Aggregate(new ExpandoObject() as IDictionary<string, object>, (a, p) => { a.Add(p.Key, p.Value); return a; });
+                memory.Add($"@{tabelaPrincipal}", new GenericValueLanguage(objPrincipal));
+                memory.Add("@Roteiro", new GenericValueLanguage(new ExpandoObject()));
 
                 // Execucao das Formulas do Roteiro
                 foreach (var evento in roteiro.Eventos)
@@ -86,15 +68,14 @@ namespace Api
                         var result = executeFormula.Execute(memory);
 
                         // Resultado
-                        memory.Add($"@Roteiro.{evento.Nome}", new GenericValueLanguage(result));
+                        (memory["@Roteiro"].Value as IDictionary<string, object>).Add(evento.Nome, result);
                     }
                     catch (Exception e)
                     {
                         Exceptions.Value.Enqueue(e);
                     }
                 };
-                object resultado = memory.Where(m => m.Key.StartsWith("@Roteiro.")).ToDictionary(x => x.Key.Substring(x.Key.LastIndexOf('.') + 1), x => x.Value.Value);
-                Resultados.TryAdd(item.Key, resultado);
+                Resultados.TryAdd(item.Key, memory["@Roteiro"].Value);
             });
             stopWatchProcessamento.Stop();
             Console.WriteLine($"Tempo Total Processamento: {stopWatchProcessamento.Elapsed}");
@@ -126,7 +107,7 @@ namespace Api
         public static async Task<IDictionary<int, IDictionary<string, object>>> CarregarDados(SetorOrigem setor, IEnumerable<TabelaColuna> tabelas, IEnumerable<CaracteristicaTabela> caracteristicaTabela, IEnumerable<Caracteristica> caracteristica)
         {
             int idSelecao = 1;
-            
+
             // Diagnóstico
             var stopwatchPre = new Stopwatch();
             stopwatchPre.Start();
@@ -181,7 +162,7 @@ namespace Api
             var totalRegistroTabelasAuxiliares = auxiliares.Select(x => x.Value.Select(y => y).Count()).Sum();
             Console.WriteLine($"Quantidade registros principais: {principal.Count}");
             Console.WriteLine($"Quantidade registros auxiliares: {totalRegistroTabelasAuxiliares}");
-            
+
 
             return principal;
         }

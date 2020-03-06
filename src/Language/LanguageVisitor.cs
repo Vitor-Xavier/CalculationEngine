@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from .\Language.g4 by ANTLR 4.8
+// Generated from Language.g4 by ANTLR 4.8
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -294,12 +294,26 @@ public interface ILanguageVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitVariableEntity([NotNull] LanguageParser.VariableEntityContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>varTableColunaEntity</c>
+	/// Visit a parse tree produced by the <c>varPrimaryEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.entity"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitVarTableColunaEntity([NotNull] LanguageParser.VarTableColunaEntityContext context);
+	Result VisitVarPrimaryEntity([NotNull] LanguageParser.VarPrimaryEntityContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>varArrayEntity</c>
+	/// labeled alternative in <see cref="LanguageParser.entity"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitVarArrayEntity([NotNull] LanguageParser.VarArrayEntityContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>varObjectEntity</c>
+	/// labeled alternative in <see cref="LanguageParser.entity"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitVarObjectEntity([NotNull] LanguageParser.VarObjectEntityContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>nullEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.entity"/>.

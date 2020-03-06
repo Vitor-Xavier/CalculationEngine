@@ -1,16 +1,60 @@
 using Antlr4.Runtime.Misc;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Globalization;
 using System.Linq;
 
 public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
 {
-    private readonly Dictionary<string, GenericValueLanguage> _memory;
+    private readonly IDictionary<string, GenericValueLanguage> _memory;
 
-    public VisitorLanguage(Dictionary<string, GenericValueLanguage> memory)
+    public VisitorLanguage(IDictionary<string, GenericValueLanguage> memory)
     {
         _memory = memory ?? new Dictionary<string, GenericValueLanguage>();
+    }
+
+    public override GenericValueLanguage VisitVarPrimaryEntity([NotNull] LanguageParser.VarPrimaryEntityContext context)
+    {
+        string id = context.VAR_PRIMARY().GetText();
+
+        _memory.TryGetValue(id, out GenericValueLanguage retono);
+        return retono;
+    }
+
+    public override GenericValueLanguage VisitVarArrayEntity([NotNull] LanguageParser.VarArrayEntityContext context)
+    {
+        string identifier = context.VAR_ARRAY().GetText();
+        int start = identifier.IndexOf("[", StringComparison.Ordinal);
+        int end = identifier.IndexOf("]", StringComparison.Ordinal) - 1;
+
+        string arrayKey = identifier.Substring(0, start);
+        if (_memory.TryGetValue(arrayKey, out GenericValueLanguage value) && value.Value is object[] array)
+        {
+            int index = int.Parse(identifier.Substring(start + 1, end - start));
+            if (array.Length > index)
+            {
+                string propertyKey = identifier.Substring(identifier.IndexOf(".", StringComparison.Ordinal) + 1);
+                if (!string.IsNullOrEmpty(propertyKey))
+                    return new GenericValueLanguage((array[index] as IDictionary<string, object>).TryGetValue(propertyKey, out object obj) ? obj : null);
+                else
+                    return new GenericValueLanguage(array[index]);
+            }
+        }
+        return new GenericValueLanguage(null);
+    }
+
+    public override GenericValueLanguage VisitVarObjectEntity([NotNull] LanguageParser.VarObjectEntityContext context)
+    {
+        string identifier = context.VAR_OBJECT().GetText();
+        string objectKey = identifier.Substring(0, identifier.IndexOf(".", StringComparison.Ordinal));
+
+        if (_memory.TryGetValue(objectKey, out GenericValueLanguage value) && value.Value is ExpandoObject obj)
+        {
+            string propertyKey = identifier.Substring(identifier.IndexOf(".", StringComparison.Ordinal) + 1); ;
+            return new GenericValueLanguage((obj as IDictionary<string, object>)[propertyKey]);
+        }
+        return new GenericValueLanguage(null);
     }
 
     public override GenericValueLanguage VisitConditional([NotNull] LanguageParser.ConditionalContext context)
@@ -26,7 +70,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
                 Visit(context.else_block());
         }
 
-        return new GenericValueLanguage(string.Empty, false);
+        return new GenericValueLanguage(string.Empty);
     }
 
     public override GenericValueLanguage VisitAndExpression([NotNull] LanguageParser.AndExpressionContext context)
@@ -42,7 +86,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         var left = bool.Parse(Visit(context.if_expression(0)).Value.ToString());
         var right = bool.Parse(Visit(context.if_expression(1)).Value.ToString());
 
-        return new GenericValueLanguage(left && right);
+        return new GenericValueLanguage(left || right);
     }
 
     public override GenericValueLanguage VisitThenBlock([NotNull] LanguageParser.ThenBlockContext context)
@@ -50,7 +94,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         for (var index = 0; index < context.rule_block().Count(); index++)
             Visit(context.rule_block(index));
 
-        return new GenericValueLanguage(string.Empty, false);
+        return new GenericValueLanguage(string.Empty);
     }
 
     public override GenericValueLanguage VisitElseBlock([NotNull] LanguageParser.ElseBlockContext context)
@@ -58,7 +102,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         for (var index = 0; index < context.rule_block().Count(); index++)
             Visit(context.rule_block(index));
 
-        return new GenericValueLanguage(string.Empty, false);
+        return new GenericValueLanguage(string.Empty);
     }
 
     public override GenericValueLanguage VisitParenthesisIfExpression([NotNull] LanguageParser.ParenthesisIfExpressionContext context) =>
@@ -80,7 +124,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
                     else if (DateTime.TryParse(left.Value.ToString(), localCulture, DateTimeStyles.None, out DateTime leftDate) &&
                             DateTime.TryParse(right.Value.ToString(), localCulture, DateTimeStyles.None, out DateTime rightDate))
                         return new GenericValueLanguage(leftDate == rightDate);
-                    return new GenericValueLanguage(left == right);
+                    return new GenericValueLanguage(left.Value == right.Value);
                 }
             case "!=":
                 {
@@ -89,7 +133,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
                     else if (DateTime.TryParse(left.Value.ToString(), localCulture, DateTimeStyles.None, out DateTime leftDate) &&
                             DateTime.TryParse(right.Value.ToString(), localCulture, DateTimeStyles.None, out DateTime rightDate))
                         return new GenericValueLanguage(leftDate != rightDate);
-                    return new GenericValueLanguage(left != right);
+                    return new GenericValueLanguage(left.Value != right.Value);
                 }
             case ">":
                 return GreaterThan(left, right);
@@ -147,31 +191,18 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         var tabela = Visit(context.tabela_caracteristica());
         var descricao = Visit(context.descricao_caracteristica());
 
-        _memory.TryGetValue($"@{tabela.Value}.{descricao.Value}[0].Valor", out GenericValueLanguage value);
-        return value ?? new GenericValueLanguage(null);
+        if (_memory.TryGetValue($"@{tabela.Value}.\"{descricao.Value}\"", out GenericValueLanguage value) && value.Value is object[] array)
+            return new GenericValueLanguage((array[0] as IDictionary<string, object>)["Valor"]);
+        return new GenericValueLanguage(null);
     }
 
     public override GenericValueLanguage VisitParenthesisExpression([NotNull] LanguageParser.ParenthesisExpressionContext context) =>
         Visit(context.arithmetic_expression());
 
-    public override GenericValueLanguage VisitVarTableColunaEntity([NotNull] LanguageParser.VarTableColunaEntityContext context)
-    {
-        var id = context.VAR_TABLE_COLUNA()?.GetText();
-
-        if (id is null) throw new Exception("Nome da variavel global nao encontrado");
-
-        return _memory.TryGetValue(id, out GenericValueLanguage retono) ? retono : new GenericValueLanguage(null);
-    }
-
     public override GenericValueLanguage VisitArithmeticAssignment([NotNull] LanguageParser.ArithmeticAssignmentContext context)
     {
         var id = context.IDENTIFIER().GetText();
-
         var value = Visit(context.arithmetic_expression());
-
-      
-        value = new GenericValueLanguage(value.Value, true);
-        
 
         if (_memory.ContainsKey(id))
             _memory[id] = value;
@@ -187,9 +218,10 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
 
         var value = Visit(context.comparison_expression());
 
-        value = new GenericValueLanguage(value.Value, true);
-
-        _memory.Add(id, value);
+        if (_memory.ContainsKey(id))
+            _memory[id] = value;
+        else
+            _memory.Add(id, value);
 
         return value;
     }
@@ -214,7 +246,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
     }
 
     public override GenericValueLanguage VisitStringEntity(LanguageParser.StringEntityContext context) =>
-        new GenericValueLanguage(context.GetText().Replace("\"", ""));
+        new GenericValueLanguage(context.GetText().Replace("\"", string.Empty));
 
     public override GenericValueLanguage VisitVariableEntity(LanguageParser.VariableEntityContext context)
     {
