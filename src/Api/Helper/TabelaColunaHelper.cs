@@ -6,7 +6,6 @@ using Api.Dto;
 
 namespace Api.Helper
 {
-
   public static class TabelaColunaHelper
   {
     public static IEnumerable<TabelaColuna> GetTabelaColunas(IEnumerable<Evento> eventos)
@@ -29,10 +28,10 @@ namespace Api.Helper
       return grupo;
     }
 
-    public static IEnumerable<CaracteristicaParametros> GetCaracteristica(IEnumerable<Evento> eventos)
+    public static IEnumerable<CaracteristicaTabela> GetCaracteristicaTabela(IEnumerable<Evento> eventos)
     {
 
-      var caracteristicaParametros = new List<CaracteristicaParametros>();
+      var caracteristicaTabela = new List<CaracteristicaTabela>();
 
       foreach (var evento in eventos)
       {
@@ -43,10 +42,11 @@ namespace Api.Helper
         var tokenTypeMap = execute.parser.TokenTypeMap;
 
         // Separa Massa de Dados para Buscar no Banco de Dados
-        caracteristicaParametros.AddRange(ListaCaracteristicaParametros(tokens, tokenTypeMap));
+        caracteristicaTabela.AddRange(ListaCaracteristicaTabela(tokens, tokenTypeMap));
 
       }
-      caracteristicaParametros = caracteristicaParametros
+
+      caracteristicaTabela = caracteristicaTabela
           .GroupBy(x => new
           {
             TabelaCaracteristica = x.Tabela,
@@ -55,7 +55,7 @@ namespace Api.Helper
             ExercicioCaracteristica = x.Exercicio,
             ValorFatorCaracteristica = x.ValorFator
           })
-          .Select(x => new CaracteristicaParametros
+          .Select(x => new CaracteristicaTabela
           {
             Tabela = x.Key.TabelaCaracteristica,
             Descricao = x.Key.DescricaoCaracteristica,
@@ -63,7 +63,45 @@ namespace Api.Helper
             Exercicio = x.Key.ExercicioCaracteristica,
             ValorFator = x.Key.ValorFatorCaracteristica,
           }).ToList();
-      return caracteristicaParametros;
+
+      return caracteristicaTabela;
+    }
+
+    public static IEnumerable<Caracteristica> GetCaracteristica(IEnumerable<Evento> eventos)
+    {
+
+      var caracteristica = new List<Caracteristica>();
+
+      foreach (var evento in eventos)
+      {
+        ExecuteLanguage execute = new ExecuteLanguage();
+        execute.DefaultParserTree(evento.Formula);
+
+        var tokens = execute.commonToken.GetTokens();
+        var tokenTypeMap = execute.parser.TokenTypeMap;
+
+        // Separa Massa de Dados para Buscar no Banco de Dados
+        caracteristica.AddRange(ListaCaracteristica(tokens, tokenTypeMap));
+
+      }
+
+      caracteristica = caracteristica
+          .GroupBy(x => new
+          {
+            Descricao = x.Descricao,
+            Codigo = x.Codigo,
+            Exercicio = x.Exercicio,
+            ValorFator = x.ValorFator
+          })
+          .Select(x => new Caracteristica
+          { 
+            Descricao = x.Key.Descricao,
+            Codigo = x.Key.Codigo,
+            Exercicio = x.Key.Exercicio,
+            ValorFator = x.Key.ValorFator,
+          }).ToList();
+
+      return caracteristica;
     }
 
     public static IEnumerable<TabelaColuna> ListaTabelaColuna(IList<IToken> Tokens, IDictionary<string, int> TokenTypeMap)
@@ -87,33 +125,87 @@ namespace Api.Helper
       return grupo;
     }
 
-    public static List<CaracteristicaParametros> ListaCaracteristicaParametros(IList<IToken> Tokens, IDictionary<string, int> TokenTypeMap)
+    public static List<CaracteristicaTabela> ListaCaracteristicaTabela(IList<IToken> Tokens, IDictionary<string, int> TokenTypeMap)
     {
-      var tokenBuscarCaracteristica = TokenTypeMap.Where(x => x.Key == "BUSCAR_CARACTERISTICA").FirstOrDefault();
-      var tokenRParen = TokenTypeMap.Where(x => x.Key == "RPAREN").FirstOrDefault();
-      var valueTokenTableCaracteristica = TokenTypeMap.Where(x => x.Key == "TEXT").Select(x => x.Value).FirstOrDefault();
+
+      // Obter Token das respectivas Key
+      var valueTokenCaracteristicaTabela = TokenTypeMap.Where(x => x.Key == "CARACTERISTICA_TABELA").Select(x => x.Value).FirstOrDefault();
+      var valueTokenRParen = TokenTypeMap.Where(x => x.Key == "RPAREN").Select(x => x.Value).FirstOrDefault();
+      var valueTokenText = TokenTypeMap.Where(x => x.Key == "TEXT").Select(x => x.Value).FirstOrDefault();
       var valueTokenNumber = TokenTypeMap.Where(x => x.Key == "NUMBER").Select(x => x.Value).FirstOrDefault();
+
+
       bool tokensEOF = true;
       int tokenIndex = 0;
-      List<CaracteristicaParametros> caracteristicaParametrosList = new List<CaracteristicaParametros>();
+
+      List<CaracteristicaTabela> caracteristicaTabelaList = new List<CaracteristicaTabela>();
       while (tokensEOF)
       {
-        var getTokenBuscarCaracteristica = Tokens.Where(x => x.Type == tokenBuscarCaracteristica.Value && x.TokenIndex > tokenIndex).FirstOrDefault();
-        var getTokenRParen = Tokens.Where(x => x.Type == tokenRParen.Value && x.TokenIndex > tokenIndex).FirstOrDefault();
+
+        var getTokenCaracteristicaTabela = Tokens.Where(x => x.Type == valueTokenCaracteristicaTabela && x.TokenIndex > tokenIndex).FirstOrDefault();
+        var getTokenRParen = Tokens.Where(x => x.Type == valueTokenRParen && x.TokenIndex > getTokenCaracteristicaTabela?.TokenIndex).FirstOrDefault();
+
+        if (getTokenCaracteristicaTabela is null || getTokenRParen is null)
+        {
+          tokensEOF = false;
+          continue;
+        }
+
+        int indexTokenCaracteristicaTabela = getTokenCaracteristicaTabela.TokenIndex;
+        int indexTokenRParen = getTokenRParen.TokenIndex;
+
+        var rangeTokenCaracteristicaTabela = Tokens.ToArray()[indexTokenCaracteristicaTabela..indexTokenRParen];
+
+        CaracteristicaTabela caracteristicaValores = new CaracteristicaTabela()
+        {
+          Tabela = AntlrHelper.ExtractTextToken(valueTokenText, rangeTokenCaracteristicaTabela, 0).Replace("\"",""),
+          Descricao = AntlrHelper.ExtractTextToken(valueTokenText, rangeTokenCaracteristicaTabela, 1).Replace("\"",""),
+          Coluna = AntlrHelper.ExtractTextToken(valueTokenText, rangeTokenCaracteristicaTabela, 2).Replace("\"",""),
+          ValorFator = AntlrHelper.ExtractTextToken(valueTokenText, rangeTokenCaracteristicaTabela, 3).Replace("\"",""),
+          Exercicio = AntlrHelper.ExtractTextToken(valueTokenNumber, rangeTokenCaracteristicaTabela, 0),
+        };
+        caracteristicaTabelaList.Add(caracteristicaValores);
+        tokenIndex = getTokenRParen.TokenIndex;
+      }
+      return caracteristicaTabelaList;
+    }
+
+  public static List<Caracteristica> ListaCaracteristica(IList<IToken> Tokens, IDictionary<string, int> TokenTypeMap)
+    {
+
+      // Obter Token das respectivas Key
+      var valueTokenBuscarCaracteristica = TokenTypeMap.Where(x => x.Key == "CARACTERISTICA").Select(x => x.Value).FirstOrDefault();
+      var valueTokenRParen = TokenTypeMap.Where(x => x.Key == "RPAREN").Select(x => x.Value).FirstOrDefault();
+      var valueTokenTableCaracteristica = TokenTypeMap.Where(x => x.Key == "TEXT").Select(x => x.Value).FirstOrDefault();
+      var valueTokenNumber = TokenTypeMap.Where(x => x.Key == "NUMBER").Select(x => x.Value).FirstOrDefault();
+
+
+      bool tokensEOF = true;
+      int tokenIndex = 0;
+
+      List<Caracteristica> caracteristicaParametrosList = new List<Caracteristica>();
+      while (tokensEOF)
+      {
+
+        var getTokenBuscarCaracteristica = Tokens.Where(x => x.Type == valueTokenBuscarCaracteristica && x.TokenIndex > tokenIndex).FirstOrDefault();
+        var getTokenRParen = Tokens.Where(x => x.Type == valueTokenRParen && x.TokenIndex > getTokenBuscarCaracteristica?.TokenIndex).FirstOrDefault();
+
         if (getTokenBuscarCaracteristica is null || getTokenRParen is null)
         {
           tokensEOF = false;
           continue;
         }
+
         int indexTokenBuscarCaracteristica = getTokenBuscarCaracteristica.TokenIndex;
         int indexTokenRParen = getTokenRParen.TokenIndex;
+
         var rangeTokenBuscaCaracteristica = Tokens.ToArray()[indexTokenBuscarCaracteristica..indexTokenRParen];
-        CaracteristicaParametros caracteristicaValores = new CaracteristicaParametros()
+
+        Caracteristica caracteristicaValores = new Caracteristica()
         {
-          Tabela = AntlrHelper.ExtractTextToken(valueTokenTableCaracteristica, rangeTokenBuscaCaracteristica, 0).Replace("\"",""),
-          Descricao = AntlrHelper.ExtractTextToken(valueTokenTableCaracteristica, rangeTokenBuscaCaracteristica, 1),
-          Coluna = AntlrHelper.ExtractTextToken(valueTokenTableCaracteristica, rangeTokenBuscaCaracteristica, 2).Replace("\"",""),
-          ValorFator = AntlrHelper.ExtractTextToken(valueTokenTableCaracteristica, rangeTokenBuscaCaracteristica, 3),
+          Descricao = AntlrHelper.ExtractTextToken(valueTokenTableCaracteristica, rangeTokenBuscaCaracteristica, 0).Replace("\"",""),
+          Codigo = AntlrHelper.ExtractTextToken(valueTokenTableCaracteristica, rangeTokenBuscaCaracteristica, 1).Replace("\"",""),
+          ValorFator = AntlrHelper.ExtractTextToken(valueTokenTableCaracteristica, rangeTokenBuscaCaracteristica, 2).Replace("\"",""),
           Exercicio = AntlrHelper.ExtractTextToken(valueTokenNumber, rangeTokenBuscaCaracteristica, 0),
         };
         caracteristicaParametrosList.Add(caracteristicaValores);

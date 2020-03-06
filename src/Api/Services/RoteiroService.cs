@@ -95,6 +95,7 @@ namespace Api.Services
       string DescricaoCaracteristica = "\"Planta de Valor Construção\"";
       string ColunaCaracteristica = "\"IdFisico\"";
       int ExercicioCaracteristica = 2019;
+      string Codigo = "\"01\"";
       string ValorFatorCaracteristica = "\"Valor\"";
 
       List<Evento> evt = new List<Evento>();
@@ -106,20 +107,20 @@ namespace Api.Services
         {
           Id = 5,
           Nome = "Carac"+i,
-          Formula = string.Format("var teste = 1.0; _BuscarCaracteristica({0},{1},{2},{3}, {4}); retorno 15;"
+          Formula = string.Format("var teste = 1.0; var teste_claudio{5} = _CARACTERISTICA({1},{6},{4}, {3}); retorno _CARACTERISTICATABELA({0},{1},{2},{3}, {4});"
           , FisicoCaracteristicas
           , DescricaoCaracteristica
           , ColunaCaracteristica
           , ExercicioCaracteristica
-          , ValorFatorCaracteristica)
+          , ValorFatorCaracteristica,i, Codigo)
         };
         evt.Add(eventoBusca);
       };
 
 
-      roteiro.Eventos.Add(fatorG);
+       roteiro.Eventos.Add(fatorG);
       roteiro.Eventos.Add(fatorK);
-      roteiro.Eventos.Add(vvt);
+       roteiro.Eventos.Add(vvt);
       roteiro.Eventos.Add(vvp);
 
       evt.ForEach(item => roteiro.Eventos.Add(item));

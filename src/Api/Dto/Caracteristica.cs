@@ -1,10 +1,10 @@
 ﻿namespace Api.Dto {
-    public class CaracteristicaParametros {
-        public string Tabela { get; set; }
+    public class Caracteristica {
         public string Descricao { get; set; }
+
+                public string Codigo { get; set; }
         public string ValorFator { get; set; }
         public string Exercicio { get; set; }
-        public string Coluna { get; internal set; }
 
     }
 }

@@ -36,9 +36,10 @@ namespace Api
             Console.WriteLine("\n-- Pré-Processamento");
 
             var tabelas = TabelaColunaHelper.GetTabelaColunas(roteiro.Eventos);
+            var caracteristicaTabela = TabelaColunaHelper.GetCaracteristicaTabela(roteiro.Eventos);
             var caracteristica = TabelaColunaHelper.GetCaracteristica(roteiro.Eventos);
 
-            var dados = await CarregarDados(roteiro.SetorOrigem, tabelas, caracteristica);
+            var dados = await CarregarDados(roteiro.SetorOrigem, tabelas, caracteristicaTabela, caracteristica);
 
             #region Processamento
             Console.WriteLine("\n-- Processamento");
@@ -48,7 +49,7 @@ namespace Api
 
             // Principal 
             string tabelaPrincipal = SetorOrigemHelper.GetTabelaPrincipal(roteiro.SetorOrigem);
-            Parallel.ForEach(dados, new ParallelOptions { MaxDegreeOfParallelism = 1 }, item =>
+            Parallel.ForEach(dados, new ParallelOptions(){ MaxDegreeOfParallelism = 1}, item =>
             {
                 var memory = new Dictionary<string, GenericValueLanguage>();
                 foreach (var props in (item.Value as IDictionary<string, object>))
@@ -122,7 +123,7 @@ namespace Api
             Console.WriteLine($"Memória máxima utilizada: {(process.PeakWorkingSet64 / 1024f) / 1024f}mb");
         }
 
-        public static async Task<IDictionary<int, IDictionary<string, object>>> CarregarDados(SetorOrigem setor, IEnumerable<TabelaColuna> tabelas, IEnumerable<CaracteristicaParametros> caracteristica)
+        public static async Task<IDictionary<int, IDictionary<string, object>>> CarregarDados(SetorOrigem setor, IEnumerable<TabelaColuna> tabelas, IEnumerable<CaracteristicaTabela> caracteristicaTabela, IEnumerable<Caracteristica> caracteristica)
         {
             int idSelecao = 1;
             
@@ -130,6 +131,8 @@ namespace Api
             var stopwatchPre = new Stopwatch();
             stopwatchPre.Start();
 
+            var stopwatchPreBD = new Stopwatch();
+            
             // TODO: BuscaCaracteristica GroupBy
 
             if (!SetorOrigemHelper.ValidarTabelasSetor(setor, tabelas.Select(g => g.Tabela)))
@@ -138,19 +141,26 @@ namespace Api
             var database = new DatabaseConnection();
 
             var consultas = SetorOrigemHelper.GetQueries(setor, tabelas, idSelecao);
-            var consultasBuscaCaracteristicas = BuscaCaracteristicaHelper.GetQueries(caracteristica, idSelecao);
+            var consultasCaracteristicaTabela = CaracteristicaHelper.GetQueries(caracteristicaTabela, idSelecao);
 
+            // TO DO
+            //Adicionar no Principal e no GetAllData para trazer os valores
+            var consultasCaracteristica = CaracteristicaHelper.GetQueries(caracteristica);
+
+            stopwatchPreBD.Start();
             // Busca por todas as listas de dados requisitadas.
-            var keyValuePairs = await database.GetAllData(consultas.Union(consultasBuscaCaracteristicas));
+            var keyValuePairs = await database.GetAllData(consultas.Union(consultasCaracteristicaTabela));
 
             // Separa as massas de dados em principal, para a tabela principal do setor informado e suas auxiliares.
             string tabelaPrincipal = SetorOrigemHelper.GetTabelaPrincipal(setor);
+
+            stopwatchPreBD.Stop();
 
             var principal = keyValuePairs.FirstOrDefault(x => x.Key == tabelaPrincipal)
                 .Value.ToDictionary(x => (int)(x as IDictionary<string, object>)["Id"], x => (x as IDictionary<string, object>));
 
             // Associa as listas de dados a lista da tabela principal.
-            foreach (var aux in keyValuePairs.Where(x => x.Key != tabelaPrincipal))
+            foreach (var aux in keyValuePairs.Where(x => x.Key != tabelaPrincipal ))
             {
                 foreach (var x in aux.Value.GroupBy(x => (int)(x as IDictionary<string, object>)["IdOrigem"]))
                 {
@@ -159,8 +169,11 @@ namespace Api
                 };
             }
 
+            
+
             stopwatchPre.Stop();
 
+            Console.WriteLine($"Tempo Total Pré-Processamento Banco Dados: {stopwatchPreBD.Elapsed}");
             Console.WriteLine($"Tempo Total Pré-Processamento: {stopwatchPre.Elapsed}");
 
             var auxiliares = keyValuePairs.Where(x => x.Key != tabelaPrincipal);

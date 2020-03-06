@@ -18,7 +18,8 @@ NULL : 'null';
 MARKER: 'marker';
 
 COALESCE: '_COALESCE';
-BUSCAR_CARACTERISTICA: '_BuscarCaracteristica';
+CARACTERISTICA_TABELA: '_CARACTERISTICATABELA';
+CARACTERISTICA: '_CARACTERISTICA';
 LOOKUP_FUNC: 'lookupFunction';
 BASE_FUNC: 'baseFunction';
 TOTAL_PAYMENTS: 'totalPayments';
@@ -91,18 +92,14 @@ rule_set
 
 rule_block
     : assignment
-    | function
     | arithmetic_expression
     | conditional
     ;
 
-function
-	: function_signature SEMI
-	;
 
-assignment
-    : (CONST)? (VAR)? IDENTIFIER ATRIB arithmetic_expression SEMI #arithmeticAssignment
-    | (CONST)? (VAR)? IDENTIFIER ATRIB comparison_expression SEMI #comparisonAssignment
+    assignment
+    : (VAR)? IDENTIFIER ATRIB arithmetic_expression SEMI #arithmeticAssignment
+    | (VAR)? IDENTIFIER ATRIB comparison_expression SEMI #comparisonAssignment
 	;
 
 return_value
@@ -126,7 +123,6 @@ if_expression
     : if_expression AND if_expression   #andExpression
     | if_expression OR if_expression    #orExpression
     | comparison_expression             #ifComparisonExpression
-    | function_signature                #ifFunctionSignature
     | LPAREN if_expression RPAREN       #parenthesisIfExpression
     | entity                            #ifEntity
     ;
@@ -147,7 +143,8 @@ comparison_operator
 
 
 function_signature
-	: BUSCAR_CARACTERISTICA LPAREN tabela_caracteristica COMMA descricao_caracteristica COMMA coluna_caracteristica COMMA exercicio_caracteristica (COMMA valor_fator_caracteristica)? RPAREN  #buscarCaracteristica
+	: CARACTERISTICA_TABELA LPAREN tabela_caracteristica COMMA descricao_caracteristica COMMA coluna_caracteristica COMMA exercicio_caracteristica (COMMA valor_fator_caracteristica)? RPAREN  #caracteristicaTabela
+    | CARACTERISTICA LPAREN descricao_caracteristica COMMA codigo_caracteristica COMMA valor_fator_caracteristica (COMMA exercicio_caracteristica)? RPAREN  #buscarCaracteristica
     ;
 
 coalesce_function
@@ -161,6 +158,7 @@ arithmetic_expression
     | arithmetic_expression MINUS arithmetic_expression							#minusExpression
     | LPAREN arithmetic_expression RPAREN										#parenthesisExpression
     | coalesce_function                                                         #coalesceExpression
+    | function_signature                #ifFunctionSignature
     | entity																	#entityExpression
     ;
 
@@ -173,6 +171,10 @@ arithmetic_expression
     ;
 
     valor_fator_caracteristica
+    : text
+    ;
+
+    codigo_caracteristica
     : text
     ;
     

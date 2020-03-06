@@ -142,7 +142,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         return new GenericValueLanguage(left.AsDouble() / right.AsDouble());
     }
 
-    public override GenericValueLanguage VisitBuscarCaracteristica(LanguageParser.BuscarCaracteristicaContext context)
+    public override GenericValueLanguage VisitCaracteristicaTabela(LanguageParser.CaracteristicaTabelaContext context)
     {
         var tabela = Visit(context.tabela_caracteristica());
         var descricao = Visit(context.descricao_caracteristica());
@@ -169,14 +169,9 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
 
         var value = Visit(context.arithmetic_expression());
 
-        if (context.CONST() != null)
-        {
-            value = new GenericValueLanguage(value.Value, true);
-        }
-        else if (value != null && value.Contant)
-        {
-            value = new GenericValueLanguage(value.Value, false);
-        }
+      
+        value = new GenericValueLanguage(value.Value, true);
+        
 
         if (_memory.ContainsKey(id))
             _memory[id] = value;
@@ -192,14 +187,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
 
         var value = Visit(context.comparison_expression());
 
-        if (context.CONST() != null)
-        {
-            value = new GenericValueLanguage(value.Value, true);
-        }
-        else if (value != null && value.Contant)
-        {
-            value = new GenericValueLanguage(value.Value, false);
-        }
+        value = new GenericValueLanguage(value.Value, true);
 
         _memory.Add(id, value);
 

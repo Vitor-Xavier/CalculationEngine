@@ -44,12 +44,6 @@ public interface ILanguageVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitRule_block([NotNull] LanguageParser.Rule_blockContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="LanguageParser.function"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitFunction([NotNull] LanguageParser.FunctionContext context);
-	/// <summary>
 	/// Visit a parse tree produced by the <c>arithmeticAssignment</c>
 	/// labeled alternative in <see cref="LanguageParser.assignment"/>.
 	/// </summary>
@@ -126,13 +120,6 @@ public interface ILanguageVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitIfEntity([NotNull] LanguageParser.IfEntityContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>ifFunctionSignature</c>
-	/// labeled alternative in <see cref="LanguageParser.if_expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitIfFunctionSignature([NotNull] LanguageParser.IfFunctionSignatureContext context);
-	/// <summary>
 	/// Visit a parse tree produced by the <c>comparisonExpression</c>
 	/// labeled alternative in <see cref="LanguageParser.comparison_expression"/>.
 	/// </summary>
@@ -152,6 +139,13 @@ public interface ILanguageVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitComparison_operator([NotNull] LanguageParser.Comparison_operatorContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>caracteristicaTabela</c>
+	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitCaracteristicaTabela([NotNull] LanguageParser.CaracteristicaTabelaContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>buscarCaracteristica</c>
 	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
@@ -209,6 +203,13 @@ public interface ILanguageVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitPlusExpression([NotNull] LanguageParser.PlusExpressionContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>ifFunctionSignature</c>
+	/// labeled alternative in <see cref="LanguageParser.arithmetic_expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIfFunctionSignature([NotNull] LanguageParser.IfFunctionSignatureContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>entityExpression</c>
 	/// labeled alternative in <see cref="LanguageParser.arithmetic_expression"/>.
 	/// </summary>
@@ -233,6 +234,12 @@ public interface ILanguageVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitValor_fator_caracteristica([NotNull] LanguageParser.Valor_fator_caracteristicaContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="LanguageParser.codigo_caracteristica"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitCodigo_caracteristica([NotNull] LanguageParser.Codigo_caracteristicaContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="LanguageParser.exercicio_caracteristica"/>.
 	/// </summary>
