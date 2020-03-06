@@ -68,7 +68,7 @@ namespace Api
                         var result = executeFormula.Execute(memory);
 
                         // Resultado
-                        (memory["@Roteiro"].Value as IDictionary<string, object>).Add(evento.Nome, result);
+                        (memory["@Roteiro"].Value as IDictionary<string, object>).Add(evento.Nome, result.Value);
                     }
                     catch (Exception e)
                     {

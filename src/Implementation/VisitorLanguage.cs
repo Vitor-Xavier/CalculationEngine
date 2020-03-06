@@ -73,6 +73,16 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         return new GenericValueLanguage(string.Empty);
     }
 
+    public override GenericValueLanguage VisitCaracteristicaTabela(LanguageParser.CaracteristicaTabelaContext context)
+    {
+        var tabela = Visit(context.tabela_caracteristica());
+        var descricao = Visit(context.descricao_caracteristica());
+
+        if (_memory.TryGetValue($"@{tabela.Value}.{descricao.Value}", out GenericValueLanguage value) && value.Value is object[] array)
+            return new GenericValueLanguage((array[0] as IDictionary<string, object>)["Valor"]);
+        return new GenericValueLanguage(null);
+    }
+
     public override GenericValueLanguage VisitAndExpression([NotNull] LanguageParser.AndExpressionContext context)
     {
         var left = bool.Parse(Visit(context.if_expression(0)).Value.ToString());
@@ -184,16 +194,6 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
             throw new Exception("Nao e possivel dividir por zero.");
 
         return new GenericValueLanguage(left.AsDouble() / right.AsDouble());
-    }
-
-    public override GenericValueLanguage VisitCaracteristicaTabela(LanguageParser.CaracteristicaTabelaContext context)
-    {
-        var tabela = Visit(context.tabela_caracteristica());
-        var descricao = Visit(context.descricao_caracteristica());
-
-        if (_memory.TryGetValue($"@{tabela.Value}.\"{descricao.Value}\"", out GenericValueLanguage value) && value.Value is object[] array)
-            return new GenericValueLanguage((array[0] as IDictionary<string, object>)["Valor"]);
-        return new GenericValueLanguage(null);
     }
 
     public override GenericValueLanguage VisitParenthesisExpression([NotNull] LanguageParser.ParenthesisExpressionContext context) =>
