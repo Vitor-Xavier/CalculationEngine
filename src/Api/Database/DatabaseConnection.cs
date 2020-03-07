@@ -14,7 +14,7 @@ namespace Api.Database
 
     public DatabaseConnection()
     {
-      _connection = new SqlConnection("");
+      _connection = new SqlConnection("Server=192.168.0.132,1433;Database=SMARTB_PMBotucatu;User Id=smar;Password=smarapd");
     }
 
     public async Task<IDictionary<string, IEnumerable<object>>> GetAllData(IEnumerable<TabelaQuery> queries)

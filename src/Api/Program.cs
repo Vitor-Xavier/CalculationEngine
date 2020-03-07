@@ -83,9 +83,10 @@ namespace Api
 
             #region Resultados
             Console.WriteLine($"\n-- Resultados {Resultados.Count}");
-            if (Resultados.Count <= 20)
+            if (Resultados.Count <= 1)
                 foreach (var result in Resultados)
-                    Console.WriteLine($"{tabelaPrincipal} {result.Key}: {result.Value}");
+                    foreach (var result2 in result.Value as IDictionary<string, object>)
+                        Console.WriteLine($"{result2.Key}: {result2.Value}");
             #endregion
 
             #region Erros

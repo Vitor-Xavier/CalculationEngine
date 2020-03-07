@@ -1,5 +1,6 @@
 ﻿using Api.Dto;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Api.Services
@@ -98,15 +99,20 @@ namespace Api.Services
             string ValorFatorCaracteristica = "\"Valor\"";
 
             List<Evento> evt = new List<Evento>();
-            for (var i = 0; i < 27; i++)
-            {
+      for (var i = 0; i < 27; i++)
+      {
 
-                DescricaoCaracteristica = arrayCaracteristica[i];
-                Evento eventoBusca = new Evento
-                {
-                    Id = 5,
-                    Nome = "Carac" + i,
-                    Formula = string.Format("var teste = 1.0; var teste_claudio{5} = _CARACTERISTICA({1},{6},{4}, {3}); retorno _CARACTERISTICATABELA({0},{1},{2},{3}, {4});"
+        
+
+        DescricaoCaracteristica = arrayCaracteristica[i];  
+        string Nome = Regex.Replace(DescricaoCaracteristica, "[^a-zA-Z0-9_.]+", "", RegexOptions.Compiled);
+        
+        Evento eventoBusca = new Evento
+        {
+          Id = 5,
+                    Nome = Nome,
+                    //Formula = string.Format("var teste = 1.0; var teste_claudio{5} = _CARACTERISTICA({1},{6},{4}, {3}); retorno _CARACTERISTICATABELA({0},{1},{2},{3}, {4});"
+                    Formula = string.Format("retorno _CARACTERISTICATABELA({0},{1},{2},{3},{4});"
                   , FisicoCaracteristicas
                   , DescricaoCaracteristica
                   , ColunaCaracteristica
@@ -122,6 +128,34 @@ namespace Api.Services
             roteiro.Eventos.Add(vvp);
 
             evt.ForEach(item => roteiro.Eventos.Add(item));
+
+
+            Evento iptu = new Evento
+            {
+                Id = 60,
+                Nome = "IPTU",
+                Formula = @"
+                    
+                    
+                    var iptu_base = @Roteiro.vvt * @Roteiro.vvp - @Fisico.AreaEdificada;
+
+                    se (@Roteiro.ILUMINAO > 0.0 && @Roteiro.ILUMINAO < 100.0) {
+                        iptu_base = iptu_base + @Roteiro.ILUMINAO;
+                    } senao {
+                        iptu_base = iptu_base + @Roteiro.ILUMINAO + @Roteiro.ESGOTO;
+                    }
+
+                    se (@Roteiro.LIXO == 100.0 || @Roteiro.ESQUINA > 50.0) {
+                        iptu_base = iptu_base - @Roteiro.REFORMADO;
+                    } senao {
+                        iptu_base = iptu_base + 5000;
+                    }
+
+                    retorno iptu_base * 0.5;"
+            };
+
+            
+            roteiro.Eventos.Add(iptu);
 
             await Task.Delay(100);
             return roteiro;

@@ -13,14 +13,14 @@ public class GenericValueLanguage
     }
 
     public static explicit operator double(GenericValueLanguage GenericValueLanguage) =>
-        double.Parse(GenericValueLanguage?.Value?.ToString() ?? "0.0");
+        Math.Round(double.Parse(GenericValueLanguage?.Value?.ToString() ?? "0.0"),4);
 
     public static explicit operator int(GenericValueLanguage GenericValueLanguage) =>
         int.Parse(GenericValueLanguage.Value.ToString());
 
     public bool AsBoolean() => bool.Parse(Value.ToString());
 
-    public double AsDouble() => double.Parse(Value.ToString());
+    public double AsDouble() => Math.Round(double.Parse(Value.ToString()),4);
 
     public DateTime AsDateTime() => DateTime.Parse(Value.ToString());
 

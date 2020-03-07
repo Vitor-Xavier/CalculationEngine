@@ -78,8 +78,13 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         var tabela = Visit(context.tabela_caracteristica());
         var descricao = Visit(context.descricao_caracteristica());
 
-        if (_memory.TryGetValue($"@{tabela.Value}.{descricao.Value}", out GenericValueLanguage value) && value.Value is object[] array)
-            return new GenericValueLanguage((array[0] as IDictionary<string, object>)["Valor"]);
+        if (_memory.TryGetValue($"@{tabela.Value}.{descricao.Value}", out GenericValueLanguage value) && value.Value is object[] array){
+            double resultado = 0;
+            double.TryParse((array[0] as IDictionary<string, object>)["Valor"].ToString(), out resultado);
+            return new GenericValueLanguage(resultado);
+        }
+            
+            
         return new GenericValueLanguage(null);
     }
 
@@ -182,8 +187,9 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         var left = Visit(context.arithmetic_expression(0));
         var right = Visit(context.arithmetic_expression(1));
 
-        return new GenericValueLanguage(left.AsDouble() * right.AsDouble());
-    }
+        var value = new GenericValueLanguage(Math.Round(left.AsDouble() * right.AsDouble(),4));
+        return value;
+  }
 
     public override GenericValueLanguage VisitDivExpression([NotNull] LanguageParser.DivExpressionContext context)
     {
@@ -193,7 +199,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         if (right.AsDouble() == 0)
             throw new Exception("Nao e possivel dividir por zero.");
 
-        return new GenericValueLanguage(left.AsDouble() / right.AsDouble());
+        return new GenericValueLanguage(Math.Round(left.AsDouble() / right.AsDouble(),4));
     }
 
     public override GenericValueLanguage VisitParenthesisExpression([NotNull] LanguageParser.ParenthesisExpressionContext context) =>
