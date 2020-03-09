@@ -29,8 +29,8 @@ namespace Api
             Console.WriteLine($"Roteiro: {roteiro.Nome}\nQuantidade de Fórmulas: {roteiro.Eventos.Count}");
 
             // Ferramentas Diagnóstico
-            var process = Process.GetCurrentProcess();
             var stopwatch = new Stopwatch();
+            var startProcessorTime = Process.GetCurrentProcess().TotalProcessorTime;
             stopwatch.Start();
 
             Console.WriteLine("\n-- Pré-Processamento");
@@ -38,13 +38,16 @@ namespace Api
             var tabelas = TabelaColunaHelper.GetTabelaColunas(roteiro.Eventos);
             var caracteristicaTabela = TabelaColunaHelper.GetCaracteristicaTabela(roteiro.Eventos);
             var caracteristica = TabelaColunaHelper.GetCaracteristica(roteiro.Eventos);
+            var parametros = TabelaColunaHelper.GetParametros(roteiro.Eventos);
 
             var dados = await CarregarDados(roteiro.SetorOrigem, tabelas, caracteristicaTabela, caracteristica);
+            Console.WriteLine($"Pico memória Pré-Processamento: {(Process.GetCurrentProcess().PeakWorkingSet64 / 1024f) / 1024f}mb");
 
             #region Processamento
             Console.WriteLine("\n-- Processamento");
 
             var stopWatchProcessamento = new Stopwatch();
+            var cpuProcessamentoStart = Process.GetCurrentProcess().TotalProcessorTime;
             stopWatchProcessamento.Start();
 
             // Principal 
@@ -60,7 +63,6 @@ namespace Api
                  // Execucao das Formulas do Roteiro
                  foreach (var evento in roteiro.Eventos)
                  {
-
                      try
                      {
                          // Execução
@@ -79,7 +81,12 @@ namespace Api
                  Resultados.TryAdd(item.Key, memory["@Roteiro"].Value);
              });
             stopWatchProcessamento.Stop();
+            var cpuProcessamentoEnd = Process.GetCurrentProcess().TotalProcessorTime;
+            double cpuTotalProcessamento = (cpuProcessamentoEnd - cpuProcessamentoStart).TotalMilliseconds;
+
             Console.WriteLine($"Tempo Total Processamento: {stopWatchProcessamento.Elapsed}");
+            Console.WriteLine($"Pico memória Processamento: {(Process.GetCurrentProcess().PeakWorkingSet64 / 1024f) / 1024f}mb");
+            Console.WriteLine($"Uso médio de CPU durante Processamento: {Math.Round((cpuTotalProcessamento / (Environment.ProcessorCount * stopWatchProcessamento.ElapsedMilliseconds)) * 100)}%");
             #endregion
 
             #region Resultados
@@ -101,9 +108,13 @@ namespace Api
 
             // Diagnostic results
             stopwatch.Stop();
+            var endProcessorTime = Process.GetCurrentProcess().TotalProcessorTime;
+            double totalProcessorTime = (endProcessorTime - startProcessorTime).TotalMilliseconds;
+
             Console.WriteLine("\n-- Geral");
             Console.WriteLine($"Tempo Total: {stopwatch.Elapsed}");
-            Console.WriteLine($"Memória máxima utilizada: {(process.PeakWorkingSet64 / 1024f) / 1024f}mb");
+            Console.WriteLine($"Memória máxima utilizada: {(Process.GetCurrentProcess().PeakWorkingSet64 / 1024f) / 1024f}mb");
+            Console.WriteLine($"Uso médio de CPU geral: {Math.Round((totalProcessorTime / (Environment.ProcessorCount * stopwatch.ElapsedMilliseconds)) * 100)}%\n");
 
             TestarFormulas(dados);
         }
@@ -170,21 +181,32 @@ namespace Api
 
         private static void TestarFormulas(IDictionary<int, IDictionary<string, object>> dados)
         {
-            int countOk = 0;
+            int countFatorG = 0;
+            int countFatorK = 0;
+            int countvvt = 0;
+            int countvvp = 0;
+            int countIptu = 0;
             foreach (var item in dados)
             {
                 var fatorG = double.Parse((Resultados[item.Key] as IDictionary<string, object>)["FatorG"].ToString());
                 var fatorK = double.Parse((Resultados[item.Key] as IDictionary<string, object>)["FatorK"].ToString());
                 var vvt = double.Parse((Resultados[item.Key] as IDictionary<string, object>)["vvt"].ToString());
                 var vvp = double.Parse((Resultados[item.Key] as IDictionary<string, object>)["vvp"].ToString());
+                var iptu = double.Parse((Resultados[item.Key] as IDictionary<string, object>)["IPTU"].ToString());
 
                 var areaTerreno = double.Parse((item.Value as IDictionary<string, object>)["AreaTerreno"].ToString());
-                if (TesteLanguage.TesteFatorG(item.Value, fatorG) &&
-                    TesteLanguage.TesteFatorK(fatorG, fatorK) &&
-                    TesteLanguage.TesteVVT(areaTerreno, fatorG, fatorK, vvt) &&
-                    TesteLanguage.TesteVVP(areaTerreno, vvp)) countOk++;
+                if (TesteLanguage.TesteFatorG(item.Value, fatorG)) countFatorG++;
+                if (TesteLanguage.TesteFatorK(fatorG, fatorK)) countFatorK++;
+                if (TesteLanguage.TesteVVT(areaTerreno, fatorG, fatorK, vvt)) countvvt++;
+                if (TesteLanguage.TesteVVP(areaTerreno, vvp)) countvvp++;
+                if (TesteLanguage.TesteIPTU(item.Value, Resultados[item.Key], iptu)) countIptu++;
             }
-            Console.WriteLine($"Assertividade: {(countOk / Resultados.Count) * 100.0}% | {countOk} de {Resultados.Count} | (FatorG, FatorK, VVT, VVP)");
+            Console.WriteLine("-- Assertividade");
+            Console.WriteLine($"Fator G: {(countFatorG / Resultados.Count) * 100}%");
+            Console.WriteLine($"Fator K: {(countFatorK / Resultados.Count) * 100}%");
+            Console.WriteLine($"VVT: {(countvvt / Resultados.Count) * 100}%");
+            Console.WriteLine($"VVP: {(countvvp / Resultados.Count) * 100}%");
+            Console.WriteLine($"IPTU: {(countIptu / Resultados.Count) * 100}%\n");
         }
     }
 }

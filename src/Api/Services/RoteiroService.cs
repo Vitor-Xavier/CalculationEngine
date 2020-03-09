@@ -51,7 +51,7 @@ namespace Api.Services
                 Formula = @"
                     var valor = 1.0;
                     // Teste
-                    var area = _COALESCE(@FisicoAreas[0].Area, @FacesdaQuadra.LarguraRua, @FisicoOutros[0].Percentual, 9.0);
+                    var area = _COALESCE(@FisicoAreas[0].Area, @FacesdaQuadra.LarguraRua, @FisicoOutros[0].Percentual, 9);
                     var percentual = @FisicoOutros[0].Percentual;
                     se (@Fisico.AreaEdificada > 0.0) {
                         valor = @Fisico.AreaEdificada * 1.05;
@@ -87,7 +87,7 @@ namespace Api.Services
             {
                 Id = 4,
                 Nome = "vvp",
-                Formula = @"retorno @Fisico.AreaTerreno * 100.0;"
+                Formula = @"retorno @Fisico.AreaTerreno * 100;"
             };
 
 

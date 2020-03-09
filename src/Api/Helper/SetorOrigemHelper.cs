@@ -7,7 +7,7 @@ namespace Api.Helper
 {
     public static class SetorOrigemHelper
     {
-        public static readonly IEnumerable<TabelaRelacionada> TabelaRelacionadas = new List<TabelaRelacionada>
+        public static readonly IEnumerable<TabelaRelacionada> TabelaRelacionadas = new HashSet<TabelaRelacionada>
         {
             { new TabelaRelacionada { Tabela = "Fisico", Relacionadas = new string[] { "FacesdaQuadra" } } }
         };
