@@ -49,7 +49,7 @@ namespace Api
 
             // Principal 
             string tabelaPrincipal = SetorOrigemHelper.GetTabelaPrincipal(roteiro.SetorOrigem);
-            Parallel.ForEach(dados, item =>
+            Parallel.ForEach(dados,item =>
             {
                 var aux = item.Value.Where(x => x.Value is object[] || x.Value is ExpandoObject);
                 var memory = aux.ToDictionary(x => $"@{x.Key}", x => new GenericValueLanguage(x.Value));
@@ -60,16 +60,16 @@ namespace Api
                 // Execucao das Formulas do Roteiro
                 foreach (var evento in roteiro.Eventos)
                 {
-                    try
-                    {
-                        // Execução
+                    
+                   try
+                    {                        // Execução
                         var executeFormula = new ExecuteLanguage();
                         executeFormula.DefaultParserTree(evento.Formula);
                         var result = executeFormula.Execute(memory);
 
                         // Resultado
                         (memory["@Roteiro"].Value as IDictionary<string, object>).Add(evento.Nome, result.Value);
-                    }
+                              }
                     catch (Exception e)
                     {
                         Exceptions.Value.Enqueue(e);

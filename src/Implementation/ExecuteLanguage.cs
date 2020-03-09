@@ -21,14 +21,9 @@ public class ExecuteLanguage
 
     public GenericValueLanguage Execute(IDictionary<string, GenericValueLanguage> values = null)
     {
-        try
-        {
+        
             var visitor = new VisitorLanguage(values);
             return visitor.Visit(_defaultParserTree);
-        }
-        catch (Exception e)
-        {
-            throw e;
-        }
+        
     }
 }

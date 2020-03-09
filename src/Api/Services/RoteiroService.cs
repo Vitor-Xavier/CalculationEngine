@@ -136,7 +136,6 @@ namespace Api.Services
                 Nome = "IPTU",
                 Formula = @"
                     
-                    
                     var iptu_base = @Roteiro.vvt * @Roteiro.vvp - @Fisico.AreaEdificada;
 
                     se (@Roteiro.ILUMINAO > 0.0 && @Roteiro.ILUMINAO < 100.0) {

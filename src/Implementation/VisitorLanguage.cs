@@ -80,7 +80,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
 
         if (_memory.TryGetValue($"@{tabela.Value}.{descricao.Value}", out GenericValueLanguage value) && value.Value is object[] array){
             double resultado = 0;
-            double.TryParse((array[0] as IDictionary<string, object>)["Valor"].ToString(), out resultado);
+            double.TryParse((array[0] as IDictionary<string, object>)["Valor"]?.ToString(), out resultado);
             return new GenericValueLanguage(resultado);
         }
             
