@@ -1,7 +1,6 @@
-using System;
-using System.Collections.Generic;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
+using System.Collections.Generic;
 
 public class ExecuteLanguage
 {
@@ -21,9 +20,7 @@ public class ExecuteLanguage
 
     public GenericValueLanguage Execute(IDictionary<string, GenericValueLanguage> values = null)
     {
-        
-            var visitor = new VisitorLanguage(values);
-            return visitor.Visit(_defaultParserTree);
-        
+        var visitor = new VisitorLanguage(values);
+        return visitor.Visit(_defaultParserTree);
     }
 }

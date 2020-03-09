@@ -171,7 +171,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         var left = Visit(context.arithmetic_expression(0));
         var right = Visit(context.arithmetic_expression(1));
 
-        return new GenericValueLanguage(left.AsDouble() + right.AsDouble());
+        return new GenericValueLanguage(Math.Round(left.AsDouble() + right.AsDouble(), 4));
     }
 
     public override GenericValueLanguage VisitMinusExpression([NotNull] LanguageParser.MinusExpressionContext context)
@@ -179,7 +179,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         var left = Visit(context.arithmetic_expression(0));
         var right = Visit(context.arithmetic_expression(1));
 
-        return new GenericValueLanguage(left.AsDouble() - right.AsDouble());
+        return new GenericValueLanguage(Math.Round(left.AsDouble() - right.AsDouble(), 4));
     }
 
     public override GenericValueLanguage VisitMultExpression([NotNull] LanguageParser.MultExpressionContext context)

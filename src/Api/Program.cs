@@ -49,34 +49,35 @@ namespace Api
 
             // Principal 
             string tabelaPrincipal = SetorOrigemHelper.GetTabelaPrincipal(roteiro.SetorOrigem);
-            Parallel.ForEach(dados,item =>
-            {
-                var aux = item.Value.Where(x => x.Value is object[] || x.Value is ExpandoObject);
-                var memory = aux.ToDictionary(x => $"@{x.Key}", x => new GenericValueLanguage(x.Value));
-                var objPrincipal = item.Value.Except(aux).Aggregate(new ExpandoObject() as IDictionary<string, object>, (a, p) => { a.Add(p.Key, p.Value); return a; });
-                memory.Add($"@{tabelaPrincipal}", new GenericValueLanguage(objPrincipal));
-                memory.Add("@Roteiro", new GenericValueLanguage(new ExpandoObject()));
+            Parallel.ForEach(dados, item =>
+             {
+                 var aux = item.Value.Where(x => x.Value is object[] || x.Value is ExpandoObject);
+                 var memory = aux.ToDictionary(x => $"@{x.Key}", x => new GenericValueLanguage(x.Value));
+                 var objPrincipal = item.Value.Except(aux).Aggregate(new ExpandoObject() as IDictionary<string, object>, (a, p) => { a.Add(p.Key, p.Value); return a; });
+                 memory.Add($"@{tabelaPrincipal}", new GenericValueLanguage(objPrincipal));
+                 memory.Add("@Roteiro", new GenericValueLanguage(new ExpandoObject()));
 
-                // Execucao das Formulas do Roteiro
-                foreach (var evento in roteiro.Eventos)
-                {
-                    
-                   try
-                    {                        // Execução
-                        var executeFormula = new ExecuteLanguage();
-                        executeFormula.DefaultParserTree(evento.Formula);
-                        var result = executeFormula.Execute(memory);
+                 // Execucao das Formulas do Roteiro
+                 foreach (var evento in roteiro.Eventos)
+                 {
 
-                        // Resultado
-                        (memory["@Roteiro"].Value as IDictionary<string, object>).Add(evento.Nome, result.Value);
-                              }
-                    catch (Exception e)
-                    {
-                        Exceptions.Value.Enqueue(e);
-                    }
-                };
-                Resultados.TryAdd(item.Key, memory["@Roteiro"].Value);
-            });
+                     try
+                     {
+                         // Execução
+                         var executeFormula = new ExecuteLanguage();
+                         executeFormula.DefaultParserTree(evento.Formula);
+                         var result = executeFormula.Execute(memory);
+
+                         // Resultado
+                         (memory["@Roteiro"].Value as IDictionary<string, object>).Add(evento.Nome, result.Value);
+                     }
+                     catch (Exception e)
+                     {
+                         Exceptions.Value.Enqueue(e);
+                     }
+                 };
+                 Resultados.TryAdd(item.Key, memory["@Roteiro"].Value);
+             });
             stopWatchProcessamento.Stop();
             Console.WriteLine($"Tempo Total Processamento: {stopWatchProcessamento.Elapsed}");
             #endregion
@@ -103,6 +104,8 @@ namespace Api
             Console.WriteLine("\n-- Geral");
             Console.WriteLine($"Tempo Total: {stopwatch.Elapsed}");
             Console.WriteLine($"Memória máxima utilizada: {(process.PeakWorkingSet64 / 1024f) / 1024f}mb");
+
+            TestarFormulas(dados);
         }
 
         public static async Task<IDictionary<int, IDictionary<string, object>>> CarregarDados(SetorOrigem setor, IEnumerable<TabelaColuna> tabelas, IEnumerable<CaracteristicaTabela> caracteristicaTabela, IEnumerable<Caracteristica> caracteristica)
@@ -114,7 +117,7 @@ namespace Api
             stopwatchPre.Start();
 
             var stopwatchPreBD = new Stopwatch();
-            
+
             // TODO: BuscaCaracteristica GroupBy
 
             if (!SetorOrigemHelper.ValidarTabelasSetor(setor, tabelas.Select(g => g.Tabela)))
@@ -142,7 +145,7 @@ namespace Api
                 .Value.ToDictionary(x => (int)(x as IDictionary<string, object>)["Id"], x => (x as IDictionary<string, object>));
 
             // Associa as listas de dados a lista da tabela principal.
-            foreach (var aux in keyValuePairs.Where(x => x.Key != tabelaPrincipal ))
+            foreach (var aux in keyValuePairs.Where(x => x.Key != tabelaPrincipal))
             {
                 foreach (var x in aux.Value.GroupBy(x => (int)(x as IDictionary<string, object>)["IdOrigem"]))
                 {
@@ -150,8 +153,6 @@ namespace Api
                         principalValue[aux.Key] = x.ToArray();
                 };
             }
-
-            
 
             stopwatchPre.Stop();
 
@@ -164,8 +165,26 @@ namespace Api
             Console.WriteLine($"Quantidade registros principais: {principal.Count}");
             Console.WriteLine($"Quantidade registros auxiliares: {totalRegistroTabelasAuxiliares}");
 
-
             return principal;
+        }
+
+        private static void TestarFormulas(IDictionary<int, IDictionary<string, object>> dados)
+        {
+            int countOk = 0;
+            foreach (var item in dados)
+            {
+                var fatorG = double.Parse((Resultados[item.Key] as IDictionary<string, object>)["FatorG"].ToString());
+                var fatorK = double.Parse((Resultados[item.Key] as IDictionary<string, object>)["FatorK"].ToString());
+                var vvt = double.Parse((Resultados[item.Key] as IDictionary<string, object>)["vvt"].ToString());
+                var vvp = double.Parse((Resultados[item.Key] as IDictionary<string, object>)["vvp"].ToString());
+
+                var areaTerreno = double.Parse((item.Value as IDictionary<string, object>)["AreaTerreno"].ToString());
+                if (TesteLanguage.TesteFatorG(item.Value, fatorG) &&
+                    TesteLanguage.TesteFatorK(fatorG, fatorK) &&
+                    TesteLanguage.TesteVVT(areaTerreno, fatorG, fatorK, vvt) &&
+                    TesteLanguage.TesteVVP(areaTerreno, vvp)) countOk++;
+            }
+            Console.WriteLine($"Assertividade: {(countOk / Resultados.Count) * 100.0}% | {countOk} de {Resultados.Count} | (FatorG, FatorK, VVT, VVP)");
         }
     }
 }
