@@ -154,6 +154,27 @@ public interface ILanguageVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitBuscarCaracteristica([NotNull] LanguageParser.BuscarCaracteristicaContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>parametroFunction</c>
+	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitParametroFunction([NotNull] LanguageParser.ParametroFunctionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>sumFunction</c>
+	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitSumFunction([NotNull] LanguageParser.SumFunctionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>lengthFunction</c>
+	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitLengthFunction([NotNull] LanguageParser.LengthFunctionContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>coalesceFunction</c>
 	/// labeled alternative in <see cref="LanguageParser.coalesce_function"/>.
 	/// </summary>

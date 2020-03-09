@@ -17,9 +17,12 @@ FALSE : 'false' ;
 NULL : 'null';
 MARKER: 'marker';
 
+SUM: '_SOMA';
+LENGTH: '_TAMANHO';
 COALESCE: '_COALESCE';
 CARACTERISTICA_TABELA: '_CARACTERISTICATABELA';
 CARACTERISTICA: '_CARACTERISTICA';
+PARAMETRO: '_PARAMETRO';
 LOOKUP_FUNC: 'lookupFunction';
 BASE_FUNC: 'baseFunction';
 TOTAL_PAYMENTS: 'totalPayments';
@@ -146,6 +149,9 @@ comparison_operator
 function_signature
 	: CARACTERISTICA_TABELA LPAREN tabela_caracteristica COMMA descricao_caracteristica COMMA coluna_caracteristica COMMA exercicio_caracteristica (COMMA valor_fator_caracteristica)? RPAREN  #caracteristicaTabela
     | CARACTERISTICA LPAREN descricao_caracteristica COMMA codigo_caracteristica COMMA valor_fator_caracteristica (COMMA exercicio_caracteristica)? RPAREN  #buscarCaracteristica
+    | PARAMETRO LPAREN text RPAREN #parametroFunction
+    | SUM LPAREN VAR_OBJECT RPAREN #sumFunction
+    | LENGTH LPAREN VAR_PRIMARY RPAREN #lengthFunction
     ;
 
 coalesce_function

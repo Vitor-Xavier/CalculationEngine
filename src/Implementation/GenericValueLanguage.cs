@@ -1,26 +1,35 @@
-﻿using System;
-using System.Globalization;
+﻿using Implementation;
+using System;
 
-public class GenericValueLanguage
+public readonly struct GenericValueLanguage
 {
     public readonly static GenericValueLanguage VOID = new GenericValueLanguage(new object());
 
     public readonly object Value;
 
-    public GenericValueLanguage(object value)
-    {
-        Value = value;
-    }
+    public GenericValueLanguage(object value) => Value = value;
 
-    public static explicit operator double(GenericValueLanguage GenericValueLanguage) =>
-        Math.Round(double.Parse(GenericValueLanguage?.Value?.ToString() ?? "0.0"),4);
+    public static GenericValueLanguage operator +(GenericValueLanguage left, GenericValueLanguage right) =>
+        new GenericValueLanguage(Math.Round(left.AsDouble() + right.AsDouble(), LanguageDefault.DecimalPlaces));
 
-    public static explicit operator int(GenericValueLanguage GenericValueLanguage) =>
-        int.Parse(GenericValueLanguage.Value.ToString());
+    public static GenericValueLanguage operator -(GenericValueLanguage left, GenericValueLanguage right) =>
+        new GenericValueLanguage(Math.Round(left.AsDouble() - right.AsDouble(), LanguageDefault.DecimalPlaces));
+
+    public static GenericValueLanguage operator *(GenericValueLanguage left, GenericValueLanguage right) =>
+        new GenericValueLanguage(Math.Round(left.AsDouble() * right.AsDouble(), LanguageDefault.DecimalPlaces));
+
+    public static GenericValueLanguage operator /(GenericValueLanguage left, GenericValueLanguage right) =>
+        new GenericValueLanguage(Math.Round(left.AsDouble() / right.AsDouble(), LanguageDefault.DecimalPlaces));
+
+    public static explicit operator double(GenericValueLanguage genericValue) =>
+        Math.Round(double.Parse(genericValue.Value?.ToString() ?? "0.0"), LanguageDefault.DecimalPlaces);
+
+    public static explicit operator int(GenericValueLanguage genericValue) =>
+        int.Parse(genericValue.Value.ToString());
 
     public bool AsBoolean() => bool.Parse(Value.ToString());
 
-    public double AsDouble() => Math.Round(double.Parse(Value.ToString()),4);
+    public double AsDouble() => double.Parse(Value.ToString());
 
     public DateTime AsDateTime() => DateTime.Parse(Value.ToString());
 

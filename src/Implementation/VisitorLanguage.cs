@@ -44,6 +44,25 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         return new GenericValueLanguage(null);
     }
 
+    public override GenericValueLanguage VisitSumFunction([NotNull] LanguageParser.SumFunctionContext context)
+    {
+        string id = context.VAR_OBJECT().GetText();
+        string identifier = id.Substring(0, id.IndexOf(".", StringComparison.Ordinal));
+        if (_memory.TryGetValue(identifier, out GenericValueLanguage value) && value.Value is object[] array)
+        {
+            string propertyIdentifier = id.Substring(id.IndexOf(".", StringComparison.Ordinal) + 1);
+            return new GenericValueLanguage(array.Sum(x => double.Parse((x as IDictionary<string, object>)[propertyIdentifier]?.ToString() ?? "0.0")));
+        }
+        else
+            return new GenericValueLanguage(0);
+    }
+
+    public override GenericValueLanguage VisitLengthFunction([NotNull] LanguageParser.LengthFunctionContext context)
+    {
+        var identifier = context.VAR_PRIMARY().GetText();
+        return new GenericValueLanguage(_memory.TryGetValue(identifier, out GenericValueLanguage value) && value.Value is object[] array ? array.Length : 0);
+    }
+
     public override GenericValueLanguage VisitVarObjectEntity([NotNull] LanguageParser.VarObjectEntityContext context)
     {
         string identifier = context.VAR_OBJECT().GetText();
@@ -171,7 +190,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         var left = Visit(context.arithmetic_expression(0));
         var right = Visit(context.arithmetic_expression(1));
 
-        return new GenericValueLanguage(Math.Round(left.AsDouble() + right.AsDouble(), 4));
+        return left + right;
     }
 
     public override GenericValueLanguage VisitMinusExpression([NotNull] LanguageParser.MinusExpressionContext context)
@@ -179,7 +198,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         var left = Visit(context.arithmetic_expression(0));
         var right = Visit(context.arithmetic_expression(1));
 
-        return new GenericValueLanguage(Math.Round(left.AsDouble() - right.AsDouble(), 4));
+        return left - right;
     }
 
     public override GenericValueLanguage VisitMultExpression([NotNull] LanguageParser.MultExpressionContext context)
@@ -187,8 +206,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         var left = Visit(context.arithmetic_expression(0));
         var right = Visit(context.arithmetic_expression(1));
 
-        var value = new GenericValueLanguage(Math.Round(left.AsDouble() * right.AsDouble(),4));
-        return value;
+        return left * right;
   }
 
     public override GenericValueLanguage VisitDivExpression([NotNull] LanguageParser.DivExpressionContext context)
@@ -199,7 +217,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         if (right.AsDouble() == 0)
             throw new Exception("Nao e possivel dividir por zero.");
 
-        return new GenericValueLanguage(Math.Round(left.AsDouble() / right.AsDouble(),4));
+        return left / right;
     }
 
     public override GenericValueLanguage VisitParenthesisExpression([NotNull] LanguageParser.ParenthesisExpressionContext context) =>
@@ -271,7 +289,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         for (int i = 0; i < parameters; i++)
         {
             var value = Visit(context.entity(i));
-            if (value?.Value != null)
+            if (value.Value != null)
                 return value;
         }
         return new GenericValueLanguage(null);
