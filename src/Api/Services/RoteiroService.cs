@@ -153,8 +153,20 @@ namespace Api.Services
                     retorno iptu_base * 0.5;"
             };
 
-            
             roteiro.Eventos.Add(iptu);
+            
+            Evento caracteristica = new Evento
+            {
+                Id = 60,
+                Nome = "CARACTERISTICA",
+                Formula = string.Format("retorno _CARACTERISTICA( {0},{1},{2},{3});"
+                  , "\"ESGOTO\""
+                  , "\"01\""
+                  , "\"Valor\""
+                  , 2019)
+            };
+            
+            roteiro.Eventos.Add(caracteristica);
 
             await Task.Delay(100);
             return roteiro;

@@ -7,11 +7,14 @@ using System.Linq;
 
 public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
 {
+    
     private readonly IDictionary<string, GenericValueLanguage> _memory;
+    private readonly IDictionary<string, GenericValueLanguage> _memoryGlobal;
 
-    public VisitorLanguage(IDictionary<string, GenericValueLanguage> memory)
+    public VisitorLanguage(IDictionary<string, GenericValueLanguage> memory, IDictionary<string, GenericValueLanguage> memoryGlobal)
     {
         _memory = memory ?? new Dictionary<string, GenericValueLanguage>();
+        _memoryGlobal = memoryGlobal ?? new Dictionary<string, GenericValueLanguage>();
     }
 
     public override GenericValueLanguage VisitVarPrimaryEntity([NotNull] LanguageParser.VarPrimaryEntityContext context)
@@ -145,6 +148,20 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
             
         return new GenericValueLanguage(null);
     }
+
+    public override GenericValueLanguage VisitCaracteristica(LanguageParser.CaracteristicaContext context)
+    {
+        var descricao = Visit(context.descricao_caracteristica());
+        
+        if (_memoryGlobal.TryGetValue($"@Caracteristica.{descricao.Value}", out GenericValueLanguage value) && value.Value is ExpandoObject array){
+    
+            double resultado = 0;
+            double.TryParse((array as IDictionary<string, object>)["Valor"]?.ToString(), out resultado);
+            return new GenericValueLanguage(resultado);
+        }
+        
+        return new GenericValueLanguage(null);
+  }
 
     public override GenericValueLanguage VisitAndExpression([NotNull] LanguageParser.AndExpressionContext context)
     {

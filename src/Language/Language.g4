@@ -151,7 +151,7 @@ comparison_operator
 
 function_signature
 	: CARACTERISTICA_TABELA LPAREN tabela_caracteristica COMMA descricao_caracteristica COMMA coluna_caracteristica COMMA exercicio_caracteristica (COMMA valor_fator_caracteristica)? RPAREN  #caracteristicaTabela
-    | CARACTERISTICA LPAREN descricao_caracteristica COMMA codigo_caracteristica COMMA valor_fator_caracteristica (COMMA exercicio_caracteristica)? RPAREN  #buscarCaracteristica
+    | CARACTERISTICA LPAREN descricao_caracteristica COMMA codigo_caracteristica COMMA valor_fator_caracteristica (COMMA exercicio_caracteristica)? RPAREN  #caracteristica
     | PARAMETRO LPAREN text RPAREN #parametroFunction
     | SUM LPAREN VAR_OBJECT RPAREN #sumFunction
     | MAX LPAREN VAR_OBJECT RPAREN #maxFunction

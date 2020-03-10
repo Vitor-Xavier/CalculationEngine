@@ -7,7 +7,17 @@ public class ExecuteLanguage
     private IParseTree _defaultParserTree;
     public CommonTokenStream commonToken;
     public LanguageParser parser;
+    private readonly IDictionary<string, GenericValueLanguage> _memoryGlobal;
 
+    public ExecuteLanguage(IDictionary<string, GenericValueLanguage> memoryGlobal)
+    {
+        _memoryGlobal = memoryGlobal;
+    }
+
+    public ExecuteLanguage()
+    {
+        
+    }
     public IParseTree DefaultParserTree(string executionCode)
     {
         var lexer = new LanguageLexer(new AntlrInputStream(executionCode));
@@ -20,7 +30,7 @@ public class ExecuteLanguage
 
     public GenericValueLanguage Execute(IDictionary<string, GenericValueLanguage> values = null)
     {
-        var visitor = new VisitorLanguage(values);
+        var visitor = new VisitorLanguage(values, _memoryGlobal);
         return visitor.Visit(_defaultParserTree);
     }
 }

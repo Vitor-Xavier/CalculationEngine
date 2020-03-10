@@ -41,6 +41,15 @@ namespace Api
             var parametros = TabelaColunaHelper.GetParametros(roteiro.Eventos);
 
             var dados = await CarregarDados(roteiro.SetorOrigem, tabelas, caracteristicaTabela, caracteristica);
+            var dadosGlobais = await CarregarDadosGlobal(roteiro.SetorOrigem, caracteristica);
+
+            var memoryGlobal = dadosGlobais.ToDictionary(x =>  $"@{x.Key}", x => new GenericValueLanguage(x.Value.FirstOrDefault()));
+
+
+            var objPrincipal = dadosGlobais.Aggregate(new ExpandoObject() as IDictionary<string, object>, (a, p) => { a.Add(p.Key, p.Value); return a; });
+
+            //memory.Add($"@{tabelaPrincipal}", new GenericValueLanguage(objPrincipal));
+
             Console.WriteLine($"Máximo memória Pré-Processamento: {(Process.GetCurrentProcess().PeakWorkingSet64 / 1024f) / 1024f}mb");
 
             #region Processamento
@@ -49,24 +58,27 @@ namespace Api
             var stopWatchProcessamento = new Stopwatch();
             var cpuProcessamentoStart = Process.GetCurrentProcess().TotalProcessorTime;
             stopWatchProcessamento.Start();
-
+            
+            var executeFormula = new ExecuteLanguage(memoryGlobal);
             // Principal 
             string tabelaPrincipal = SetorOrigemHelper.GetTabelaPrincipal(roteiro.SetorOrigem);
-            Parallel.ForEach(dados, item =>
+            Parallel.ForEach(dados, new ParallelOptions(){MaxDegreeOfParallelism =1},item =>
              {
-                 var aux = item.Value.Where(x => x.Value is object[] || x.Value is ExpandoObject);
-                 var memory = aux.ToDictionary(x => $"@{x.Key}", x => new GenericValueLanguage(x.Value));
-                 var objPrincipal = item.Value.Except(aux).Aggregate(new ExpandoObject() as IDictionary<string, object>, (a, p) => { a.Add(p.Key, p.Value); return a; });
-                 memory.Add($"@{tabelaPrincipal}", new GenericValueLanguage(objPrincipal));
-                 memory.Add("@Roteiro", new GenericValueLanguage(new ExpandoObject()));
+                var aux = item.Value.Where(x => x.Value is object[] || x.Value is ExpandoObject);
 
-                 // Execucao das Formulas do Roteiro
-                 foreach (var evento in roteiro.Eventos)
+                 
+                var memory = aux.ToDictionary(x => $"@{x.Key}", x => new GenericValueLanguage(x.Value));
+                var objPrincipal = item.Value.Except(aux).Aggregate(new ExpandoObject() as IDictionary<string, object>, (a, p) => { a.Add(p.Key, p.Value); return a; });
+                memory.Add($"@{tabelaPrincipal}", new GenericValueLanguage(objPrincipal));
+                memory.Add("@Roteiro", new GenericValueLanguage(new ExpandoObject()));
+
+               // Execucao das Formulas do Roteiro
+               foreach (var evento in roteiro.Eventos)
                  {
                      try
                      {
                          // Execução
-                         var executeFormula = new ExecuteLanguage();
+                         
                          executeFormula.DefaultParserTree(evento.Formula);
                          var result = executeFormula.Execute(memory);
                          
@@ -116,6 +128,43 @@ namespace Api
             Console.WriteLine($"Uso médio CPU total: {Math.Round((totalProcessorTime / (Environment.ProcessorCount * stopwatch.ElapsedMilliseconds)) * 100)}%\n");
 
             TestarFormulas(dados);
+        }
+
+        public static async Task<IDictionary<string, IEnumerable<object>>> CarregarDadosGlobal(SetorOrigem setor, IEnumerable<Caracteristica> caracteristica)
+        {
+        
+            // Diagnóstico
+            var stopwatchPre = new Stopwatch();
+            stopwatchPre.Start();
+
+            var stopwatchPreBD = new Stopwatch();
+
+            // TODO: BuscaCaracteristica GroupBy
+
+            var database = new DatabaseConnection();
+
+            // TO DO
+            //Adicionar no Principal e no GetAllData para trazer os valores
+            var consultasCaracteristica = CaracteristicaHelper.GetQueries(caracteristica);
+
+            stopwatchPreBD.Start();
+
+            // Busca por todas as listas de dados requisitadas.
+            var keyValuePairsGlobal = await database.GetAllData(consultasCaracteristica);
+
+            // Separa as massas de dados em principal, para a tabela principal do setor informado e suas auxiliares.
+            
+            var tabelaGlobal = SetorOrigemHelper.GetTabelasSetor(SetorOrigem.Global);
+            
+            stopwatchPreBD.Stop();
+          
+            stopwatchPre.Stop();
+
+            Console.WriteLine($"Tempo Total Pré-Processamento Banco Dados: {stopwatchPreBD.Elapsed}");
+            Console.WriteLine($"Tempo Total Pré-Processamento: {stopwatchPre.Elapsed}");
+            Console.WriteLine($"Quantidade registros globais({tabelaGlobal.ToString()}): {keyValuePairsGlobal.Count}");
+
+            return keyValuePairsGlobal;
         }
 
         public static async Task<IDictionary<int, IDictionary<string, object>>> CarregarDados(SetorOrigem setor, IEnumerable<TabelaColuna> tabelas, IEnumerable<CaracteristicaTabela> caracteristicaTabela, IEnumerable<Caracteristica> caracteristica)

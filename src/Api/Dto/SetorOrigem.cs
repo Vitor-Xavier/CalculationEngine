@@ -47,6 +47,9 @@ namespace Api.Dto
         TaxaDiversa,
 
         [Description("Alienacão")]
-        Alienacao
+        Alienacao,
+
+        [Description("Global")]
+        Global
     }
 }

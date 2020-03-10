@@ -21,6 +21,7 @@ namespace Api.Helper
                 SetorOrigem.ITBI_Complementar => "ItbiComplementar",
                 SetorOrigem.Mobiliario => "Ccm",
                 SetorOrigem.Parcelamento => "Parcelamentos",
+                SetorOrigem.Global => "Global",
                 _ => throw new Exception("Setor não possui uma tabela principal configurada.")
             };
 
@@ -33,6 +34,7 @@ namespace Api.Helper
                 SetorOrigem.ITBI_Complementar => new string[] { "Itbi", "ItbiComplementar", "ItbiFisicos", "ItbiOutros" },
                 SetorOrigem.Mobiliario => new string[] { "Ccm", "CcmAtividades", "CcmCnae" },
                 SetorOrigem.Parcelamento => new string[] { "Parcelamentos" },
+                SetorOrigem.Global => new string[] { "Caracteristica", "Parametro" },
                 _ => throw new Exception("Setor não possui tabelas configuradas.")
             };
 
