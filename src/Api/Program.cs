@@ -23,37 +23,40 @@ namespace Api
 
         static async Task Main(string[] args)
         {
-            Console.WriteLine("-- Roteiro");
+            Console.WriteLine("# Cálculo Tributário");
+            Console.WriteLine("\n## Roteiro\n");
             var roteiroService = new RoteiroService();
             var roteiro = await roteiroService.GetRoteiro();
-            Console.WriteLine($"Roteiro: {roteiro.Nome}\nQuantidade de Fórmulas: {roteiro.Eventos.Count}");
+            Console.WriteLine("| Roteiro  | Valor      |");
+            Console.WriteLine("|----------|------------|");
+            Console.WriteLine($"| Nome     | {roteiro.Nome,-10} |");
+            Console.WriteLine($"| Fórmulas | {roteiro.Eventos.Count,-10} |");
 
             // Ferramentas Diagnóstico
             var stopwatch = new Stopwatch();
             var startProcessorTime = Process.GetCurrentProcess().TotalProcessorTime;
             stopwatch.Start();
 
-            Console.WriteLine("\n-- Pré-Processamento");
+            Console.WriteLine("\n## Pré-Processamento\n");
 
             var tabelas = TabelaColunaHelper.GetTabelaColunas(roteiro.Eventos);
             var caracteristicaTabela = TabelaColunaHelper.GetCaracteristicaTabela(roteiro.Eventos);
             var caracteristica = TabelaColunaHelper.GetCaracteristica(roteiro.Eventos);
             var parametros = TabelaColunaHelper.GetParametros(roteiro.Eventos);
 
+            var consultaParametro = ParametroHelper.GetQuery(parametros);
+            var db = new DatabaseConnection();
+            
+            //TODO Adicionar Global
+            var ps = await db.GetAllData(new TabelaQuery[] { consultaParametro });
+
             var dados = await CarregarDados(roteiro.SetorOrigem, tabelas, caracteristicaTabela, caracteristica);
             var dadosGlobais = await CarregarDadosGlobal(roteiro.SetorOrigem, caracteristica);
 
             var memoryGlobal = dadosGlobais.ToDictionary(x =>  $"@{x.Key}", x => new GenericValueLanguage(x.Value.FirstOrDefault()));
 
-
-            var objPrincipal = dadosGlobais.Aggregate(new ExpandoObject() as IDictionary<string, object>, (a, p) => { a.Add(p.Key, p.Value); return a; });
-
-            //memory.Add($"@{tabelaPrincipal}", new GenericValueLanguage(objPrincipal));
-
-            Console.WriteLine($"Máximo memória Pré-Processamento: {(Process.GetCurrentProcess().PeakWorkingSet64 / 1024f) / 1024f}mb");
-
             #region Processamento
-            Console.WriteLine("\n-- Processamento");
+            Console.WriteLine("\n## Processamento\n");
 
             var stopWatchProcessamento = new Stopwatch();
             var cpuProcessamentoStart = Process.GetCurrentProcess().TotalProcessorTime;
@@ -96,24 +99,32 @@ namespace Api
             var cpuProcessamentoEnd = Process.GetCurrentProcess().TotalProcessorTime;
             double cpuTotalProcessamento = (cpuProcessamentoEnd - cpuProcessamentoStart).TotalMilliseconds;
 
-            Console.WriteLine($"Tempo Total Processamento: {stopWatchProcessamento.Elapsed}");
-            Console.WriteLine($"Uso médio CPU Processamento: {Math.Round((cpuTotalProcessamento / (Environment.ProcessorCount * stopWatchProcessamento.ElapsedMilliseconds)) * 100)}%");
+            Console.WriteLine("| Medição        | Utilização       |");
+            Console.WriteLine("|----------------|------------------|");
+            Console.WriteLine($"| Tempo Total    | {stopWatchProcessamento.Elapsed} |");
+            Console.WriteLine($"| CPU média      | {Math.Round((cpuTotalProcessamento / (Environment.ProcessorCount * stopWatchProcessamento.ElapsedMilliseconds)) * 100) + "%",-16} |\n");
             #endregion
 
             #region Resultados
-            Console.WriteLine($"\n-- Resultados {Resultados.Count}");
+            Console.WriteLine($"\n## Resultados\n");
+            Console.WriteLine("| Resultados                | Valor           |");
+            Console.WriteLine("|---------------------------|-----------------|");
             if (Resultados.Count <= 1)
                 foreach (var result in Resultados)
                     foreach (var result2 in result.Value as IDictionary<string, object>)
-                        Console.WriteLine($"{result2.Key}: {result2.Value}");
+                        Console.WriteLine($"| {result2.Key, -25} | {result2.Value, -15} |");
+            Console.WriteLine($"| {"Total", -25} | {Resultados.Count, -15} |");
             #endregion
 
             #region Erros
             if (Exceptions.Value.Count > 0)
             {
-                Console.WriteLine($"\n-- Erros {Exceptions.Value.Count}");
+                Console.WriteLine($"\n## Erros\n");
+                Console.WriteLine($"| {"Erros",-20} | {"Valor",-15} |");
+                Console.WriteLine($"|----------------------|-----------------|");
                 foreach (var exception in Exceptions.Value)
                     Console.WriteLine($"Exceção: {exception.Message}");
+                Console.WriteLine($"| {"Total",-20} | {Exceptions.Value.Count,-15} |");
             }
             #endregion
 
@@ -122,12 +133,14 @@ namespace Api
             var endProcessorTime = Process.GetCurrentProcess().TotalProcessorTime;
             double totalProcessorTime = (endProcessorTime - startProcessorTime).TotalMilliseconds;
 
-            Console.WriteLine("\n-- Geral");
-            Console.WriteLine($"Tempo Total: {stopwatch.Elapsed}");
-            Console.WriteLine($"Memória máxima utilizada: {(Process.GetCurrentProcess().PeakWorkingSet64 / 1024f) / 1024f}mb");
-            Console.WriteLine($"Uso médio CPU total: {Math.Round((totalProcessorTime / (Environment.ProcessorCount * stopwatch.ElapsedMilliseconds)) * 100)}%\n");
-
             TestarFormulas(dados);
+
+            Console.WriteLine("\n## Geral\n");
+            Console.WriteLine("| Medição        | Utilização       |");
+            Console.WriteLine("|----------------|------------------|");
+            Console.WriteLine($"| Tempo Total    | {stopwatch.Elapsed} |");
+            Console.WriteLine($"| Memória máxima | {(Process.GetCurrentProcess().PeakWorkingSet64 / 1024f) / 1024f + "mb", -16} |");
+            Console.WriteLine($"| CPU média      | {Math.Round((totalProcessorTime / (Environment.ProcessorCount * stopwatch.ElapsedMilliseconds)) * 100) + "%", -16:d2} |\n");
         }
 
         public static async Task<IDictionary<string, IEnumerable<object>>> CarregarDadosGlobal(SetorOrigem setor, IEnumerable<Caracteristica> caracteristica)
@@ -169,7 +182,7 @@ namespace Api
 
         public static async Task<IDictionary<int, IDictionary<string, object>>> CarregarDados(SetorOrigem setor, IEnumerable<TabelaColuna> tabelas, IEnumerable<CaracteristicaTabela> caracteristicaTabela, IEnumerable<Caracteristica> caracteristica)
         {
-            int idSelecao = 1;
+            int idSelecao = 3;
 
             // Diagnóstico
             var stopwatchPre = new Stopwatch();
@@ -215,14 +228,17 @@ namespace Api
 
             stopwatchPre.Stop();
 
-            Console.WriteLine($"Tempo Total Pré-Processamento Banco Dados: {stopwatchPreBD.Elapsed}");
-            Console.WriteLine($"Tempo Total Pré-Processamento: {stopwatchPre.Elapsed}");
-
             var auxiliares = keyValuePairs.Where(x => x.Key != tabelaPrincipal);
             var totalTabelasAuxiliares = auxiliares.Count();
             var totalRegistroTabelasAuxiliares = auxiliares.Select(x => x.Value.Select(y => y).Count()).Sum();
-            Console.WriteLine($"Quantidade registros principais: {principal.Count}");
-            Console.WriteLine($"Quantidade registros auxiliares: {totalRegistroTabelasAuxiliares}");
+            Console.WriteLine("| Medição              | Utilização       |");
+            Console.WriteLine("|----------------------|------------------|");
+            Console.WriteLine($"| Registros principais | {principal.Count, -16} |");
+            Console.WriteLine($"| Registros auxiliares | {totalRegistroTabelasAuxiliares, -16} |");
+
+            Console.WriteLine($"| Memória máxima       | {(Process.GetCurrentProcess().PeakWorkingSet64 / 1024f) / 1024f + "mb",-16} |");
+            Console.WriteLine($"| Tempo Banco de Dados | {stopwatchPreBD.Elapsed} |");
+            Console.WriteLine($"| Tempo Total          | {stopwatchPre.Elapsed} |");
 
             return principal;
         }
@@ -249,12 +265,14 @@ namespace Api
                 if (TesteLanguage.TesteVVP(areaTerreno, vvp)) countvvp++;
                 if (TesteLanguage.TesteIPTU(item.Value, Resultados[item.Key], iptu)) countIptu++;
             }
-            Console.WriteLine("-- Assertividade");
-            Console.WriteLine($"Fator G: {(countFatorG / Resultados.Count) * 100}%");
-            Console.WriteLine($"Fator K: {(countFatorK / Resultados.Count) * 100}%");
-            Console.WriteLine($"VVT: {(countvvt / Resultados.Count) * 100}%");
-            Console.WriteLine($"VVP: {(countvvp / Resultados.Count) * 100}%");
-            Console.WriteLine($"IPTU: {(countIptu / Resultados.Count) * 100}%\n");
+            Console.WriteLine("\n## Assertividade\n");
+            Console.WriteLine("| Fórmula         |  %   |");
+            Console.WriteLine("|-----------------|------|");
+            Console.WriteLine($"| {"Fator G", -15} | {(countFatorG / Resultados.Count) * 100:d2}% |");
+            Console.WriteLine($"| {"Fator K", -15} | {(countFatorK / Resultados.Count) * 100:d3}% |");
+            Console.WriteLine($"| {"VVT", -15} | {(countvvt / Resultados.Count) * 100:d3}% |");
+            Console.WriteLine($"| {"VVP", -15} | {(countvvp / Resultados.Count) * 100:d3}% |");
+            Console.WriteLine($"| {"IPTU", -15} | {(countIptu / Resultados.Count) * 100:d3}% |");
         }
     }
 }

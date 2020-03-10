@@ -239,6 +239,28 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// <return>The visitor result.</return>
 	public virtual Result VisitParametroFunction([NotNull] LanguageParser.ParametroFunctionContext context) { return VisitChildren(context); }
 	/// <summary>
+	/// Visit a parse tree produced by the <c>parametroCodigoFunction</c>
+	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitParametroCodigoFunction([NotNull] LanguageParser.ParametroCodigoFunctionContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>parametroIntervaloFunction</c>
+	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitParametroIntervaloFunction([NotNull] LanguageParser.ParametroIntervaloFunctionContext context) { return VisitChildren(context); }
+	/// <summary>
 	/// Visit a parse tree produced by the <c>sumFunction</c>
 	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
 	/// <para>
@@ -293,6 +315,17 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	public virtual Result VisitLengthFunction([NotNull] LanguageParser.LengthFunctionContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>roundFunction</c>
+	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitRoundFunction([NotNull] LanguageParser.RoundFunctionContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by the <c>coalesceFunction</c>
 	/// labeled alternative in <see cref="LanguageParser.coalesce_function"/>.
@@ -573,7 +606,8 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// <return>The visitor result.</return>
 	public virtual Result VisitStringEntity([NotNull] LanguageParser.StringEntityContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="LanguageParser.number_integer"/>.
+	/// Visit a parse tree produced by the <c>numberInteger</c>
+	/// labeled alternative in <see cref="LanguageParser.number_integer"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -581,9 +615,10 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitNumber_integer([NotNull] LanguageParser.Number_integerContext context) { return VisitChildren(context); }
+	public virtual Result VisitNumberInteger([NotNull] LanguageParser.NumberIntegerContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="LanguageParser.number_decimal"/>.
+	/// Visit a parse tree produced by the <c>numberDecimal</c>
+	/// labeled alternative in <see cref="LanguageParser.number_decimal"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -591,5 +626,5 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitNumber_decimal([NotNull] LanguageParser.Number_decimalContext context) { return VisitChildren(context); }
+	public virtual Result VisitNumberDecimal([NotNull] LanguageParser.NumberDecimalContext context) { return VisitChildren(context); }
 }

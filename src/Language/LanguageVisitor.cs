@@ -161,6 +161,20 @@ public interface ILanguageVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitParametroFunction([NotNull] LanguageParser.ParametroFunctionContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>parametroCodigoFunction</c>
+	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitParametroCodigoFunction([NotNull] LanguageParser.ParametroCodigoFunctionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>parametroIntervaloFunction</c>
+	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitParametroIntervaloFunction([NotNull] LanguageParser.ParametroIntervaloFunctionContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>sumFunction</c>
 	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
 	/// </summary>
@@ -195,6 +209,13 @@ public interface ILanguageVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitLengthFunction([NotNull] LanguageParser.LengthFunctionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>roundFunction</c>
+	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitRoundFunction([NotNull] LanguageParser.RoundFunctionContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>coalesceFunction</c>
 	/// labeled alternative in <see cref="LanguageParser.coalesce_function"/>.
@@ -371,15 +392,17 @@ public interface ILanguageVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitStringEntity([NotNull] LanguageParser.StringEntityContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="LanguageParser.number_integer"/>.
+	/// Visit a parse tree produced by the <c>numberInteger</c>
+	/// labeled alternative in <see cref="LanguageParser.number_integer"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitNumber_integer([NotNull] LanguageParser.Number_integerContext context);
+	Result VisitNumberInteger([NotNull] LanguageParser.NumberIntegerContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="LanguageParser.number_decimal"/>.
+	/// Visit a parse tree produced by the <c>numberDecimal</c>
+	/// labeled alternative in <see cref="LanguageParser.number_decimal"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitNumber_decimal([NotNull] LanguageParser.Number_decimalContext context);
+	Result VisitNumberDecimal([NotNull] LanguageParser.NumberDecimalContext context);
 }

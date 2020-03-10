@@ -28,7 +28,7 @@ public class ExecuteLanguage
         return parser.rule_set();
     }
 
-    public GenericValueLanguage Execute(IDictionary<string, GenericValueLanguage> values = null)
+    public GenericValueLanguage Execute(IDictionary<string, GenericValueLanguage> values)
     {
         var visitor = new VisitorLanguage(values, _memoryGlobal);
         return visitor.Visit(_defaultParserTree);
