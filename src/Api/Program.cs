@@ -41,7 +41,7 @@ namespace Api
             var parametros = TabelaColunaHelper.GetParametros(roteiro.Eventos);
 
             var dados = await CarregarDados(roteiro.SetorOrigem, tabelas, caracteristicaTabela, caracteristica);
-            Console.WriteLine($"Pico memória Pré-Processamento: {(Process.GetCurrentProcess().PeakWorkingSet64 / 1024f) / 1024f}mb");
+            Console.WriteLine($"Máximo memória Pré-Processamento: {(Process.GetCurrentProcess().PeakWorkingSet64 / 1024f) / 1024f}mb");
 
             #region Processamento
             Console.WriteLine("\n-- Processamento");
@@ -69,7 +69,7 @@ namespace Api
                          var executeFormula = new ExecuteLanguage();
                          executeFormula.DefaultParserTree(evento.Formula);
                          var result = executeFormula.Execute(memory);
-
+                         
                          // Resultado
                          (memory["@Roteiro"].Value as IDictionary<string, object>).Add(evento.Nome, result.Value);
                      }
@@ -85,8 +85,7 @@ namespace Api
             double cpuTotalProcessamento = (cpuProcessamentoEnd - cpuProcessamentoStart).TotalMilliseconds;
 
             Console.WriteLine($"Tempo Total Processamento: {stopWatchProcessamento.Elapsed}");
-            Console.WriteLine($"Pico memória Processamento: {(Process.GetCurrentProcess().PeakWorkingSet64 / 1024f) / 1024f}mb");
-            Console.WriteLine($"Uso médio de CPU durante Processamento: {Math.Round((cpuTotalProcessamento / (Environment.ProcessorCount * stopWatchProcessamento.ElapsedMilliseconds)) * 100)}%");
+            Console.WriteLine($"Uso médio CPU Processamento: {Math.Round((cpuTotalProcessamento / (Environment.ProcessorCount * stopWatchProcessamento.ElapsedMilliseconds)) * 100)}%");
             #endregion
 
             #region Resultados
@@ -114,7 +113,7 @@ namespace Api
             Console.WriteLine("\n-- Geral");
             Console.WriteLine($"Tempo Total: {stopwatch.Elapsed}");
             Console.WriteLine($"Memória máxima utilizada: {(Process.GetCurrentProcess().PeakWorkingSet64 / 1024f) / 1024f}mb");
-            Console.WriteLine($"Uso médio de CPU geral: {Math.Round((totalProcessorTime / (Environment.ProcessorCount * stopwatch.ElapsedMilliseconds)) * 100)}%\n");
+            Console.WriteLine($"Uso médio CPU total: {Math.Round((totalProcessorTime / (Environment.ProcessorCount * stopwatch.ElapsedMilliseconds)) * 100)}%\n");
 
             TestarFormulas(dados);
         }

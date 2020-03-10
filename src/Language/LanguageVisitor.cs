@@ -168,6 +168,27 @@ public interface ILanguageVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitSumFunction([NotNull] LanguageParser.SumFunctionContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>maxFunction</c>
+	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMaxFunction([NotNull] LanguageParser.MaxFunctionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>minFunction</c>
+	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMinFunction([NotNull] LanguageParser.MinFunctionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>averageFunction</c>
+	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAverageFunction([NotNull] LanguageParser.AverageFunctionContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>lengthFunction</c>
 	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
 	/// </summary>

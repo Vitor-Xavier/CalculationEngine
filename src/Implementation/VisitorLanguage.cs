@@ -57,6 +57,45 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
             return new GenericValueLanguage(0);
     }
 
+    public override GenericValueLanguage VisitMaxFunction([NotNull] LanguageParser.MaxFunctionContext context)
+    {
+        string id = context.VAR_OBJECT().GetText();
+        string identifier = id.Substring(0, id.IndexOf(".", StringComparison.Ordinal));
+        if (_memory.TryGetValue(identifier, out GenericValueLanguage value) && value.Value is object[] array)
+        {
+            string propertyIdentifier = id.Substring(id.IndexOf(".", StringComparison.Ordinal) + 1);
+            return new GenericValueLanguage(array.Max(x => double.Parse((x as IDictionary<string, object>)[propertyIdentifier]?.ToString() ?? "0.0")));
+        }
+        else
+            return new GenericValueLanguage(0);
+    }
+
+    public override GenericValueLanguage VisitMinFunction([NotNull] LanguageParser.MinFunctionContext context)
+    {
+        string id = context.VAR_OBJECT().GetText();
+        string identifier = id.Substring(0, id.IndexOf(".", StringComparison.Ordinal));
+        if (_memory.TryGetValue(identifier, out GenericValueLanguage value) && value.Value is object[] array)
+        {
+            string propertyIdentifier = id.Substring(id.IndexOf(".", StringComparison.Ordinal) + 1);
+            return new GenericValueLanguage(array.Min(x => double.Parse((x as IDictionary<string, object>)[propertyIdentifier]?.ToString() ?? "0.0")));
+        }
+        else
+            return new GenericValueLanguage(0);
+    }
+
+    public override GenericValueLanguage VisitAverageFunction([NotNull] LanguageParser.AverageFunctionContext context)
+    {
+        string id = context.VAR_OBJECT().GetText();
+        string identifier = id.Substring(0, id.IndexOf(".", StringComparison.Ordinal));
+        if (_memory.TryGetValue(identifier, out GenericValueLanguage value) && value.Value is object[] array)
+        {
+            string propertyIdentifier = id.Substring(id.IndexOf(".", StringComparison.Ordinal) + 1);
+            return new GenericValueLanguage(array.Average(x => double.Parse((x as IDictionary<string, object>)[propertyIdentifier]?.ToString() ?? "0.0")));
+        }
+        else
+            return new GenericValueLanguage(0);
+    }
+
     public override GenericValueLanguage VisitLengthFunction([NotNull] LanguageParser.LengthFunctionContext context)
     {
         var identifier = context.VAR_PRIMARY().GetText();

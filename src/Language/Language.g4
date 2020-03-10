@@ -18,6 +18,9 @@ NULL : 'null';
 MARKER: 'marker';
 
 SUM: '_SOMA';
+MAX: '_MAXIMO';
+MIN: '_MINIMO';
+AVERAGE: '_MEDIA';
 LENGTH: '_TAMANHO';
 COALESCE: '_COALESCE';
 CARACTERISTICA_TABELA: '_CARACTERISTICATABELA';
@@ -151,6 +154,9 @@ function_signature
     | CARACTERISTICA LPAREN descricao_caracteristica COMMA codigo_caracteristica COMMA valor_fator_caracteristica (COMMA exercicio_caracteristica)? RPAREN  #buscarCaracteristica
     | PARAMETRO LPAREN text RPAREN #parametroFunction
     | SUM LPAREN VAR_OBJECT RPAREN #sumFunction
+    | MAX LPAREN VAR_OBJECT RPAREN #maxFunction
+    | MIN LPAREN VAR_OBJECT RPAREN #minFunction
+    | AVERAGE LPAREN VAR_OBJECT RPAREN #averageFunction
     | LENGTH LPAREN VAR_PRIMARY RPAREN #lengthFunction
     ;
 
