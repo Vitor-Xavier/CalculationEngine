@@ -199,12 +199,18 @@ namespace Api.Helper
         public static IEnumerable<Parametro> GetParametros(IList<IToken> Tokens, IDictionary<string, int> TokenTypeMap)
         {
             int tokenValueParametro = TokenTypeMap.FirstOrDefault(x => x.Key == "PARAMETRO").Value;
+            int tokenValueParametroCodigo = TokenTypeMap.FirstOrDefault(x => x.Key == "PARAMETRO_CODIGO").Value;
+            int tokenValueParametroIntervalo = TokenTypeMap.FirstOrDefault(x => x.Key == "PARAMETRO_INTERVALO").Value;
             int tokenValueLParen = TokenTypeMap.FirstOrDefault(x => x.Key == "LPAREN").Value;
             int tokenValueRParen = TokenTypeMap.FirstOrDefault(x => x.Key == "RPAREN").Value;
             int tokenValueText = TokenTypeMap.FirstOrDefault(x => x.Key == "TEXT").Value;
+            int tokenValueNumber = TokenTypeMap.FirstOrDefault(x => x.Key == "NUMBER").Value;
 
             int tokenIndex = 0;
-            while (Tokens.FirstOrDefault(x => x.Type == tokenValueParametro && x.TokenIndex > tokenIndex) is IToken tokenParametro)
+            while (Tokens.FirstOrDefault(x => (x.Type == tokenValueParametro ||
+                x.Type == tokenValueParametroCodigo ||
+                x.Type == tokenValueParametroIntervalo) &&
+                x.TokenIndex > tokenIndex) is IToken tokenParametro)
             {
                 var tokenRParen = Tokens.FirstOrDefault(x => x.Type == tokenValueRParen && x.TokenIndex > tokenParametro.TokenIndex);
 
@@ -213,6 +219,9 @@ namespace Api.Helper
                 yield return new Parametro
                 {
                     Nome = AntlrHelper.ExtractTextToken(tokenValueText, rangeToken, 0).Replace("\"", ""),
+                    Codigo = AntlrHelper.ExtractTextToken(tokenValueText, rangeToken, 1).Replace("\"", ""),
+                    Valor = AntlrHelper.ExtractTextToken(tokenValueText, rangeToken, 1).Replace("\"", ""),
+                    Exercicio = int.TryParse(AntlrHelper.ExtractTextToken(tokenValueNumber, rangeToken, 0), out int exercicio) ? exercicio : default(int?)
                 };
 
                 tokenIndex = tokenRParen.TokenIndex;

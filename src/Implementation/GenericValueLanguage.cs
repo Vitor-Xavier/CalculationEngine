@@ -31,11 +31,15 @@ public readonly struct GenericValueLanguage
 
     public double AsDouble() => double.Parse(Value.ToString());
 
+    public int AsInt() => int.Parse(Value.ToString());
+
     public DateTime AsDateTime() => DateTime.Parse(Value.ToString());
 
     public string AsString() => Value.ToString();
 
     public bool IsDouble() => Value is double;
+
+    public bool IsInt() => Value is int;
 
     public bool IsDate() => Value is DateTime;
 

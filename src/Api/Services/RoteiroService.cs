@@ -7,7 +7,7 @@ namespace Api.Services
 {
     public class RoteiroService
     {
-        string[] arrayCaracteristica =  {"\"Planta de Valor Construção\"",
+        private readonly string[] arrayCaracteristica =  {"\"Planta de Valor Construção\"",
                 "\"Planta de Valor Terreno\"",
                 "\"CARTORIO\"",
                 "\"TAXA INCÊNDIO\"",
@@ -90,6 +90,10 @@ namespace Api.Services
                 Formula = @"retorno @Fisico.AreaTerreno * 100;"
             };
 
+            roteiro.Eventos.Add(fatorG);
+            roteiro.Eventos.Add(fatorK);
+            roteiro.Eventos.Add(vvt);
+            roteiro.Eventos.Add(vvp);
 
             string FisicoCaracteristicas = "\"FisicoCaracteristicas\"";
             string DescricaoCaracteristica = "\"Planta de Valor Construção\"";
@@ -122,13 +126,32 @@ namespace Api.Services
                 evt.Add(eventoBusca);
             };
 
-            roteiro.Eventos.Add(fatorG);
-            roteiro.Eventos.Add(fatorK);
-            roteiro.Eventos.Add(vvt);
-            roteiro.Eventos.Add(vvp);
-
             evt.ForEach(item => roteiro.Eventos.Add(item));
 
+            Evento eventoParametroUnico = new Evento
+            {
+                Id = 70,
+                Nome = "createParametro2",
+                Formula = @"retorno _PARAMETRO(""createParametro2"", 2016);"
+            };
+
+            Evento eventoParametroIntervalo = new Evento
+            {
+                Id = 71,
+                Nome = "TabelaEmpregados",
+                Formula = @"retorno _PARAMETROINTERVALO(""TabelaEmpregados"", ""12"");"
+            };
+
+            Evento eventoParametroCodigo = new Evento
+            {
+                Id = 72,
+                Nome = "AjuizamentosFases",
+                Formula = @"retorno _PARAMETROCODIGO(""AjuizamentosFases"", ""2"");"
+            };
+
+            roteiro.Eventos.Add(eventoParametroUnico);
+            roteiro.Eventos.Add(eventoParametroIntervalo);
+            roteiro.Eventos.Add(eventoParametroCodigo);
 
             Evento iptu = new Evento
             {

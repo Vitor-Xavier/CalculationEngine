@@ -26,13 +26,15 @@ COALESCE: '_COALESCE';
 CARACTERISTICA_TABELA: '_CARACTERISTICATABELA';
 CARACTERISTICA: '_CARACTERISTICA';
 PARAMETRO: '_PARAMETRO';
+PARAMETRO_CODIGO: '_PARAMETROCODIGO';
+PARAMETRO_INTERVALO: '_PARAMETROINTERVALO';
+ROUND: '_ARREDONDAR';
 LOOKUP_FUNC: 'lookupFunction';
 BASE_FUNC: 'baseFunction';
 TOTAL_PAYMENTS: 'totalPayments';
 TOTAL_DISCOUNTS: 'totalDiscounts';
 DIRECT_RECALCULATION: 'directRecalculation';
 PROPORTIONAL_RECALCULATION: 'proportionalRecalculation';
-ROUND_FUNCTION: 'roundFunction';
 CLEAR_VALUES_FUNCTION: 'clearValuesFunction';
 CLEAR_DISCOUNTS_FUNCTION: 'clearDiscountsFunction';
 CLEAR_PAYMENTS_FUNCTION: 'clearPaymentsFunction';
@@ -152,12 +154,15 @@ comparison_operator
 function_signature
 	: CARACTERISTICA_TABELA LPAREN tabela_caracteristica COMMA descricao_caracteristica COMMA coluna_caracteristica COMMA exercicio_caracteristica (COMMA valor_fator_caracteristica)? RPAREN  #caracteristicaTabela
     | CARACTERISTICA LPAREN descricao_caracteristica COMMA codigo_caracteristica COMMA valor_fator_caracteristica (COMMA exercicio_caracteristica)? RPAREN  #buscarCaracteristica
-    | PARAMETRO LPAREN text RPAREN #parametroFunction
+    | PARAMETRO LPAREN text (COMMA number_integer)? RPAREN #parametroFunction
+    | PARAMETRO_CODIGO LPAREN text COMMA text (COMMA number_integer)? RPAREN #parametroCodigoFunction
+    | PARAMETRO_INTERVALO LPAREN text COMMA text (COMMA number_integer)? RPAREN #parametroIntervaloFunction
     | SUM LPAREN VAR_OBJECT RPAREN #sumFunction
     | MAX LPAREN VAR_OBJECT RPAREN #maxFunction
     | MIN LPAREN VAR_OBJECT RPAREN #minFunction
     | AVERAGE LPAREN VAR_OBJECT RPAREN #averageFunction
     | LENGTH LPAREN VAR_PRIMARY RPAREN #lengthFunction
+    | ROUND LPAREN number_decimal (COMMA number_integer)? RPAREN #roundFunction
     ;
 
 coalesce_function
@@ -220,9 +225,9 @@ arithmetic_expression
     ;
 
     number_integer
-    : NUMBER 
+    : NUMBER #numberInteger
     ;
 
     number_decimal
-    : DECIMAL 
+    : DECIMAL #numberDecimal
     ;

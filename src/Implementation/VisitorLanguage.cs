@@ -9,9 +9,12 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
 {
     private readonly IDictionary<string, GenericValueLanguage> _memory;
 
-    public VisitorLanguage(IDictionary<string, GenericValueLanguage> memory)
+    private readonly IDictionary<string, IEnumerable<object>> _globalMemory;
+
+    public VisitorLanguage(IDictionary<string, GenericValueLanguage> memory, IDictionary<string, IEnumerable<object>> globalMemory)
     {
         _memory = memory ?? new Dictionary<string, GenericValueLanguage>();
+        _globalMemory = globalMemory ?? new Dictionary<string, IEnumerable<object>>();
     }
 
     public override GenericValueLanguage VisitVarPrimaryEntity([NotNull] LanguageParser.VarPrimaryEntityContext context)
@@ -40,6 +43,19 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
                 else
                     return new GenericValueLanguage(array[index]);
             }
+        }
+        return new GenericValueLanguage(null);
+    }
+
+    public override GenericValueLanguage VisitVarObjectEntity([NotNull] LanguageParser.VarObjectEntityContext context)
+    {
+        string identifier = context.VAR_OBJECT().GetText();
+        string objectKey = identifier.Substring(0, identifier.IndexOf(".", StringComparison.Ordinal));
+
+        if (_memory.TryGetValue(objectKey, out GenericValueLanguage value) && value.Value is ExpandoObject obj)
+        {
+            string propertyKey = identifier.Substring(identifier.IndexOf(".", StringComparison.Ordinal) + 1); ;
+            return new GenericValueLanguage((obj as IDictionary<string, object>)[propertyKey]);
         }
         return new GenericValueLanguage(null);
     }
@@ -96,23 +112,56 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
             return new GenericValueLanguage(0);
     }
 
+    public override GenericValueLanguage VisitParametroFunction([NotNull] LanguageParser.ParametroFunctionContext context)
+    {
+        var nome = Visit(context.text());
+        int? exercicio = int.TryParse(context.number_integer()?.GetText(), out int num) ? num : default(int?);
+
+        var value = _globalMemory["ParametroVlrs"].Where(x =>
+        {
+            var dict = x as IDictionary<string, object>;
+            return dict["NomeParam"].ToString() == nome.Value.ToString() && (!exercicio.HasValue || (int.TryParse(dict["Exercicio"].ToString(), out int ex) ? ex == exercicio : false));
+        }).FirstOrDefault();
+
+        return new GenericValueLanguage(value != null ? (value as IDictionary<string, object>)["Valor"] : null);
+    }
+
+    public override GenericValueLanguage VisitParametroIntervaloFunction([NotNull] LanguageParser.ParametroIntervaloFunctionContext context)
+    {
+        var nome = Visit(context.text(0)).AsString();
+        var valor = Visit(context.text(1)).AsString();
+        int? exercicio = int.TryParse(context.number_integer()?.GetText(), out int num) ? num : default(int?);
+
+        var value = _globalMemory["ParametroVlrs"].Where(x =>
+        {
+            var dict = x as IDictionary<string, object>;
+            return dict["NomeParam"].ToString() == nome && dict["Codigo"].ToString() == valor &&
+                (!exercicio.HasValue || (int.TryParse(dict["Exercicio"].ToString(), out int ex) ? ex == exercicio : false));
+        }).FirstOrDefault();
+
+        return new GenericValueLanguage(value != null ? (value as IDictionary<string, object>)["Valor"] : null);
+    }
+
+    public override GenericValueLanguage VisitParametroCodigoFunction([NotNull] LanguageParser.ParametroCodigoFunctionContext context)
+    {
+        string nome = Visit(context.text(0)).AsString();
+        string codigo = Visit(context.text(1)).AsString();
+        int? exercicio = int.TryParse(context.number_integer()?.GetText(), out int num) ? num : default(int?);
+
+        var value = _globalMemory["ParametroVlrs"].Where(x =>
+        {
+            var dict = x as IDictionary<string, object>;
+            return dict["NomeParam"].ToString() == nome && dict["Codigo"].ToString() == codigo &&
+                (!exercicio.HasValue || (int.TryParse(dict["Exercicio"].ToString(), out int ex) ? ex == exercicio : false));
+        }).FirstOrDefault();
+
+        return new GenericValueLanguage(value != null ? (value as IDictionary<string, object>)["Valor"] : null);
+    }
+
     public override GenericValueLanguage VisitLengthFunction([NotNull] LanguageParser.LengthFunctionContext context)
     {
         var identifier = context.VAR_PRIMARY().GetText();
         return new GenericValueLanguage(_memory.TryGetValue(identifier, out GenericValueLanguage value) && value.Value is object[] array ? array.Length : 0);
-    }
-
-    public override GenericValueLanguage VisitVarObjectEntity([NotNull] LanguageParser.VarObjectEntityContext context)
-    {
-        string identifier = context.VAR_OBJECT().GetText();
-        string objectKey = identifier.Substring(0, identifier.IndexOf(".", StringComparison.Ordinal));
-
-        if (_memory.TryGetValue(objectKey, out GenericValueLanguage value) && value.Value is ExpandoObject obj)
-        {
-            string propertyKey = identifier.Substring(identifier.IndexOf(".", StringComparison.Ordinal) + 1); ;
-            return new GenericValueLanguage((obj as IDictionary<string, object>)[propertyKey]);
-        }
-        return new GenericValueLanguage(null);
     }
 
     public override GenericValueLanguage VisitConditional([NotNull] LanguageParser.ConditionalContext context)
@@ -136,13 +185,14 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         var tabela = Visit(context.tabela_caracteristica());
         var descricao = Visit(context.descricao_caracteristica());
 
-        if (_memory.TryGetValue($"@{tabela.Value}.{descricao.Value}", out GenericValueLanguage value) && value.Value is object[] array){
+        if (_memory.TryGetValue($"@{tabela.Value}.{descricao.Value}", out GenericValueLanguage value) && value.Value is object[] array)
+        {
             double resultado = 0;
             double.TryParse((array[0] as IDictionary<string, object>)["Valor"]?.ToString(), out resultado);
             return new GenericValueLanguage(resultado);
         }
-            
-            
+
+
         return new GenericValueLanguage(null);
     }
 
@@ -246,7 +296,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         var right = Visit(context.arithmetic_expression(1));
 
         return left * right;
-  }
+    }
 
     public override GenericValueLanguage VisitDivExpression([NotNull] LanguageParser.DivExpressionContext context)
     {
@@ -301,6 +351,12 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
     public override GenericValueLanguage VisitNumberIntegerEntity(LanguageParser.NumberIntegerEntityContext context) =>
         new GenericValueLanguage(int.Parse(context.GetText(), CultureInfo.InvariantCulture));
 
+    public override GenericValueLanguage VisitNumberInteger([NotNull] LanguageParser.NumberIntegerContext context) =>
+        new GenericValueLanguage(int.Parse(context.GetText(), CultureInfo.InvariantCulture));
+
+    public override GenericValueLanguage VisitNumberDecimal([NotNull] LanguageParser.NumberDecimalContext context) =>
+        new GenericValueLanguage(double.Parse(context.GetText(), CultureInfo.InvariantCulture));
+
     public override GenericValueLanguage VisitDateEntity(LanguageParser.DateEntityContext context)
     {
         var culture = new CultureInfo("pt-BR", true);
@@ -337,6 +393,13 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
     public override GenericValueLanguage VisitCoalesceExpression([NotNull] LanguageParser.CoalesceExpressionContext context) =>
         Visit(context.coalesce_function());
 
+    public override GenericValueLanguage VisitRoundFunction([NotNull] LanguageParser.RoundFunctionContext context)
+    {
+        double number = Visit(context.number_decimal()).AsDouble();
+        int? decimalPlaces = context.number_integer() != null ? Visit(context.number_integer()).AsInt() : default(int?);
+
+        return new GenericValueLanguage(Math.Round(number, decimalPlaces ?? 0));
+    }
 
     private GenericValueLanguage GreaterThan(GenericValueLanguage left, GenericValueLanguage right)
     {
