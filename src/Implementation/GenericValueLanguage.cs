@@ -64,6 +64,6 @@ public readonly struct GenericValueLanguage
     }
 
     public override string ToString() =>
-        IsDecimal() ? Value.ToString().Replace(',', '.') : Value.ToString();
+        IsDecimal() ? Value.ToString().Replace(',', '.') : Value?.ToString();
 }
 

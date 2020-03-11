@@ -51,8 +51,13 @@ GET_DATE: 'getDate';
 LAST_DAY_PROCESS: 'lastDayProcess';
 DESPREZAR: 'desprezar';
 
-RBRACES: '}';
+WHILE: 'enquanto';
+
+LBRACKET: '[';
+RBRACKET: ']';
+
 LBRACES: '{';
+RBRACES: '}';
 
 LPAREN : '(' ;
 RPAREN : ')' ;
@@ -75,6 +80,7 @@ CONST: 'const';
 RETURN: 'retorno';
 
 COMMA: ',';
+DOT: '.';
 QUOTE : '"' ;
 
 NUMBER : '-'?[0-9]+;
@@ -84,7 +90,7 @@ IDENTIFIER : [a-zA-Z_][a-zA-Z_0-9]* ;
 TEXT: QUOTE (~["\\] | '\\' .)* QUOTE;
 VAR_PRIMARY: [@][a-zA-Z_][a-zA-Z_0-9]*;
 VAR_OBJECT: [@][a-zA-Z_][a-zA-Z_0-9]*[.][a-zA-Z_][a-zA-Z_0-9]*;
-VAR_ARRAY: [@][a-zA-Z_][a-zA-Z_0-9]*('['[0-9]+']')'.'[a-zA-Z_][a-zA-Z_0-9]+;
+VAR_ARRAY: [@][a-zA-Z_][a-zA-Z_0-9]*(LBRACKET (NUMBER | IDENTIFIER) RBRACKET)'.'[a-zA-Z_][a-zA-Z_0-9]+;
 
 SEMI : ';';
 COLON : ':';
@@ -103,8 +109,8 @@ rule_block
     : assignment
     | arithmetic_expression
     | conditional
+    | loop
     ;
-
 
 assignment
     : (VAR)? IDENTIFIER ATRIB arithmetic_expression SEMI #arithmeticAssignment
@@ -114,7 +120,6 @@ assignment
 return_value
 	: RETURN arithmetic_expression? SEMI #returnValue
 	;
-
 
 conditional
     : IF if_expression LBRACES then_block RBRACES (ELSE LBRACES else_block RBRACES)?
@@ -150,6 +155,9 @@ comparison_operator
     | NEQ
     ;
 
+loop
+    : WHILE LPAREN if_expression RPAREN LBRACES rule_block* RBRACES #whileExpression
+    ;
 
 function_signature
 	: CARACTERISTICA_TABELA LPAREN tabela_caracteristica COMMA descricao_caracteristica COMMA coluna_caracteristica COMMA exercicio_caracteristica (COMMA valor_fator_caracteristica)? RPAREN  #caracteristicaTabela
@@ -163,10 +171,7 @@ function_signature
     | AVERAGE LPAREN VAR_OBJECT RPAREN #averageFunction
     | LENGTH LPAREN VAR_PRIMARY RPAREN #lengthFunction
     | ROUND LPAREN number_decimal (COMMA number_integer)? RPAREN #roundFunction
-    ;
-
-coalesce_function
-    : COALESCE LPAREN entity (COMMA entity)* RPAREN #coalesceFunction
+    | COALESCE LPAREN entity (COMMA entity)* RPAREN #coalesceFunction
     ;
 
 arithmetic_expression
@@ -175,8 +180,7 @@ arithmetic_expression
     | arithmetic_expression PLUS arithmetic_expression							#plusExpression
     | arithmetic_expression MINUS arithmetic_expression							#minusExpression
     | LPAREN arithmetic_expression RPAREN										#parenthesisExpression
-    | coalesce_function                                                         #coalesceExpression
-    | function_signature                #ifFunctionSignature
+    | function_signature                                                        #ifFunctionSignature
     | entity																	#entityExpression
     ;
 
