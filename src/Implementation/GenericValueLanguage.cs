@@ -10,19 +10,19 @@ public readonly struct GenericValueLanguage
     public GenericValueLanguage(object value) => Value = value;
 
     public static GenericValueLanguage operator +(GenericValueLanguage left, GenericValueLanguage right) =>
-        new GenericValueLanguage(Math.Round(left.AsDecimal() + right.AsDecimal(), LanguageDefault.DecimalPlaces));
+        new GenericValueLanguage(left.AsDecimal() + right.AsDecimal());
 
     public static GenericValueLanguage operator -(GenericValueLanguage left, GenericValueLanguage right) =>
-        new GenericValueLanguage(Math.Round(left.AsDecimal() - right.AsDecimal(), LanguageDefault.DecimalPlaces));
+        new GenericValueLanguage(left.AsDecimal() - right.AsDecimal());
 
     public static GenericValueLanguage operator *(GenericValueLanguage left, GenericValueLanguage right) =>
-        new GenericValueLanguage(Math.Round(left.AsDecimal() * right.AsDecimal(), LanguageDefault.DecimalPlaces));
+        new GenericValueLanguage(left.AsDecimal() * right.AsDecimal());
 
     public static GenericValueLanguage operator /(GenericValueLanguage left, GenericValueLanguage right) =>
-        new GenericValueLanguage(Math.Round(left.AsDecimal() / right.AsDecimal(), LanguageDefault.DecimalPlaces));
+        new GenericValueLanguage(left.AsDecimal() / right.AsDecimal());
 
     public static explicit operator decimal(GenericValueLanguage genericValue) =>
-        Math.Round(decimal.Parse(genericValue.Value?.ToString() ?? "0.0"), LanguageDefault.DecimalPlaces);
+        decimal.Parse(genericValue.Value?.ToString() ?? "0.0");
 
     public static explicit operator int(GenericValueLanguage genericValue) =>
         int.Parse(genericValue.Value.ToString());
