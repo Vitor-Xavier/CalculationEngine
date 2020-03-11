@@ -44,16 +44,10 @@ namespace Api
             var caracteristica = TabelaColunaHelper.GetCaracteristica(roteiro.Eventos);
             var parametros = TabelaColunaHelper.GetParametros(roteiro.Eventos);
 
-            var consultaParametro = ParametroHelper.GetQuery(parametros);
-            var db = new DatabaseConnection();
-            
-            //TODO Adicionar Global
-            var ps = await db.GetAllData(new TabelaQuery[] { consultaParametro });
-
             var dados = await CarregarDados(roteiro.SetorOrigem, tabelas, caracteristicaTabela, caracteristica);
-            var dadosGlobais = await CarregarDadosGlobal(roteiro.SetorOrigem, caracteristica);
+            var dadosGlobais = await CarregarDadosGlobal(roteiro.SetorOrigem, caracteristica, parametros);
 
-            var memoryGlobal = dadosGlobais.ToDictionary(x =>  $"@{x.Key}", x => new GenericValueLanguage(x.Value.FirstOrDefault()));
+            var memoryGlobal = dadosGlobais.ToDictionary(x =>  $"@{x.Key}", x => new GenericValueLanguage(x.Key == "Caracteristica" ? x.Value.FirstOrDefault() : x.Value.ToArray()));
 
             #region Processamento
             Console.WriteLine("\n## Processamento\n");
@@ -65,7 +59,7 @@ namespace Api
             
             // Principal 
             string tabelaPrincipal = SetorOrigemHelper.GetTabelaPrincipal(roteiro.SetorOrigem);
-            Parallel.ForEach(dados,item =>
+            Parallel.ForEach(dados, item =>
              {
                 var aux = item.Value.Where(x => x.Value is object[] || x.Value is ExpandoObject);
 
@@ -143,7 +137,7 @@ namespace Api
             Console.WriteLine($"| CPU média      | {Math.Round((totalProcessorTime / (Environment.ProcessorCount * stopwatch.ElapsedMilliseconds)) * 100) + "%", -16:d2} |\n");
         }
 
-        public static async Task<IDictionary<string, IEnumerable<object>>> CarregarDadosGlobal(SetorOrigem setor, IEnumerable<Caracteristica> caracteristica)
+        public static async Task<IDictionary<string, IEnumerable<object>>> CarregarDadosGlobal(SetorOrigem setor, IEnumerable<Caracteristica> caracteristica, IEnumerable<Parametro> parametros)
         {
         
             // Diagnóstico
@@ -159,11 +153,13 @@ namespace Api
             // TO DO
             //Adicionar no Principal e no GetAllData para trazer os valores
             var consultasCaracteristica = CaracteristicaHelper.GetQueries(caracteristica);
+            //var consultasParametro = ParametroHelper.GetQueries(parametros);
+            var consultaParametro = ParametroHelper.GetQuery(parametros);
 
             stopwatchPreBD.Start();
 
             // Busca por todas as listas de dados requisitadas.
-            var keyValuePairsGlobal = await database.GetAllData(consultasCaracteristica);
+            var keyValuePairsGlobal = await database.GetAllData(consultasCaracteristica.Union(new TabelaQuery[] { consultaParametro }));
 
             // Separa as massas de dados em principal, para a tabela principal do setor informado e suas auxiliares.
             

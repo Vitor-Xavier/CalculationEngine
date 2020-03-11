@@ -106,11 +106,11 @@ namespace Api.Helper
 
         public static IEnumerable<TabelaColuna> ListaTabelaColuna(IList<IToken> Tokens, IDictionary<string, int> TokenTypeMap)
         {
-            var tokenVarTableColuna = TokenTypeMap.Where(x => x.Key == "VAR_PRIMARY" || x.Key == "VAR_OBJECT" || x.Key == "VAR_ARRAY").Select(x => x.Value).ToList();
+            var tokenVarTableColuna = TokenTypeMap.Where(x => x.Key == "VAR_OBJECT" || x.Key == "VAR_ARRAY").Select(x => x.Value).ToList();
             var tokensTypeVarTableColuna = Tokens.Where(x => tokenVarTableColuna.Contains(x.Type)).ToList();
             var grupo = tokensTypeVarTableColuna.Select(x => new
             {
-                tabela = Regex.Replace(x.Text.RemoveCaracter("@").SubstringWithIndexOf('.'), @"\[[0-9]+\]", string.Empty),
+                tabela = Regex.Replace(x.Text.RemoveCaracter("@").SubstringWithIndexOf('.'), @"\[\w+\]", string.Empty),
                 coluna = x.Text.RemoveCaracter("@").SubstringWithIndexOf('.', true).RemoveCaracter(".")
             })
                 .Where(u => u.tabela != "Roteiro")
@@ -219,8 +219,8 @@ namespace Api.Helper
                 yield return new Parametro
                 {
                     Nome = AntlrHelper.ExtractTextToken(tokenValueText, rangeToken, 0).Replace("\"", ""),
-                    Codigo = AntlrHelper.ExtractTextToken(tokenValueText, rangeToken, 1).Replace("\"", ""),
-                    Valor = AntlrHelper.ExtractTextToken(tokenValueText, rangeToken, 1).Replace("\"", ""),
+                    Codigo = tokenParametro.Type == tokenValueParametroCodigo ? AntlrHelper.ExtractTextToken(tokenValueText, rangeToken, 1).Replace("\"", "") : null,
+                    Valor = tokenParametro.Type == tokenValueParametroIntervalo ? AntlrHelper.ExtractTextToken(tokenValueText, rangeToken, 1).Replace("\"", "") : null,
                     Exercicio = int.TryParse(AntlrHelper.ExtractTextToken(tokenValueNumber, rangeToken, 0), out int exercicio) ? exercicio : default(int?)
                 };
 

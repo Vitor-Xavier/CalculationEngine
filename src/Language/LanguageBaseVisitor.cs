@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from .\Language.g4 by ANTLR 4.8
+// Generated from Language.g4 by ANTLR 4.8
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -206,6 +206,17 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// <return>The visitor result.</return>
 	public virtual Result VisitComparison_operator([NotNull] LanguageParser.Comparison_operatorContext context) { return VisitChildren(context); }
 	/// <summary>
+	/// Visit a parse tree produced by the <c>whileExpression</c>
+	/// labeled alternative in <see cref="LanguageParser.loop"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitWhileExpression([NotNull] LanguageParser.WhileExpressionContext context) { return VisitChildren(context); }
+	/// <summary>
 	/// Visit a parse tree produced by the <c>caracteristicaTabela</c>
 	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
 	/// <para>
@@ -328,7 +339,7 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	public virtual Result VisitRoundFunction([NotNull] LanguageParser.RoundFunctionContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by the <c>coalesceFunction</c>
-	/// labeled alternative in <see cref="LanguageParser.coalesce_function"/>.
+	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -337,17 +348,6 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	public virtual Result VisitCoalesceFunction([NotNull] LanguageParser.CoalesceFunctionContext context) { return VisitChildren(context); }
-	/// <summary>
-	/// Visit a parse tree produced by the <c>coalesceExpression</c>
-	/// labeled alternative in <see cref="LanguageParser.arithmetic_expression"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitCoalesceExpression([NotNull] LanguageParser.CoalesceExpressionContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by the <c>minusExpression</c>
 	/// labeled alternative in <see cref="LanguageParser.arithmetic_expression"/>.

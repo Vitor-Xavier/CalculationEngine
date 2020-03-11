@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from .\Language.g4 by ANTLR 4.8
+// Generated from Language.g4 by ANTLR 4.8
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -140,6 +140,13 @@ public interface ILanguageVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitComparison_operator([NotNull] LanguageParser.Comparison_operatorContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>whileExpression</c>
+	/// labeled alternative in <see cref="LanguageParser.loop"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitWhileExpression([NotNull] LanguageParser.WhileExpressionContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>caracteristicaTabela</c>
 	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
 	/// </summary>
@@ -218,18 +225,11 @@ public interface ILanguageVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitRoundFunction([NotNull] LanguageParser.RoundFunctionContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>coalesceFunction</c>
-	/// labeled alternative in <see cref="LanguageParser.coalesce_function"/>.
+	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitCoalesceFunction([NotNull] LanguageParser.CoalesceFunctionContext context);
-	/// <summary>
-	/// Visit a parse tree produced by the <c>coalesceExpression</c>
-	/// labeled alternative in <see cref="LanguageParser.arithmetic_expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitCoalesceExpression([NotNull] LanguageParser.CoalesceExpressionContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>minusExpression</c>
 	/// labeled alternative in <see cref="LanguageParser.arithmetic_expression"/>.
