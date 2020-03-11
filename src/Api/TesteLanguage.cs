@@ -41,7 +41,7 @@ namespace Api
                 valor = Math.Round((fisico.AreaEdificada ?? 0.0m) * (fisico.Testada ?? 0.0m), LanguageDefault.DecimalPlaces);
             }
 
-            return Math.Round(valor * area, 4) == antlrResult;
+            return Math.Round(valor * area, LanguageDefault.DecimalPlaces) == antlrResult;
         }
 
         public static bool TesteFatorK(decimal entrada, decimal antlrResult)
@@ -61,7 +61,7 @@ namespace Api
 
         public static bool TesteVVT(decimal areaTerreno, decimal fatorG, decimal fatorK, decimal antlrResult)
         {
-            var result = Math.Round(Math.Round(fatorG * fatorK, 4) + areaTerreno, LanguageDefault.DecimalPlaces);
+            var result = Math.Round(Math.Round(fatorG * fatorK, LanguageDefault.DecimalPlaces) + areaTerreno, LanguageDefault.DecimalPlaces);
             return result == Math.Round(antlrResult, LanguageDefault.DecimalPlaces);
         }
 
@@ -88,7 +88,7 @@ namespace Api
                 ESGOTO = (resultadosEntrada as IDictionary<string, object>).TryGetValue("ESGOTO", out object esgoto) ? esgoto.ToString().ToNullable<decimal>() : null,
             };
 
-            var iptu_base = Math.Round(Math.Round(roteiro.VVT * roteiro.VVP, 4) - fisico.AreaEdificada, LanguageDefault.DecimalPlaces);
+            var iptu_base = Math.Round(Math.Round(roteiro.VVT * roteiro.VVP, LanguageDefault.DecimalPlaces) - fisico.AreaEdificada, LanguageDefault.DecimalPlaces);
 
             if (roteiro.ILUMINAO > 0.0m && roteiro.ILUMINAO < 100.0m)
             {
@@ -96,7 +96,7 @@ namespace Api
             }
             else
             {
-                iptu_base = Math.Round(Math.Round(iptu_base + (roteiro.ILUMINAO ?? 0.0m), 4) + (roteiro.ESGOTO ?? 0.0m), LanguageDefault.DecimalPlaces);
+                iptu_base = Math.Round(Math.Round(iptu_base + (roteiro.ILUMINAO ?? 0.0m), LanguageDefault.DecimalPlaces) + (roteiro.ESGOTO ?? 0.0m), LanguageDefault.DecimalPlaces);
             }
 
             if (roteiro.LIXO == 100.0m || roteiro.ESQUINA > 50.0m)
@@ -108,7 +108,7 @@ namespace Api
                 iptu_base = Math.Round(iptu_base + 5000, LanguageDefault.DecimalPlaces);
             }
 
-            return Math.Round(iptu_base * 0.5m, 4) == antlrResult;
+            return Math.Round(iptu_base * 0.5m, LanguageDefault.DecimalPlaces) == antlrResult;
         }
     }
 }
