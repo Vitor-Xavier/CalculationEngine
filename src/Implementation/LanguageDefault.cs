@@ -2,6 +2,6 @@
 {
     public static class LanguageDefault
     {
-        public const int DecimalPlaces = 4;
+        public const int DecimalPlaces = 18;
     }
 }

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from Language.g4 by ANTLR 4.8
+// Generated from .\Language.g4 by ANTLR 4.8
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -147,12 +147,12 @@ public interface ILanguageVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitCaracteristicaTabela([NotNull] LanguageParser.CaracteristicaTabelaContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>buscarCaracteristica</c>
+	/// Visit a parse tree produced by the <c>caracteristica</c>
 	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitBuscarCaracteristica([NotNull] LanguageParser.BuscarCaracteristicaContext context);
+	Result VisitCaracteristica([NotNull] LanguageParser.CaracteristicaContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>parametroFunction</c>
 	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.

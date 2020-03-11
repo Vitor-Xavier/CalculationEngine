@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from Language.g4 by ANTLR 4.8
+// Generated from .\Language.g4 by ANTLR 4.8
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -217,7 +217,7 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// <return>The visitor result.</return>
 	public virtual Result VisitCaracteristicaTabela([NotNull] LanguageParser.CaracteristicaTabelaContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by the <c>buscarCaracteristica</c>
+	/// Visit a parse tree produced by the <c>caracteristica</c>
 	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -226,7 +226,7 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitBuscarCaracteristica([NotNull] LanguageParser.BuscarCaracteristicaContext context) { return VisitChildren(context); }
+	public virtual Result VisitCaracteristica([NotNull] LanguageParser.CaracteristicaContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by the <c>parametroFunction</c>
 	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.

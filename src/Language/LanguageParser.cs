@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from Language.g4 by ANTLR 4.8
+// Generated from .\Language.g4 by ANTLR 4.8
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -973,7 +973,7 @@ public partial class LanguageParser : Parser {
 			else return visitor.VisitChildren(this);
 		}
 	}
-	public partial class BuscarCaracteristicaContext : Function_signatureContext {
+	public partial class CaracteristicaContext : Function_signatureContext {
 		public ITerminalNode CARACTERISTICA() { return GetToken(LanguageParser.CARACTERISTICA, 0); }
 		public ITerminalNode LPAREN() { return GetToken(LanguageParser.LPAREN, 0); }
 		public Descricao_caracteristicaContext descricao_caracteristica() {
@@ -993,10 +993,10 @@ public partial class LanguageParser : Parser {
 		public Exercicio_caracteristicaContext exercicio_caracteristica() {
 			return GetRuleContext<Exercicio_caracteristicaContext>(0);
 		}
-		public BuscarCaracteristicaContext(Function_signatureContext context) { CopyFrom(context); }
+		public CaracteristicaContext(Function_signatureContext context) { CopyFrom(context); }
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILanguageVisitor<TResult> typedVisitor = visitor as ILanguageVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitBuscarCaracteristica(this);
+			if (typedVisitor != null) return typedVisitor.VisitCaracteristica(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
@@ -1169,7 +1169,7 @@ public partial class LanguageParser : Parser {
 				}
 				break;
 			case CARACTERISTICA:
-				_localctx = new BuscarCaracteristicaContext(_localctx);
+				_localctx = new CaracteristicaContext(_localctx);
 				EnterOuterAlt(_localctx, 2);
 				{
 				State = 157; Match(CARACTERISTICA);

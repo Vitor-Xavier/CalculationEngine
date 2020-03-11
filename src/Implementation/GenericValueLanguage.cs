@@ -10,26 +10,26 @@ public readonly struct GenericValueLanguage
     public GenericValueLanguage(object value) => Value = value;
 
     public static GenericValueLanguage operator +(GenericValueLanguage left, GenericValueLanguage right) =>
-        new GenericValueLanguage(Math.Round(left.AsDouble() + right.AsDouble(), LanguageDefault.DecimalPlaces));
+        new GenericValueLanguage(Math.Round(left.AsDecimal() + right.AsDecimal(), LanguageDefault.DecimalPlaces));
 
     public static GenericValueLanguage operator -(GenericValueLanguage left, GenericValueLanguage right) =>
-        new GenericValueLanguage(Math.Round(left.AsDouble() - right.AsDouble(), LanguageDefault.DecimalPlaces));
+        new GenericValueLanguage(Math.Round(left.AsDecimal() - right.AsDecimal(), LanguageDefault.DecimalPlaces));
 
     public static GenericValueLanguage operator *(GenericValueLanguage left, GenericValueLanguage right) =>
-        new GenericValueLanguage(Math.Round(left.AsDouble() * right.AsDouble(), LanguageDefault.DecimalPlaces));
+        new GenericValueLanguage(Math.Round(left.AsDecimal() * right.AsDecimal(), LanguageDefault.DecimalPlaces));
 
     public static GenericValueLanguage operator /(GenericValueLanguage left, GenericValueLanguage right) =>
-        new GenericValueLanguage(Math.Round(left.AsDouble() / right.AsDouble(), LanguageDefault.DecimalPlaces));
+        new GenericValueLanguage(Math.Round(left.AsDecimal() / right.AsDecimal(), LanguageDefault.DecimalPlaces));
 
-    public static explicit operator double(GenericValueLanguage genericValue) =>
-        Math.Round(double.Parse(genericValue.Value?.ToString() ?? "0.0"), LanguageDefault.DecimalPlaces);
+    public static explicit operator decimal(GenericValueLanguage genericValue) =>
+        Math.Round(decimal.Parse(genericValue.Value?.ToString() ?? "0.0"), LanguageDefault.DecimalPlaces);
 
     public static explicit operator int(GenericValueLanguage genericValue) =>
         int.Parse(genericValue.Value.ToString());
 
     public bool AsBoolean() => bool.Parse(Value.ToString());
 
-    public double AsDouble() => double.Parse(Value.ToString());
+    public decimal AsDecimal() => decimal.Parse(Value.ToString());
 
     public int AsInt() => int.Parse(Value.ToString());
 
@@ -37,7 +37,7 @@ public readonly struct GenericValueLanguage
 
     public string AsString() => Value.ToString();
 
-    public bool IsDouble() => Value is double;
+    public bool IsDecimal() => Value is decimal;
 
     public bool IsInt() => Value is int;
 
@@ -64,6 +64,6 @@ public readonly struct GenericValueLanguage
     }
 
     public override string ToString() =>
-        IsDouble() ? Value.ToString().Replace(',', '.') : Value.ToString();
+        IsDecimal() ? Value.ToString().Replace(',', '.') : Value.ToString();
 }
 

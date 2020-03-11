@@ -62,10 +62,10 @@ namespace Api
             var cpuProcessamentoStart = Process.GetCurrentProcess().TotalProcessorTime;
             stopWatchProcessamento.Start();
             
-            var executeFormula = new ExecuteLanguage(memoryGlobal);
+            
             // Principal 
             string tabelaPrincipal = SetorOrigemHelper.GetTabelaPrincipal(roteiro.SetorOrigem);
-            Parallel.ForEach(dados, new ParallelOptions(){MaxDegreeOfParallelism =1},item =>
+            Parallel.ForEach(dados,item =>
              {
                 var aux = item.Value.Where(x => x.Value is object[] || x.Value is ExpandoObject);
 
@@ -81,7 +81,7 @@ namespace Api
                      try
                      {
                          // Execução
-                         
+                         var executeFormula = new ExecuteLanguage(memoryGlobal);
                          executeFormula.DefaultParserTree(evento.Formula);
                          var result = executeFormula.Execute(memory);
                          
@@ -182,7 +182,7 @@ namespace Api
 
         public static async Task<IDictionary<int, IDictionary<string, object>>> CarregarDados(SetorOrigem setor, IEnumerable<TabelaColuna> tabelas, IEnumerable<CaracteristicaTabela> caracteristicaTabela, IEnumerable<Caracteristica> caracteristica)
         {
-            int idSelecao = 3;
+            int idSelecao = 1;
 
             // Diagnóstico
             var stopwatchPre = new Stopwatch();
@@ -252,13 +252,13 @@ namespace Api
             int countIptu = 0;
             foreach (var item in dados)
             {
-                var fatorG = double.Parse((Resultados[item.Key] as IDictionary<string, object>)["FatorG"].ToString());
-                var fatorK = double.Parse((Resultados[item.Key] as IDictionary<string, object>)["FatorK"].ToString());
-                var vvt = double.Parse((Resultados[item.Key] as IDictionary<string, object>)["vvt"].ToString());
-                var vvp = double.Parse((Resultados[item.Key] as IDictionary<string, object>)["vvp"].ToString());
-                var iptu = double.Parse((Resultados[item.Key] as IDictionary<string, object>)["IPTU"].ToString());
+                var fatorG = decimal.Parse((Resultados[item.Key] as IDictionary<string, object>)["FatorG"].ToString());
+                var fatorK = decimal.Parse((Resultados[item.Key] as IDictionary<string, object>)["FatorK"].ToString());
+                var vvt = decimal.Parse((Resultados[item.Key] as IDictionary<string, object>)["vvt"].ToString());
+                var vvp = decimal.Parse((Resultados[item.Key] as IDictionary<string, object>)["vvp"].ToString());
+                var iptu = decimal.Parse((Resultados[item.Key] as IDictionary<string, object>)["IPTU"].ToString());
 
-                var areaTerreno = double.Parse((item.Value as IDictionary<string, object>)["AreaTerreno"].ToString());
+                var areaTerreno = decimal.Parse((item.Value as IDictionary<string, object>)["AreaTerreno"].ToString());
                 if (TesteLanguage.TesteFatorG(item.Value, fatorG)) countFatorG++;
                 if (TesteLanguage.TesteFatorK(fatorG, fatorK)) countFatorK++;
                 if (TesteLanguage.TesteVVT(areaTerreno, fatorG, fatorK, vvt)) countvvt++;
