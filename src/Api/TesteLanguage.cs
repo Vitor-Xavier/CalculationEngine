@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Implementation;
+﻿using System.Collections.Generic;
 
 namespace Api
 {
@@ -34,14 +32,14 @@ namespace Api
             var valor = 0m;
             if (fisico.AreaEdificada > 0.0m)
             {
-                valor = Math.Round((fisico.AreaEdificada ?? 0.0m) * 1.05m, LanguageDefault.DecimalPlaces);
+                valor = (fisico.AreaEdificada ?? 0.0m) * 1.05m;
             }
             else
             {
-                valor = Math.Round((fisico.AreaEdificada ?? 0.0m) * (fisico.Testada ?? 0.0m), LanguageDefault.DecimalPlaces);
+                valor = (fisico.AreaEdificada ?? 0.0m) * (fisico.Testada ?? 0.0m);
             }
 
-            return Math.Round(valor * area, LanguageDefault.DecimalPlaces) == antlrResult;
+            return valor * area == antlrResult;
         }
 
         public static bool TesteFatorK(decimal entrada, decimal antlrResult)
@@ -61,14 +59,14 @@ namespace Api
 
         public static bool TesteVVT(decimal areaTerreno, decimal fatorG, decimal fatorK, decimal antlrResult)
         {
-            var result = Math.Round(Math.Round(fatorG * fatorK, LanguageDefault.DecimalPlaces) + areaTerreno, LanguageDefault.DecimalPlaces);
-            return result == Math.Round(antlrResult, LanguageDefault.DecimalPlaces);
+            var result = fatorG * fatorK + areaTerreno;
+            return result == antlrResult;
         }
 
         public static bool TesteVVP(decimal areaTerreno, decimal antlrResult)
         {
-            var result = Math.Round(areaTerreno * 100, LanguageDefault.DecimalPlaces);
-            return result == Math.Round(antlrResult, LanguageDefault.DecimalPlaces);
+            var result = areaTerreno * 100;
+            return result == antlrResult;
         }
 
         public static bool TesteIPTU(object fisicoEntrada, object resultadosEntrada, decimal antlrResult)
@@ -88,27 +86,27 @@ namespace Api
                 ESGOTO = (resultadosEntrada as IDictionary<string, object>).TryGetValue("ESGOTO", out object esgoto) ? esgoto.ToString().ToNullable<decimal>() : null,
             };
 
-            var iptu_base = Math.Round(Math.Round(roteiro.VVT * roteiro.VVP, LanguageDefault.DecimalPlaces) - fisico.AreaEdificada, LanguageDefault.DecimalPlaces);
+            var iptu_base = roteiro.VVT * roteiro.VVP - fisico.AreaEdificada;
 
             if (roteiro.ILUMINAO > 0.0m && roteiro.ILUMINAO < 100.0m)
             {
-                iptu_base = Math.Round(iptu_base + (roteiro.ILUMINAO ?? 0.0m), LanguageDefault.DecimalPlaces);
+                iptu_base = iptu_base + (roteiro.ILUMINAO ?? 0.0m);
             }
             else
             {
-                iptu_base = Math.Round(Math.Round(iptu_base + (roteiro.ILUMINAO ?? 0.0m), LanguageDefault.DecimalPlaces) + (roteiro.ESGOTO ?? 0.0m), LanguageDefault.DecimalPlaces);
+                iptu_base =iptu_base + (roteiro.ILUMINAO ?? 0.0m) + (roteiro.ESGOTO ?? 0.0m);
             }
 
             if (roteiro.LIXO == 100.0m || roteiro.ESQUINA > 50.0m)
             {
-                iptu_base = Math.Round(iptu_base - (roteiro.REFORMADO ?? 0.0m), LanguageDefault.DecimalPlaces);
+                iptu_base = iptu_base - (roteiro.REFORMADO ?? 0.0m);
             }
             else
             {
-                iptu_base = Math.Round(iptu_base + 5000, LanguageDefault.DecimalPlaces);
+                iptu_base = iptu_base + 5000;
             }
 
-            return Math.Round(iptu_base * 0.5m, LanguageDefault.DecimalPlaces) == antlrResult;
+            return iptu_base * 0.5m == antlrResult;
         }
     }
 }
