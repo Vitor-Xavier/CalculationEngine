@@ -1,4 +1,5 @@
 using Antlr4.Runtime.Misc;
+using Common.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -10,6 +11,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
 
     private readonly IDictionary<string, GenericValueLanguage> _memory;
     private readonly IDictionary<string, GenericValueLanguage> _memoryGlobal;
+    private readonly IDictionary<string, GenericValueLanguage> _memoryLocal = new Dictionary<string, GenericValueLanguage>();
 
     public VisitorLanguage(IDictionary<string, GenericValueLanguage> memory, IDictionary<string, GenericValueLanguage> memoryGlobal)
     {
@@ -35,7 +37,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         if (_memory.TryGetValue(arrayKey, out GenericValueLanguage value) && value.Value is object[] array)
         {
             string pos = identifier.Substring(start + 1, end - start);
-            int index = int.TryParse(identifier.Substring(start + 1, end - start), out int idx) ? idx : _memory[pos].AsInt();
+            int index = int.TryParse(identifier.Substring(start + 1, end - start), out int idx) ? idx : _memoryLocal[pos].AsInt();
             if (array.Length > index)
             {
                 string propertyKey = identifier.Substring(identifier.IndexOf(".", StringComparison.Ordinal) + 1);
@@ -55,7 +57,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
 
         if (_memory.TryGetValue(objectKey, out GenericValueLanguage value) && value.Value is ExpandoObject obj)
         {
-            string propertyKey = identifier.Substring(identifier.IndexOf(".", StringComparison.Ordinal) + 1); ;
+            string propertyKey = identifier.Substring(identifier.IndexOf(".", StringComparison.Ordinal) + 1);
             return new GenericValueLanguage((obj as IDictionary<string, object>)[propertyKey]);
         }
         return new GenericValueLanguage(null);
@@ -111,6 +113,53 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         }
         else
             return new GenericValueLanguage(0);
+    }
+
+    public override GenericValueLanguage VisitAbsFunction([NotNull] LanguageParser.AbsFunctionContext context) =>
+        new GenericValueLanguage(Math.Abs(Visit(context.arithmetic_expression()).AsDecimal()));
+
+    public override GenericValueLanguage VisitSumIfFunction([NotNull] LanguageParser.SumIfFunctionContext context)
+    {
+        string identifier = context.VAR_OBJECT().GetText();
+        string objectKey = identifier.Substring(0, identifier.IndexOf(".", StringComparison.Ordinal));
+        decimal sum = 0m;
+
+        if (_memory.TryGetValue(objectKey, out GenericValueLanguage value) && value.Value is object[] array)
+        {
+            string propertyKey = identifier.Substring(identifier.IndexOf(".", StringComparison.Ordinal) + 1);
+            string op = context.comparison_operator().GetText();
+            foreach (IDictionary<string, object> item in array)
+            {
+                var left = item.TryGetValue(context.arithmetic_expression(0).GetText(), out object leftValue) ? new GenericValueLanguage(leftValue) : Visit(context.arithmetic_expression(0));
+                var right = item.TryGetValue(context.arithmetic_expression(1).GetText(), out object rightValue) ? new GenericValueLanguage(rightValue) : Visit(context.arithmetic_expression(1));
+
+                if (CompareGenericValues(left, right, op).AsBoolean())
+                    sum += item[propertyKey].IsNumericType() ? decimal.Parse(item[propertyKey]?.ToString() ?? "0") : 0m;
+            }
+        }
+
+        return new GenericValueLanguage(sum);
+    }
+
+    public override GenericValueLanguage VisitCountIfFunction([NotNull] LanguageParser.CountIfFunctionContext context)
+    {
+        string identifier = context.VAR_PRIMARY().GetText();
+        int count = 0;
+
+        if (_memory.TryGetValue(identifier, out GenericValueLanguage value) && value.Value is object[] array)
+        {
+            string op = context.comparison_operator().GetText();
+            foreach (IDictionary<string, object> item in array)
+            {
+                var left = item.TryGetValue(context.arithmetic_expression(0).GetText(), out object leftValue) ? new GenericValueLanguage(leftValue) : Visit(context.arithmetic_expression(0));
+                var right = item.TryGetValue(context.arithmetic_expression(1).GetText(), out object rightValue) ? new GenericValueLanguage(rightValue) : Visit(context.arithmetic_expression(1));
+
+                if (CompareGenericValues(left, right, op).AsBoolean())
+                    count++;
+            }
+        }
+
+        return new GenericValueLanguage(count);
     }
 
     public override GenericValueLanguage VisitParametroFunction([NotNull] LanguageParser.ParametroFunctionContext context)
@@ -252,39 +301,8 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         var left = Visit(context.arithmetic_expression(0));
         var right = Visit(context.arithmetic_expression(1));
         string op = context.comparison_operator().GetText();
-        var localCulture = new CultureInfo("pt-BR");
 
-        switch (op)
-        {
-            case "==":
-                {
-                    if (decimal.TryParse(left.Value.ToString(), out decimal leftDecimal) && decimal.TryParse(right.Value.ToString(), out decimal rightDecimal))
-                        return new GenericValueLanguage(leftDecimal == rightDecimal);
-                    else if (DateTime.TryParse(left.Value.ToString(), localCulture, DateTimeStyles.None, out DateTime leftDate) &&
-                            DateTime.TryParse(right.Value.ToString(), localCulture, DateTimeStyles.None, out DateTime rightDate))
-                        return new GenericValueLanguage(leftDate == rightDate);
-                    return new GenericValueLanguage(left.Value == right.Value);
-                }
-            case "!=":
-                {
-                    if (decimal.TryParse(left.Value.ToString(), out decimal leftDecimal) && decimal.TryParse(right.Value.ToString(), out decimal rightDecimal))
-                        return new GenericValueLanguage(leftDecimal != rightDecimal);
-                    else if (DateTime.TryParse(left.Value.ToString(), localCulture, DateTimeStyles.None, out DateTime leftDate) &&
-                            DateTime.TryParse(right.Value.ToString(), localCulture, DateTimeStyles.None, out DateTime rightDate))
-                        return new GenericValueLanguage(leftDate != rightDate);
-                    return new GenericValueLanguage(left.Value != right.Value);
-                }
-            case ">":
-                return GreaterThan(left, right);
-            case ">=":
-                return GreaterThanOrEqual(left, right);
-            case "<":
-                return LessThan(left, right);
-            case "<=":
-                return LessThanOrEqual(left, right);
-            default:
-                throw new InvalidOperationException($"Operador '{op}' nao reconhecido.");
-        }
+        return CompareGenericValues(left, right, op);
     }
 
     public override GenericValueLanguage VisitParenthesisComparisonExpression([NotNull] LanguageParser.ParenthesisComparisonExpressionContext context) =>
@@ -325,32 +343,97 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         return left / right;
     }
 
+    public override GenericValueLanguage VisitPowExpression([NotNull] LanguageParser.PowExpressionContext context)
+    {
+        var left = Visit(context.arithmetic_expression(0));
+        var right = Visit(context.arithmetic_expression(1));
+
+        if (left.IsNumeric && right.IsNumeric)
+            return new GenericValueLanguage(Math.Pow((double)left, (double)right));
+        throw new ArithmeticException($"Não é possível elevar o valor {left.Value} a {right.Value}");
+    }
+
+    public override GenericValueLanguage VisitSqrtFunction([NotNull] LanguageParser.SqrtFunctionContext context)
+    {
+        var number = Visit(context.arithmetic_expression());
+
+        if (number.IsNumeric)
+            return new GenericValueLanguage(Math.Sqrt((double)number));
+        throw new ArithmeticException($"Não foi possível retornar a raiz de {number.Value}");
+    }
+
     public override GenericValueLanguage VisitParenthesisExpression([NotNull] LanguageParser.ParenthesisExpressionContext context) =>
         Visit(context.arithmetic_expression());
 
     public override GenericValueLanguage VisitArithmeticAssignment([NotNull] LanguageParser.ArithmeticAssignmentContext context)
     {
-        var id = context.IDENTIFIER().GetText();
+        string identifier = context.IDENTIFIER().GetText();
         var value = Visit(context.arithmetic_expression());
+        string op = context.assignment_operator().GetText();
 
-        if (_memory.ContainsKey(id))
-            _memory[id] = value;
-        else
-            _memory.Add(id, value);
+        if (!_memoryLocal.TryGetValue(identifier, out GenericValueLanguage currentValue))
+            throw new Exception($"Varíavel '{identifier}' não foi declarada");
 
-        return value;
+        switch (op)
+        {
+            case "=":
+                _memoryLocal[identifier] = value;
+                break;
+            case "+=" when currentValue.Value is string currentString:
+                _memoryLocal[identifier] = new GenericValueLanguage(currentString + value.AsString());
+                break;
+            case "+=" when currentValue.IsNumeric && value.IsNumeric:
+                _memoryLocal[identifier] = currentValue + value;
+                break;
+            case "-=" when currentValue.IsNumeric && value.IsNumeric:
+                _memoryLocal[identifier] = currentValue - value;
+                break;
+            case "*=" when currentValue.IsNumeric && value.IsNumeric:
+                _memoryLocal[identifier] = currentValue * value;
+                break;
+            case "/=" when currentValue.IsNumeric && value.IsNumeric && (decimal)value != 0:
+                _memoryLocal[identifier] = currentValue / value;
+                break;
+            default:
+                throw new InvalidOperationException("Operador de atribuição inválido");
+        }
+
+        return _memoryLocal[identifier];
     }
 
     public override GenericValueLanguage VisitComparisonAssignment([NotNull] LanguageParser.ComparisonAssignmentContext context)
     {
-        var id = context.IDENTIFIER().GetText();
-
+        string identifier = context.IDENTIFIER().GetText();
         var value = Visit(context.comparison_expression());
 
-        if (_memory.ContainsKey(id))
-            _memory[id] = value;
-        else
-            _memory.Add(id, value);
+        if (!_memoryLocal.ContainsKey(identifier))
+            throw new Exception($"Varíavel '{identifier}' não foi declarada");
+
+        _memoryLocal[identifier] = value;
+
+        return _memoryLocal[identifier];
+    }
+
+    public override GenericValueLanguage VisitArithmeticDeclaration([NotNull] LanguageParser.ArithmeticDeclarationContext context)
+    {
+        var id = context.IDENTIFIER().GetText();
+        var value = Visit(context.arithmetic_expression());
+
+        if (_memoryLocal.ContainsKey(id))
+            throw new ArgumentException($"Variável {id} já foi declarada");
+        _memoryLocal.Add(id, value);
+
+        return value;
+    }
+
+    public override GenericValueLanguage VisitComparisonDeclaration([NotNull] LanguageParser.ComparisonDeclarationContext context)
+    {
+        var id = context.IDENTIFIER().GetText();
+        var value = Visit(context.comparison_expression());
+
+        if (_memoryLocal.ContainsKey(id))
+            throw new ArgumentException($"Variável {id} já foi declarada");
+        _memoryLocal.Add(id, value);
 
         return value;
     }
@@ -389,7 +472,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
 
         if (id is null) throw new NullReferenceException("Variavel nao informada");
 
-        if (_memory.TryGetValue(id, out GenericValueLanguage value))
+        if (_memoryLocal.TryGetValue(id, out GenericValueLanguage value))
             return value;
         else throw new Exception("Variavel nao informada");
     }
@@ -408,8 +491,8 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
 
     public override GenericValueLanguage VisitRoundFunction([NotNull] LanguageParser.RoundFunctionContext context)
     {
-        decimal number = Visit(context.number_decimal()).AsDecimal();
-        int? decimalPlaces = context.number_integer() != null ? Visit(context.number_integer()).AsInt() : default(int?);
+        decimal number = Visit(context.arithmetic_expression(0)).AsDecimal();
+        int? decimalPlaces = context.arithmetic_expression(1) != null ? Visit(context.arithmetic_expression(1)).AsInt() : default(int?);
 
         return new GenericValueLanguage(Math.Round(number, decimalPlaces ?? 0));
     }
@@ -425,14 +508,93 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         return new GenericValueLanguage(null);
     }
 
+    public override GenericValueLanguage VisitIsNullFunction([NotNull] LanguageParser.IsNullFunctionContext context) =>
+        new GenericValueLanguage(Visit(context.arithmetic_expression()).Value is null);
+
+    public override GenericValueLanguage VisitTodayFunction([NotNull] LanguageParser.TodayFunctionContext context) =>
+        new GenericValueLanguage(DateTime.Today);
+
+    public override GenericValueLanguage VisitNowFunction([NotNull] LanguageParser.NowFunctionContext context) =>
+        new GenericValueLanguage(DateTime.Now);
+
+    public override GenericValueLanguage VisitDateDifFunction([NotNull] LanguageParser.DateDifFunctionContext context)
+    {
+        var left = Visit(context.entity(0));
+        var right = Visit(context.entity(1));
+        string unit = context.date_unit().GetText();
+
+        switch (unit)
+        {
+            case "ANO":
+                return new GenericValueLanguage(Math.Abs((right.AsDateTime() - left.AsDateTime()).Days / 365));
+            case "MES":
+                return new GenericValueLanguage(Math.Abs(right.AsDateTime().MonthDifference(left.AsDateTime())));
+            case "DIA":
+                return new GenericValueLanguage((right.AsDateTime() - left.AsDateTime()).Days);
+            default:
+                throw new ArgumentException($"Unidade {unit} nao reconhecida");
+        }
+    }
+
+    public override GenericValueLanguage VisitGetDayFunction([NotNull] LanguageParser.GetDayFunctionContext context) =>
+        new GenericValueLanguage(Visit(context.entity()).AsDateTime().Day);
+
+    public override GenericValueLanguage VisitGetMonthFunction([NotNull] LanguageParser.GetMonthFunctionContext context) =>
+        new GenericValueLanguage(Visit(context.entity()).AsDateTime().Month);
+
+    public override GenericValueLanguage VisitGetYearFunction([NotNull] LanguageParser.GetYearFunctionContext context) =>
+        new GenericValueLanguage(Visit(context.entity()).AsDateTime().Year);
+
+    private GenericValueLanguage CompareGenericValues(GenericValueLanguage left, GenericValueLanguage right, string op)
+    {
+        switch (op)
+        {
+            case "==": return Equal(left, right);
+            case "!=": return NotEqual(left, right);
+            case ">": return GreaterThan(left, right);
+            case "<": return LessThan(left, right);
+            case ">=": return GreaterThanOrEqual(left, right);
+            case "<=": return LessThanOrEqual(left, right);
+            default:
+                throw new InvalidOperationException($"Operador '{op}' nao reconhecido.");
+        }
+    }
+
+    private GenericValueLanguage Equal(GenericValueLanguage left, GenericValueLanguage right)
+    {
+        var localCulture = new CultureInfo("pt-BR");
+
+        if (decimal.TryParse(left.Value.ToString(), out decimal leftDecimal) && decimal.TryParse(right.Value.ToString(), out decimal rightDecimal))
+            return new GenericValueLanguage(leftDecimal == rightDecimal);
+        else if (DateTime.TryParse(left.Value.ToString(), localCulture, DateTimeStyles.None, out DateTime leftDate) &&
+                DateTime.TryParse(right.Value.ToString(), localCulture, DateTimeStyles.None, out DateTime rightDate))
+            return new GenericValueLanguage(leftDate == rightDate);
+        return new GenericValueLanguage(left.Value == right.Value);
+    }
+
+    private GenericValueLanguage NotEqual(GenericValueLanguage left, GenericValueLanguage right)
+    {
+        var localCulture = new CultureInfo("pt-BR");
+
+        if (decimal.TryParse(left.Value.ToString(), out decimal leftDecimal) && decimal.TryParse(right.Value.ToString(), out decimal rightDecimal))
+            return new GenericValueLanguage(leftDecimal != rightDecimal);
+        else if (DateTime.TryParse(left.Value.ToString(), localCulture, DateTimeStyles.None, out DateTime leftDate) &&
+                DateTime.TryParse(right.Value.ToString(), localCulture, DateTimeStyles.None, out DateTime rightDate))
+            return new GenericValueLanguage(leftDate != rightDate);
+        return new GenericValueLanguage(left.Value != right.Value);
+    }
+
     private GenericValueLanguage GreaterThan(GenericValueLanguage left, GenericValueLanguage right)
     {
-        if (decimal.TryParse(left.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal leftDecimal) && 
+        if (decimal.TryParse(left.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal leftDecimal) &&
             decimal.TryParse(right.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal rightDecimal))
             return new GenericValueLanguage(leftDecimal > rightDecimal);
 
         if (left.IsDate() && right.IsDate())
             return new GenericValueLanguage(left.AsDateTime() > right.AsDateTime());
+
+        if (left.Value is null || right.Value is null)
+            return new GenericValueLanguage(false);
 
         throw new InvalidOperationException("Comparando valores incompatíveis.");
     }
@@ -446,6 +608,9 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         if (left.IsDate() && right.IsDate())
             return new GenericValueLanguage(left.AsDateTime() < right.AsDateTime());
 
+        if (left.Value is null || right.Value is null)
+            return new GenericValueLanguage(false);
+
         throw new InvalidOperationException("Comparando valores incompatíveis.");
     }
 
@@ -458,6 +623,9 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         if (left.IsDate() && right.IsDate())
             return new GenericValueLanguage(left.AsDateTime() >= right.AsDateTime());
 
+        if (left.Value is null || right.Value is null)
+            return new GenericValueLanguage(false);
+
         throw new InvalidOperationException("Comparando valores incompatíveis.");
     }
 
@@ -469,6 +637,9 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
 
         if (left.IsDate() && right.IsDate())
             return new GenericValueLanguage(left.AsDateTime() <= right.AsDateTime());
+
+        if (left.Value is null || right.Value is null)
+            return new GenericValueLanguage(false);
 
         throw new InvalidOperationException("Comparando valores incompatíveis.");
     }

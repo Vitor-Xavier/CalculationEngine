@@ -9,20 +9,22 @@ public class ExecuteLanguage
     public LanguageParser parser;
     private readonly IDictionary<string, GenericValueLanguage> _memoryGlobal;
 
-    public ExecuteLanguage(IDictionary<string, GenericValueLanguage> memoryGlobal)
-    {
-        _memoryGlobal = memoryGlobal;
-    }
+    public ExecuteLanguage() { }
 
-    public ExecuteLanguage()
-    {
-        
-    }
+    public ExecuteLanguage(IDictionary<string, GenericValueLanguage> memoryGlobal) =>
+        _memoryGlobal = memoryGlobal;
+
     public IParseTree DefaultParserTree(string executionCode)
     {
         var lexer = new LanguageLexer(new AntlrInputStream(executionCode));
         commonToken = new CommonTokenStream(lexer);
         parser = new LanguageParser(commonToken);
+
+#if DEBUG
+        parser.Interpreter.PredictionMode = Antlr4.Runtime.Atn.PredictionMode.LL;
+#else
+        parser.Interpreter.PredictionMode = Antlr4.Runtime.Atn.PredictionMode.SLL;
+#endif
 
         _defaultParserTree = parser.rule_set();
         return parser.rule_set();

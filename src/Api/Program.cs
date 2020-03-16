@@ -1,6 +1,6 @@
 ﻿using Api.Database;
 using Api.Dto;
-using Api.Extensions;
+using Common.Extensions;
 using Api.Helper;
 using Api.Services;
 using System;
