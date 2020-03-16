@@ -141,6 +141,17 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// <return>The visitor result.</return>
 	public virtual Result VisitElseBlock([NotNull] LanguageParser.ElseBlockContext context) { return VisitChildren(context); }
 	/// <summary>
+	/// Visit a parse tree produced by the <c>notIfEntity</c>
+	/// labeled alternative in <see cref="LanguageParser.if_expression"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitNotIfEntity([NotNull] LanguageParser.NotIfEntityContext context) { return VisitChildren(context); }
+	/// <summary>
 	/// Visit a parse tree produced by the <c>orExpression</c>
 	/// labeled alternative in <see cref="LanguageParser.if_expression"/>.
 	/// <para>
@@ -195,6 +206,17 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	public virtual Result VisitIfEntity([NotNull] LanguageParser.IfEntityContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>notParenthesisIfExpression</c>
+	/// labeled alternative in <see cref="LanguageParser.if_expression"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitNotParenthesisIfExpression([NotNull] LanguageParser.NotParenthesisIfExpressionContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by the <c>comparisonExpression</c>
 	/// labeled alternative in <see cref="LanguageParser.comparison_expression"/>.

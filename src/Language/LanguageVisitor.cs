@@ -99,6 +99,13 @@ public interface ILanguageVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitElseBlock([NotNull] LanguageParser.ElseBlockContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>notIfEntity</c>
+	/// labeled alternative in <see cref="LanguageParser.if_expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitNotIfEntity([NotNull] LanguageParser.NotIfEntityContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>orExpression</c>
 	/// labeled alternative in <see cref="LanguageParser.if_expression"/>.
 	/// </summary>
@@ -133,6 +140,13 @@ public interface ILanguageVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitIfEntity([NotNull] LanguageParser.IfEntityContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>notParenthesisIfExpression</c>
+	/// labeled alternative in <see cref="LanguageParser.if_expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitNotParenthesisIfExpression([NotNull] LanguageParser.NotParenthesisIfExpressionContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>comparisonExpression</c>
 	/// labeled alternative in <see cref="LanguageParser.comparison_expression"/>.

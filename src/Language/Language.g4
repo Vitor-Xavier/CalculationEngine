@@ -3,14 +3,18 @@ grammar Language;
 
 /* Lexical rules */
 
+COMMENT: '//' .+? ('\n'|EOF) -> skip;
+WS: [ \r\t\u000C\n]+ -> skip;
+
 IF   : 'se' ;
 ELSE : 'senao';
 SWITCH: 'switch';
 CASE: 'case';
 DEFAULT: 'default';
 
-AND : '&&' ;
-OR  : '||' ;
+AND : '&&';
+OR  : '||';
+NOT : '!';
 
 TRUE  : 'true' ;
 FALSE : 'false' ;
@@ -113,9 +117,6 @@ VAR_ARRAY: [@][a-zA-Z_][a-zA-Z_0-9]*(LBRACKET (NUMBER | IDENTIFIER) RBRACKET)'.'
 SEMI : ';';
 COLON : ':';
 
-COMMENT : '//' .+? ('\n'|EOF) -> skip ;
-WS : [ \r\t\u000C\n]+ -> skip ;
-
 /* Grammar rules */
 
 
@@ -162,7 +163,9 @@ if_expression
     : if_expression AND if_expression   #andExpression
     | if_expression OR if_expression    #orExpression
     | comparison_expression             #ifComparisonExpression
+    | NOT LPAREN if_expression RPAREN       #notParenthesisIfExpression
     | LPAREN if_expression RPAREN       #parenthesisIfExpression
+    | NOT entity                        #notIfEntity
     | entity                            #ifEntity
     ;
 

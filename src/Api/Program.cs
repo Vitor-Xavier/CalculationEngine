@@ -85,6 +85,7 @@ namespace Api
                     catch (Exception e)
                     {
                         Exceptions.Value.Enqueue(e);
+                        break;
                     }
                 };
                 Resultados.TryAdd(item.Key, memory["@Roteiro"].Value);
