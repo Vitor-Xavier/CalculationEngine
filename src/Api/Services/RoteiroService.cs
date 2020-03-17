@@ -49,6 +49,35 @@ namespace Api.Services
                 Id = 1,
                 Nome = "FatorG",
                 Formula = @"
+                    // var dt1 = 14/02/2008;
+                    // var dt2 = _HOJE();
+                    // var dia = _DIA(dt2);
+                    // var mes = _MES(dt2);
+                    // var ano = _ANO(dt2);
+                    // var dtdf = _DATADIF(dt1, dt2, MES);
+                    // var percentualMinimo = 0.35;
+                    // var somase = _SOMASE(@FisicoOutros.Percentual, Percentual > percentualMinimo);
+                    // var countse = _CONTSE(@FisicoOutros, Percentual > percentualMinimo);
+                    // var abcv = _ARREDONDAR(_COALESCE(@FacesdaQuadra.LarguraRua, 3.989898), 2);
+                    // var index = 0;
+                    // var somaManual = 0.0;
+                    // var perc = 0.0;
+                    // var maior = 0.0;
+                    // enquanto (index < _CONT(@FisicoOutros)) {
+                    //     somaManual += _COALESCE(@FisicoOutros[index].Percentual, 0);
+                    //     se (maior < @FisicoOutros[index].Percentual) {
+                    //         maior = @FisicoOutros[index].Percentual;
+                    //         perc *= _COALESCE(@FisicoOutros[index].Percentual, 0);
+                    //     } senao {
+                    //         perc += 1;
+                    //     }
+                    //     index +=  1;
+                    // }
+                    // var tst5 = 2 ^ 3;
+                    // var tst6 = _RAIZ(11);
+                    // var somaFunc = _SOMA(@FisicoOutros.Percentual);
+                    // var maxFunc = _MAXIMO(@FisicoOutros.Percentual);
+
                     var valor = 1.0;
                     // Teste
                     var area = _COALESCE(@FisicoAreas[0].Area, @FacesdaQuadra.LarguraRua, @FisicoOutros[0].Percentual, 9);

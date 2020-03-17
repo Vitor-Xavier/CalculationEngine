@@ -3,25 +3,34 @@ grammar Language;
 
 /* Lexical rules */
 
+COMMENT: '//' .+? ('\n'|EOF) -> skip;
+WS: [ \r\t\u000C\n]+ -> skip;
+
 IF   : 'se' ;
 ELSE : 'senao';
 SWITCH: 'switch';
 CASE: 'case';
 DEFAULT: 'default';
 
-AND : '&&' ;
-OR  : '||' ;
+AND : '&&';
+OR  : '||';
+NOT : '!';
 
 TRUE  : 'true' ;
 FALSE : 'false' ;
-NULL : 'null';
+NULL : 'nulo';
 MARKER: 'marker';
 
+ISNULL: '_NULO';
+SUM_IF: '_SOMASE';
+COUNT_IF: '_CONTSE';
+ABS: '_ABS';
+SQRT: '_RAIZ';
 SUM: '_SOMA';
 MAX: '_MAXIMO';
 MIN: '_MINIMO';
 AVERAGE: '_MEDIA';
-LENGTH: '_TAMANHO';
+LENGTH: '_CONT';
 COALESCE: '_COALESCE';
 CARACTERISTICA_TABELA: '_CARACTERISTICATABELA';
 CARACTERISTICA: '_CARACTERISTICA';
@@ -29,6 +38,13 @@ PARAMETRO: '_PARAMETRO';
 PARAMETRO_CODIGO: '_PARAMETROCODIGO';
 PARAMETRO_INTERVALO: '_PARAMETROINTERVALO';
 ROUND: '_ARREDONDAR';
+TODAY: '_HOJE';
+NOW: '_AGORA';
+DATE_DIF: '_DATADIF';
+GET_MONTH: '_MES';
+GET_DAY: '_DIA';
+GET_YEAR: '_ANO';
+
 LOOKUP_FUNC: 'lookupFunction';
 BASE_FUNC: 'baseFunction';
 TOTAL_PAYMENTS: 'totalPayments';
@@ -38,9 +54,6 @@ PROPORTIONAL_RECALCULATION: 'proportionalRecalculation';
 CLEAR_VALUES_FUNCTION: 'clearValuesFunction';
 CLEAR_DISCOUNTS_FUNCTION: 'clearDiscountsFunction';
 CLEAR_PAYMENTS_FUNCTION: 'clearPaymentsFunction';
-GET_DAY: 'getDay';
-GET_MONTH: 'getMonth';
-GET_YEAR: 'getYear';
 ADD_DAY: 'addDay';
 ADD_MONTH: 'addMonth';
 ADD_YEAR: 'addYear';
@@ -56,8 +69,8 @@ WHILE: 'enquanto';
 LBRACKET: '[';
 RBRACKET: ']';
 
-LBRACES: '{';
-RBRACES: '}';
+LBRACE: '{';
+RBRACE: '}';
 
 LPAREN : '(' ;
 RPAREN : ')' ;
@@ -66,6 +79,7 @@ MULT  : '*' ;
 DIV   : '/' ;
 PLUS  : '+' ;
 MINUS : '-' ;
+POW: '^';
 
 GT : '>' ;
 GE : '>=' ;
@@ -73,11 +87,23 @@ LT : '<' ;
 LE : '<=' ;
 EQ : '==' ;
 NEQ : '!=' ;
+
+YEAR: 'ANO';
+MONTH: 'MES';
+DAY: 'DIA';
+
 ATRIB: '=';
+PLUS_ASSIGNMENT: '+=';
+MINUS_ASSIGNMENT: '-=';
+MULT_ASSIGNMENT: '*=';
+DIV_ASSIGNMENT: '/=';
 
 VAR: 'var';
+<<<<<<< HEAD
 LISTA: 'lista';
 CONST: 'const';
+=======
+>>>>>>> 485d5f81bab9c27f2ce2af739360785ab1ed9afe
 RETURN: 'retorno';
 
 COMMA: ',';
@@ -99,9 +125,6 @@ IDENTIFIER_ARRAY: [a-zA-Z_][a-zA-Z_0-9]*(LBRACKET (NUMBER | IDENTIFIER) RBRACKET
 SEMI : ';';
 COLON : ':';
 
-COMMENT : '//' .+? ('\n'|EOF) -> skip ;
-WS : [ \r\t\u000C\n]+ -> skip ;
-
 /* Grammar rules */
 
 
@@ -111,15 +134,27 @@ rule_set
 
 rule_block
     : assignment
+    | variable_declaration
     | arithmetic_expression
     | conditional
     | loop
     ;
 
+
+variable_declaration
+    : VAR IDENTIFIER ATRIB arithmetic_expression SEMI #arithmeticDeclaration
+    | VAR IDENTIFIER ATRIB comparison_expression SEMI #comparisonDeclaration
+    ;
+
 assignment
+<<<<<<< HEAD
     : (VAR)? IDENTIFIER ATRIB arithmetic_expression SEMI #arithmeticAssignment
     | (VAR)? IDENTIFIER ATRIB comparison_expression SEMI #comparisonAssignment
     | (LISTA)? IDENTIFIER_ARRAY ATRIB arithmetic_expression SEMI #arrayAssignment
+=======
+    : IDENTIFIER assignment_operator arithmetic_expression SEMI #arithmeticAssignment
+    | IDENTIFIER ATRIB comparison_expression SEMI #comparisonAssignment
+>>>>>>> 485d5f81bab9c27f2ce2af739360785ab1ed9afe
 	;
 
 return_value
@@ -127,7 +162,7 @@ return_value
 	;
 
 conditional
-    : IF if_expression LBRACES then_block RBRACES (ELSE LBRACES else_block RBRACES)?
+    : IF if_expression LBRACE then_block RBRACE (ELSE LBRACE else_block RBRACE)?
     ;
 
 then_block
@@ -142,7 +177,9 @@ if_expression
     : if_expression AND if_expression   #andExpression
     | if_expression OR if_expression    #orExpression
     | comparison_expression             #ifComparisonExpression
+    | NOT LPAREN if_expression RPAREN       #notParenthesisIfExpression
     | LPAREN if_expression RPAREN       #parenthesisIfExpression
+    | NOT entity                        #notIfEntity
     | entity                            #ifEntity
     ;
 
@@ -160,8 +197,16 @@ comparison_operator
     | NEQ
     ;
 
+assignment_operator
+    : ATRIB
+    | PLUS_ASSIGNMENT
+    | MINUS_ASSIGNMENT
+    | MULT_ASSIGNMENT
+    | DIV_ASSIGNMENT
+    ;
+
 loop
-    : WHILE LPAREN if_expression RPAREN LBRACES rule_block* RBRACES #whileExpression
+    : WHILE LPAREN if_expression RPAREN LBRACE rule_block* RBRACE #whileExpression
     ;
 
 function_signature
@@ -175,8 +220,19 @@ function_signature
     | MIN LPAREN VAR_OBJECT RPAREN #minFunction
     | AVERAGE LPAREN VAR_OBJECT RPAREN #averageFunction
     | LENGTH LPAREN VAR_PRIMARY RPAREN #lengthFunction
-    | ROUND LPAREN number_decimal (COMMA number_integer)? RPAREN #roundFunction
+    | ROUND LPAREN arithmetic_expression (COMMA arithmetic_expression)? RPAREN #roundFunction
     | COALESCE LPAREN entity (COMMA entity)* RPAREN #coalesceFunction
+    | SQRT LPAREN arithmetic_expression RPAREN #sqrtFunction
+    | ABS LPAREN arithmetic_expression RPAREN #absFunction
+    | SUM_IF LPAREN VAR_OBJECT COMMA arithmetic_expression comparison_operator arithmetic_expression RPAREN #sumIfFunction
+    | COUNT_IF LPAREN VAR_PRIMARY COMMA arithmetic_expression comparison_operator arithmetic_expression RPAREN #countIfFunction
+    | ISNULL LPAREN arithmetic_expression RPAREN #isNullFunction
+    | TODAY LPAREN RPAREN #todayFunction
+    | NOW LPAREN RPAREN #nowFunction
+    | DATE_DIF LPAREN entity COMMA entity COMMA date_unit RPAREN #dateDifFunction
+    | GET_YEAR LPAREN entity RPAREN #getYearFunction
+    | GET_MONTH LPAREN entity RPAREN #getMonthFunction
+    | GET_DAY LPAREN entity RPAREN #getDayFunction
     ;
 
 arithmetic_expression
@@ -184,6 +240,7 @@ arithmetic_expression
     | arithmetic_expression DIV arithmetic_expression							#divExpression
     | arithmetic_expression PLUS arithmetic_expression							#plusExpression
     | arithmetic_expression MINUS arithmetic_expression							#minusExpression
+    | arithmetic_expression POW arithmetic_expression							#powExpression
     | LPAREN arithmetic_expression RPAREN										#parenthesisExpression
     | function_signature                                                        #ifFunctionSignature
     | entity																	#entityExpression
@@ -243,3 +300,8 @@ arithmetic_expression
     number_decimal
     : DECIMAL #numberDecimal
     ;
+
+date_unit
+    : YEAR
+    | MONTH
+    | DAY;

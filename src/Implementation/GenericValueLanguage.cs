@@ -1,4 +1,4 @@
-﻿using Implementation;
+﻿using Common.Extensions;
 using System;
 
 public readonly struct GenericValueLanguage
@@ -6,6 +6,8 @@ public readonly struct GenericValueLanguage
     public readonly static GenericValueLanguage VOID = new GenericValueLanguage(new object());
 
     public readonly object Value;
+
+    public bool IsNumeric => Value?.IsNumericType() ?? false;
 
     public GenericValueLanguage(object value) => Value = value;
 
@@ -22,7 +24,7 @@ public readonly struct GenericValueLanguage
         new GenericValueLanguage(left.AsDecimal() / right.AsDecimal());
 
     public static explicit operator decimal(GenericValueLanguage genericValue) =>
-        decimal.Parse(genericValue.Value?.ToString() ?? "0.0");
+        decimal.Parse(genericValue.Value?.ToString() ?? "0");
 
     public static explicit operator int(GenericValueLanguage genericValue) =>
         int.Parse(genericValue.Value.ToString());
@@ -49,14 +51,10 @@ public readonly struct GenericValueLanguage
     public override bool Equals(object o)
     {
         if (Value == o)
-        {
             return true;
-        }
 
         if (Value is null || o is null)
-        {
             return false;
-        }
 
         var that = (GenericValueLanguage)o;
 

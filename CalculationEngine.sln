@@ -1,15 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26124.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29905.134
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0E350A07-B974-4FB2-B6B7-B486D01A1116}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Language", "src\Language\Language.csproj", "{BFF0D612-1DB8-49C4-B642-8CC3E912976B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Language", "src\Language\Language.csproj", "{BFF0D612-1DB8-49C4-B642-8CC3E912976B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Implementation", "src\Implementation\Implementation.csproj", "{F5CCBDF5-C421-4D4F-8543-A4B05F9105BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Implementation", "src\Implementation\Implementation.csproj", "{F5CCBDF5-C421-4D4F-8543-A4B05F9105BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "src\Api\Api.csproj", "{4A2DF7CE-A809-4052-BB56-28EBEA4F8181}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api", "src\Api\Api.csproj", "{4A2DF7CE-A809-4052-BB56-28EBEA4F8181}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "src\Common\Common.csproj", "{BE20AAA1-4CE9-41A4-A7FC-FE32C7B81E73}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,9 +21,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{BFF0D612-1DB8-49C4-B642-8CC3E912976B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -60,10 +59,29 @@ Global
 		{4A2DF7CE-A809-4052-BB56-28EBEA4F8181}.Release|x64.Build.0 = Release|Any CPU
 		{4A2DF7CE-A809-4052-BB56-28EBEA4F8181}.Release|x86.ActiveCfg = Release|Any CPU
 		{4A2DF7CE-A809-4052-BB56-28EBEA4F8181}.Release|x86.Build.0 = Release|Any CPU
+		{BE20AAA1-4CE9-41A4-A7FC-FE32C7B81E73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE20AAA1-4CE9-41A4-A7FC-FE32C7B81E73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE20AAA1-4CE9-41A4-A7FC-FE32C7B81E73}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BE20AAA1-4CE9-41A4-A7FC-FE32C7B81E73}.Debug|x64.Build.0 = Debug|Any CPU
+		{BE20AAA1-4CE9-41A4-A7FC-FE32C7B81E73}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BE20AAA1-4CE9-41A4-A7FC-FE32C7B81E73}.Debug|x86.Build.0 = Debug|Any CPU
+		{BE20AAA1-4CE9-41A4-A7FC-FE32C7B81E73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE20AAA1-4CE9-41A4-A7FC-FE32C7B81E73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE20AAA1-4CE9-41A4-A7FC-FE32C7B81E73}.Release|x64.ActiveCfg = Release|Any CPU
+		{BE20AAA1-4CE9-41A4-A7FC-FE32C7B81E73}.Release|x64.Build.0 = Release|Any CPU
+		{BE20AAA1-4CE9-41A4-A7FC-FE32C7B81E73}.Release|x86.ActiveCfg = Release|Any CPU
+		{BE20AAA1-4CE9-41A4-A7FC-FE32C7B81E73}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{BFF0D612-1DB8-49C4-B642-8CC3E912976B} = {0E350A07-B974-4FB2-B6B7-B486D01A1116}
 		{F5CCBDF5-C421-4D4F-8543-A4B05F9105BA} = {0E350A07-B974-4FB2-B6B7-B486D01A1116}
 		{4A2DF7CE-A809-4052-BB56-28EBEA4F8181} = {0E350A07-B974-4FB2-B6B7-B486D01A1116}
+		{BE20AAA1-4CE9-41A4-A7FC-FE32C7B81E73} = {0E350A07-B974-4FB2-B6B7-B486D01A1116}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4E4A604A-3DF4-4A6E-9990-7CC1065B08A0}
 	EndGlobalSection
 EndGlobal

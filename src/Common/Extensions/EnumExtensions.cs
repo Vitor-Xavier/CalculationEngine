@@ -3,10 +3,15 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 
-namespace Api.Extensions
+namespace Common.Extensions
 {
     public static class EnumExtensions
     {
+        /// <summary>
+        /// Extrai a descrição definida no atributo 'Description' do item de uma enumeração.
+        /// </summary>
+        /// <param name="value">Valor da enumeração</param>
+        /// <returns>Descrição</returns>
         public static string GetDescription(this Enum value)
         {
             Type type = value.GetType();
