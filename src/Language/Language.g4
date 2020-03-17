@@ -100,7 +100,7 @@ DIV_ASSIGNMENT: '/=';
 
 VAR: 'var';
 LISTA: 'lista';
-CONST: 'const';
+
 RETURN: 'retorno';
 
 COMMA: ',';
@@ -117,13 +117,10 @@ VAR_OBJECT: [@][a-zA-Z_][a-zA-Z_0-9]*[.][a-zA-Z_][a-zA-Z_0-9]*;
 VAR_ARRAY: [@][a-zA-Z_][a-zA-Z_0-9]*(LBRACKET (NUMBER | IDENTIFIER) RBRACKET)'.'[a-zA-Z_][a-zA-Z_0-9]+;
 IDENTIFIER_ARRAY: [a-zA-Z_][a-zA-Z_0-9]*(LBRACKET (NUMBER | IDENTIFIER) RBRACKET)'.'[a-zA-Z_][a-zA-Z_0-9]+;
 
-
-
 SEMI : ';';
 COLON : ':';
 
 /* Grammar rules */
-
 
 rule_set
 	: rule_block* return_value? 
@@ -141,17 +138,12 @@ rule_block
 variable_declaration
     : VAR IDENTIFIER ATRIB arithmetic_expression SEMI #arithmeticDeclaration
     | VAR IDENTIFIER ATRIB comparison_expression SEMI #comparisonDeclaration
+    | LISTA IDENTIFIER_ARRAY ATRIB arithmetic_expression SEMI #arrayAssignment
     ;
 
 assignment
-<<<<<<< HEAD
-    : (VAR)? IDENTIFIER ATRIB arithmetic_expression SEMI #arithmeticAssignment
-    | (VAR)? IDENTIFIER ATRIB comparison_expression SEMI #comparisonAssignment
-    | (LISTA)? IDENTIFIER_ARRAY ATRIB arithmetic_expression SEMI #arrayAssignment
-=======
     : IDENTIFIER assignment_operator arithmetic_expression SEMI #arithmeticAssignment
     | IDENTIFIER ATRIB comparison_expression SEMI #comparisonAssignment
->>>>>>> 485d5f81bab9c27f2ce2af739360785ab1ed9afe
 	;
 
 return_value
