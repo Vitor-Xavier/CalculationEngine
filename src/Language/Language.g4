@@ -99,11 +99,8 @@ MULT_ASSIGNMENT: '*=';
 DIV_ASSIGNMENT: '/=';
 
 VAR: 'var';
-<<<<<<< HEAD
 LISTA: 'lista';
 CONST: 'const';
-=======
->>>>>>> 485d5f81bab9c27f2ce2af739360785ab1ed9afe
 RETURN: 'retorno';
 
 COMMA: ',';
