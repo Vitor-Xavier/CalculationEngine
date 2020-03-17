@@ -1,5 +1,6 @@
 ﻿using Api.Dto;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -25,6 +26,19 @@ namespace Api.Helper
                 _ => throw new Exception("Setor não possui uma tabela principal configurada.")
             };
 
+        public static string GetTabelaPrincipalColuna(SetorOrigem setor) =>
+            setor switch
+            {
+                SetorOrigem.Imobiliario => "IdFisico as [Fisico.Id]",
+                SetorOrigem.Contribuinte => "CRC as [Contribuintes.Id]",
+                SetorOrigem.ITBI => "IdItbi as [Itbi.Id]",
+                SetorOrigem.ITBI_Complementar => "IdItbiComplementar as [IdItbiComplementar.Id]",
+                SetorOrigem.Mobiliario => "Ccm as [Ccm.Id]",
+                SetorOrigem.Parcelamento => "IdParcelamento as [Parcelamento.ID]",
+                SetorOrigem.Global => "Global",
+                _ => throw new Exception("Setor não possui uma tabela principal configurada.")
+            };
+
         public static IEnumerable<string> GetTabelasSetor(SetorOrigem setor) =>
             setor switch
             {
@@ -44,7 +58,7 @@ namespace Api.Helper
         public static string GetDefaultSQL(string tabela, int selecaoId) =>
             tabela.ToUpper() switch
             {
-                "FISICO" => "SELECT IdFisico as [Fisico.Id], {0} FROM Fisico " +
+                "FISICO" => "SELECT {0} FROM Fisico " +
                            $"INNER JOIN RoteiroSelecaoItens selecao ON selecao.IdSelecao = {selecaoId} AND IdFisico = selecao.IdSelecionado",
                 "FACESDAQUADRA" => " LEFT JOIN FacesdaQuadra ON Fisico.IdFacedaQuadra = FacesdaQuadra.IdFacedaQuadra",
                 "FISICOOUTROS" => "SELECT IdFisicoOutro as [FisicoOutros.Id], IdFisico as [FisicoOutros.IdOrigem], {0} FROM FisicoOutros " +
@@ -58,10 +72,12 @@ namespace Api.Helper
         public static IEnumerable<TabelaQuery> GetQueries(SetorOrigem setor, IEnumerable<TabelaColuna> tabelas, int selecaoId)
         {
             string tabelaPrincipal = GetTabelaPrincipal(setor);
-            var principal = tabelas.FirstOrDefault(x => x.Tabela == GetTabelaPrincipal(setor));
+            TabelaColuna principal = tabelas.FirstOrDefault(x => x.Tabela == GetTabelaPrincipal(setor));
+
+       
 
             var relacionados = tabelas.Where(x => TabelaRelacionadas.First(y => y.Tabela == tabelaPrincipal).Relacionadas.Contains(x.Tabela));
-            principal.Coluna = principal.Coluna.Union(relacionados.SelectMany(x => x.Coluna.Select(y => $"{x.Tabela}.{y} as [{x.Tabela}.{y}]"))).ToList();
+            principal.Coluna = principal.Coluna?.Union(relacionados.SelectMany(x => x.Coluna.Select(y => $"{x.Tabela}.{y} as [{x.Tabela}.{y}]"))).ToList();
             string sqlRelacionados = string.Join("\\s", relacionados.Select(x => GetDefaultSQL(x.Tabela, selecaoId)));
 
             foreach (var tabela in tabelas.Except(relacionados))

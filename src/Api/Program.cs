@@ -25,7 +25,7 @@ namespace Api
         {
             Console.WriteLine("# Cálculo Tributário");
             Console.WriteLine("\n## Roteiro\n");
-            var roteiroService = new RoteiroService();
+            var roteiroService = new RoteiroBaseService();
             var roteiro = await roteiroService.GetRoteiro();
             Console.WriteLine("| Roteiro  | Valor      |");
             Console.WriteLine("|----------|------------|");
@@ -39,15 +39,15 @@ namespace Api
 
             Console.WriteLine("\n## Pré-Processamento\n");
 
-            var tabelas = TabelaColunaHelper.GetTabelaColunas(roteiro.Eventos);
+            var tabelas = TabelaColunaHelper.GetTabelaColunas(roteiro);
             var caracteristicaTabela = TabelaColunaHelper.GetCaracteristicaTabela(roteiro.Eventos);
             var caracteristica = TabelaColunaHelper.GetCaracteristica(roteiro.Eventos);
             var parametros = TabelaColunaHelper.GetParametros(roteiro.Eventos);
 
             var dados = await CarregarDados(roteiro.SetorOrigem, tabelas, caracteristicaTabela, caracteristica);
-            var dadosGlobais = await CarregarDadosGlobal(roteiro.SetorOrigem, caracteristica, parametros);
+            //var dadosGlobais = await CarregarDadosGlobal(roteiro.SetorOrigem, caracteristica, parametros);
 
-            var memoryGlobal = dadosGlobais.ToDictionary(x => $"@{x.Key}", x => new GenericValueLanguage(x.Key == "Caracteristica" ? x.Value.FirstOrDefault() : x.Value.ToArray()));
+            //var memoryGlobal = dadosGlobais.ToDictionary(x => $"@{x.Key}", x => new GenericValueLanguage(x.Key == "Caracteristica" ? x.Value.FirstOrDefault() : x.Value.ToArray()));
 
             #region Processamento
             Console.WriteLine("\n## Processamento\n");
@@ -75,7 +75,7 @@ namespace Api
                     try
                     {
                         // Execução
-                        var executeFormula = new ExecuteLanguage(memoryGlobal);
+                        var executeFormula = new ExecuteLanguage();
                         executeFormula.DefaultParserTree(evento.Formula);
                         var result = executeFormula.Execute(memory);
 
@@ -127,7 +127,7 @@ namespace Api
             var endProcessorTime = Process.GetCurrentProcess().TotalProcessorTime;
             double totalProcessorTime = (endProcessorTime - startProcessorTime).TotalMilliseconds;
 
-            TestarFormulas(dados);
+            //TestarFormulas(dados);
 
             Console.WriteLine("\n## Geral\n");
             Console.WriteLine("| Medição        | Utilização       |");
@@ -181,7 +181,7 @@ namespace Api
 
         public static async Task<IDictionary<int, IDictionary<string, object>>> CarregarDados(SetorOrigem setor, IEnumerable<TabelaColuna> tabelas, IEnumerable<CaracteristicaTabela> caracteristicaTabela, IEnumerable<Caracteristica> caracteristica)
         {
-            int idSelecao = 1;
+            int idSelecao = 3;
 
             // Diagnóstico
             var stopwatchPre = new Stopwatch();
@@ -196,34 +196,42 @@ namespace Api
 
             var database = new DatabaseConnection();
 
-            var consultas = SetorOrigemHelper.GetQueries(setor, tabelas, idSelecao);
-            var consultasCaracteristicaTabela = CaracteristicaHelper.GetQueries(caracteristicaTabela, idSelecao);
+            IEnumerable<TabelaQuery> consultas = Enumerable.Empty<TabelaQuery>();
+            if(tabelas.Any() && tabelas.Count() > 0)    
+                consultas = SetorOrigemHelper.GetQueries(setor, tabelas, idSelecao);
 
-            // TO DO
-            //Adicionar no Principal e no GetAllData para trazer os valores
-            var consultasCaracteristica = CaracteristicaHelper.GetQueries(caracteristica);
+            IEnumerable<TabelaQuery> consultasCaracteristicaTabela = Enumerable.Empty<TabelaQuery>();
+            if(caracteristicaTabela.Any() && tabelas.Count() > 0)    
+                consultasCaracteristicaTabela = CaracteristicaHelper.GetQueries(caracteristicaTabela, idSelecao);
 
-            stopwatchPreBD.Start();
-            // Busca por todas as listas de dados requisitadas.
-            var keyValuePairs = await database.GetAllData(consultas.Union(consultasCaracteristicaTabela));
+            IEnumerable<TabelaQuery> unionTabela = consultas.Union(consultasCaracteristicaTabela);
 
-            // Separa as massas de dados em principal, para a tabela principal do setor informado e suas auxiliares.
-            string tabelaPrincipal = SetorOrigemHelper.GetTabelaPrincipal(setor);
+            Dictionary<int, IDictionary<string, object>> principal = new Dictionary<int, IDictionary<string, object>>();
+            if(unionTabela.Any()){
+                stopwatchPreBD.Start();
+                // Busca por todas as listas de dados requisitadas.
+            
+                IDictionary<string, IEnumerable<object>> keyValuePairs = new Dictionary<string, IEnumerable<object>>();
+                keyValuePairs = await database.GetAllData(unionTabela);
 
-            stopwatchPreBD.Stop();
+                // Separa as massas de dados em principal, para a tabela principal do setor informado e suas auxiliares.
+                string tabelaPrincipal = SetorOrigemHelper.GetTabelaPrincipal(setor);
 
-            var principal = keyValuePairs.FirstOrDefault(x => x.Key == tabelaPrincipal)
-                .Value.ToDictionary(x => (int)(x as IDictionary<string, object>)["Id"], x => (x as IDictionary<string, object>));
+                stopwatchPreBD.Stop();
 
-            // Associa as listas de dados a lista da tabela principal.
-            foreach (var aux in keyValuePairs.Where(x => x.Key != tabelaPrincipal))
-            {
-                foreach (var x in aux.Value.GroupBy(x => (int)(x as IDictionary<string, object>)["IdOrigem"]))
+                principal = keyValuePairs.FirstOrDefault(x => x.Key == tabelaPrincipal)
+                    .Value.ToDictionary(x => (int)(x as IDictionary<string, object>)["Id"], x => (x as IDictionary<string, object>));
+
+                // Associa as listas de dados a lista da tabela principal.
+                foreach (var aux in keyValuePairs.Where(x => x.Key != tabelaPrincipal))
                 {
-                    if (principal.TryGetValue(x.Key, out IDictionary<string, object> principalValue))
-                        principalValue[aux.Key] = x.ToArray();
-                };
-            }
+                    foreach (var x in aux.Value.GroupBy(x => (int)(x as IDictionary<string, object>)["IdOrigem"]))
+                    {
+                        if (principal.TryGetValue(x.Key, out IDictionary<string, object> principalValue))
+                            principalValue[aux.Key] = x.ToArray();
+                    };
+                }
+            
 
             stopwatchPre.Stop();
 
@@ -231,15 +239,20 @@ namespace Api
             var totalTabelasAuxiliares = auxiliares.Count();
             var totalRegistroTabelasAuxiliares = auxiliares.Select(x => x.Value.Select(y => y).Count()).Sum();
 
+
             Console.WriteLine("### Dados principais e relacionados\n");
             Console.WriteLine("| Medição              | Utilização       |");
             Console.WriteLine("|----------------------|------------------|");
-            Console.WriteLine($"| Registros principais | {principal.Count,-16} |");
+            Console.WriteLine($"| Registros principais | {principal?.Count,-16} |");
             Console.WriteLine($"| Registros auxiliares | {totalRegistroTabelasAuxiliares,-16} |");
 
             Console.WriteLine($"| Memória máxima       | {(Process.GetCurrentProcess().PeakWorkingSet64 / 1024f) / 1024f + "mb",-16} |");
             Console.WriteLine($"| Tempo Banco de Dados | {stopwatchPreBD.Elapsed} |");
             Console.WriteLine($"| Tempo Total          | {stopwatchPre.Elapsed} |\n");
+
+            }
+
+            stopwatchPre.Stop();
 
             return principal;
         }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Antlr4.Runtime;
@@ -8,11 +9,14 @@ namespace Api.Helper
 {
     public static class TabelaColunaHelper
     {
-        public static IEnumerable<TabelaColuna> GetTabelaColunas(IEnumerable<Evento> eventos)
+        public static IEnumerable<TabelaColuna> GetTabelaColunas(Roteiro roteiro)
         {
+            
             var grupo = new List<TabelaColuna>();
 
-            foreach (var evento in eventos)
+            string tabelaPrincipal = SetorOrigemHelper.GetTabelaPrincipal(roteiro.SetorOrigem);
+            string colunaPrincipal = SetorOrigemHelper.GetTabelaPrincipalColuna(roteiro.SetorOrigem);
+            foreach (var evento in roteiro.Eventos)
             {
                 ExecuteLanguage execute = new ExecuteLanguage();
                 execute.DefaultParserTree(evento.Formula);
@@ -24,7 +28,19 @@ namespace Api.Helper
                 grupo.AddRange(ListaTabelaColuna(tokens, tokenTypeMap));
 
             }
+
+            if(!grupo.Any(x => x.Tabela == tabelaPrincipal)){
+                grupo.Add(new TabelaColuna()
+                {
+                Tabela = tabelaPrincipal,
+                Coluna = new List<string>(){ colunaPrincipal }
+            });
+            } else {
+                grupo.Where(x => x.Tabela == tabelaPrincipal).Select(c => {c.Coluna.Add(colunaPrincipal); return c;}).ToList();
+            }   
+
             grupo = grupo.GroupBy(t => t.Tabela).Select(x => new TabelaColuna { Tabela = x.Key, Coluna = x.SelectMany(y => y.Coluna).Distinct().ToList() }).ToList();
+
             return grupo;
         }
 

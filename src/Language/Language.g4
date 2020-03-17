@@ -76,6 +76,7 @@ NEQ : '!=' ;
 ATRIB: '=';
 
 VAR: 'var';
+LISTA: 'lista';
 CONST: 'const';
 RETURN: 'retorno';
 
@@ -91,6 +92,9 @@ TEXT: QUOTE (~["\\] | '\\' .)* QUOTE;
 VAR_PRIMARY: [@][a-zA-Z_][a-zA-Z_0-9]*;
 VAR_OBJECT: [@][a-zA-Z_][a-zA-Z_0-9]*[.][a-zA-Z_][a-zA-Z_0-9]*;
 VAR_ARRAY: [@][a-zA-Z_][a-zA-Z_0-9]*(LBRACKET (NUMBER | IDENTIFIER) RBRACKET)'.'[a-zA-Z_][a-zA-Z_0-9]+;
+IDENTIFIER_ARRAY: [a-zA-Z_][a-zA-Z_0-9]*(LBRACKET (NUMBER | IDENTIFIER) RBRACKET)'.'[a-zA-Z_][a-zA-Z_0-9]+;
+
+
 
 SEMI : ';';
 COLON : ':';
@@ -115,6 +119,7 @@ rule_block
 assignment
     : (VAR)? IDENTIFIER ATRIB arithmetic_expression SEMI #arithmeticAssignment
     | (VAR)? IDENTIFIER ATRIB comparison_expression SEMI #comparisonAssignment
+    | (LISTA)? IDENTIFIER_ARRAY ATRIB arithmetic_expression SEMI #arrayAssignment
 	;
 
 return_value
@@ -218,11 +223,14 @@ arithmetic_expression
     | number_integer            #numberIntegerEntity
 	| DATE						#dateEntity
     | IDENTIFIER                #variableEntity
+    | IDENTIFIER_ARRAY          #variableArrayEntity
     | VAR_PRIMARY               #varPrimaryEntity
     | VAR_ARRAY                 #varArrayEntity
     | VAR_OBJECT                #varObjectEntity
     | NULL                      #nullEntity
     ;
+
+ 
 
     text
     : TEXT #stringEntity

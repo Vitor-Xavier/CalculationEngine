@@ -11,11 +11,15 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
     private readonly IDictionary<string, GenericValueLanguage> _memory;
     private readonly IDictionary<string, GenericValueLanguage> _memoryGlobal;
 
+    private readonly IDictionary<string, GenericValueLanguage> _memoryLocalArrayGlobal;
+
+
     public VisitorLanguage(IDictionary<string, GenericValueLanguage> memory, IDictionary<string, GenericValueLanguage> memoryGlobal)
     {
         _memory = memory ?? new Dictionary<string, GenericValueLanguage>();
         _memoryGlobal = memoryGlobal ?? new Dictionary<string, GenericValueLanguage>();
-    }
+        _memoryLocalArrayGlobal = _memoryLocalArrayGlobal ?? new Dictionary<string, GenericValueLanguage>();
+  }
 
     public override GenericValueLanguage VisitVarPrimaryEntity([NotNull] LanguageParser.VarPrimaryEntityContext context)
     {
@@ -341,6 +345,19 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         return value;
     }
 
+
+    public override GenericValueLanguage VisitArrayAssignment([NotNull] LanguageParser.ArrayAssignmentContext context)
+    {
+        string identifier = context.IDENTIFIER_ARRAY().GetText();
+        int start = identifier.IndexOf("[", StringComparison.Ordinal);
+        int end = identifier.IndexOf("]", StringComparison.Ordinal) - 1;
+
+        string arrayKey = identifier.Substring(0, start);
+                  
+
+        return new GenericValueLanguage(0);
+    }
+
     public override GenericValueLanguage VisitComparisonAssignment([NotNull] LanguageParser.ComparisonAssignmentContext context)
     {
         var id = context.IDENTIFIER().GetText();
@@ -393,6 +410,19 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
             return value;
         else throw new Exception("Variavel nao informada");
     }
+
+    public override GenericValueLanguage VisitVariableArrayEntity(LanguageParser.VariableArrayEntityContext context)
+    {
+        var id = context.GetText();
+
+        if (id is null) throw new NullReferenceException("Variavel nao informada");
+
+        if (_memory.TryGetValue(id, out GenericValueLanguage value))
+            return value;
+        else throw new Exception("Variavel nao informada");
+    }
+
+    
 
     public override GenericValueLanguage VisitCoalesceFunction([NotNull] LanguageParser.CoalesceFunctionContext context)
     {
