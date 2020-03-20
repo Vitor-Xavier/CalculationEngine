@@ -8,9 +8,11 @@ WS: [ \r\t\u000C\n]+ -> skip;
 
 IF   : 'se' ;
 ELSE : 'senao';
-SWITCH: 'switch';
-CASE: 'case';
-DEFAULT: 'default';
+SWITCH: 'parametro';
+CASE: 'caso';
+DEFAULT: 'padrao';
+WHILE: 'enquanto';
+BREAK: 'parar';
 
 AND : '&&';
 OR  : '||';
@@ -38,33 +40,19 @@ PARAMETRO: '_PARAMETRO';
 PARAMETRO_CODIGO: '_PARAMETROCODIGO';
 PARAMETRO_INTERVALO: '_PARAMETROINTERVALO';
 ROUND: '_ARREDONDAR';
+DATE_FUNCTION: '_DATA';
 TODAY: '_HOJE';
 NOW: '_AGORA';
 DATE_DIF: '_DATADIF';
+GET_YEAR: '_ANO';
 GET_MONTH: '_MES';
 GET_DAY: '_DIA';
-GET_YEAR: '_ANO';
-
-LOOKUP_FUNC: 'lookupFunction';
-BASE_FUNC: 'baseFunction';
-TOTAL_PAYMENTS: 'totalPayments';
-TOTAL_DISCOUNTS: 'totalDiscounts';
-DIRECT_RECALCULATION: 'directRecalculation';
-PROPORTIONAL_RECALCULATION: 'proportionalRecalculation';
-CLEAR_VALUES_FUNCTION: 'clearValuesFunction';
-CLEAR_DISCOUNTS_FUNCTION: 'clearDiscountsFunction';
-CLEAR_PAYMENTS_FUNCTION: 'clearPaymentsFunction';
-ADD_DAY: 'addDay';
-ADD_MONTH: 'addMonth';
-ADD_YEAR: 'addYear';
-GET_DAY_DIFF: 'getDayDiff';
-GET_MONTH_DIFF: 'getMonthDiff';
-GET_YEAR_DIFF: 'getYearDiff';
-GET_DATE: 'getDate';
-LAST_DAY_PROCESS: 'lastDayProcess';
-DESPREZAR: 'desprezar';
-
-WHILE: 'enquanto';
+GET_HOUR: '_HORA';
+GET_MINUTE: '_MINUTO';
+ADD_DAY: '_DIA_ADICIONAR';
+ADD_MONTH: '_MES_ADICIONAR';
+ADD_YEAR: '_ANO_ADICIONAR';
+TRIM: '_ARRUMAR';
 
 LBRACKET: '[';
 RBRACKET: ']';
@@ -120,20 +108,23 @@ IDENTIFIER_ARRAY: [a-zA-Z_][a-zA-Z_0-9]*(LBRACKET (NUMBER | IDENTIFIER) RBRACKET
 SEMI : ';';
 COLON : ':';
 
+ERRORCHAR: .;
+
 /* Grammar rules */
 
 rule_set
-	: rule_block* return_value? 
+	: rule_block* return_value?
 	;
 
 rule_block
-    : assignment
-    | variable_declaration
+    : variable_declaration
+    | switch_expression
     | arithmetic_expression
     | conditional
     | loop
+    | break_statement
+    | assignment
     ;
-
 
 variable_declaration
     : VAR IDENTIFIER ATRIB arithmetic_expression SEMI #arithmeticDeclaration
@@ -166,10 +157,22 @@ if_expression
     : if_expression AND if_expression   #andExpression
     | if_expression OR if_expression    #orExpression
     | comparison_expression             #ifComparisonExpression
-    | NOT LPAREN if_expression RPAREN       #notParenthesisIfExpression
+    | NOT LPAREN if_expression RPAREN   #notParenthesisIfExpression
     | LPAREN if_expression RPAREN       #parenthesisIfExpression
     | NOT entity                        #notIfEntity
     | entity                            #ifEntity
+    ;
+
+switch_expression
+    : SWITCH arithmetic_expression LBRACE case_statement+ default_statement? RBRACE #switchExpression
+    ;
+
+case_statement
+    : CASE arithmetic_expression COLON (LBRACE rule_block+ RBRACE | rule_block) #caseStatement
+    ;
+
+default_statement
+    : DEFAULT COLON (LBRACE rule_block+ RBRACE | rule_block) #defaultStatement
     ;
 
 comparison_expression
@@ -198,6 +201,10 @@ loop
     : WHILE LPAREN if_expression RPAREN LBRACE rule_block* RBRACE #whileExpression
     ;
 
+break_statement
+    : BREAK SEMI
+    ;
+
 function_signature
 	: CARACTERISTICA_TABELA LPAREN tabela_caracteristica COMMA descricao_caracteristica COMMA coluna_caracteristica COMMA exercicio_caracteristica (COMMA valor_fator_caracteristica)? RPAREN  #caracteristicaTabela
     | CARACTERISTICA LPAREN descricao_caracteristica COMMA codigo_caracteristica COMMA valor_fator_caracteristica (COMMA exercicio_caracteristica)? RPAREN  #caracteristica
@@ -210,18 +217,25 @@ function_signature
     | AVERAGE LPAREN VAR_OBJECT RPAREN #averageFunction
     | LENGTH LPAREN VAR_PRIMARY RPAREN #lengthFunction
     | ROUND LPAREN arithmetic_expression (COMMA arithmetic_expression)? RPAREN #roundFunction
-    | COALESCE LPAREN entity (COMMA entity)* RPAREN #coalesceFunction
+    | COALESCE LPAREN entity (COMMA entity)+ RPAREN #coalesceFunction
     | SQRT LPAREN arithmetic_expression RPAREN #sqrtFunction
     | ABS LPAREN arithmetic_expression RPAREN #absFunction
     | SUM_IF LPAREN VAR_OBJECT COMMA arithmetic_expression comparison_operator arithmetic_expression RPAREN #sumIfFunction
     | COUNT_IF LPAREN VAR_PRIMARY COMMA arithmetic_expression comparison_operator arithmetic_expression RPAREN #countIfFunction
     | ISNULL LPAREN arithmetic_expression RPAREN #isNullFunction
+    | DATE_FUNCTION LPAREN arithmetic_expression COMMA arithmetic_expression COMMA arithmetic_expression RPAREN #dateFunction
     | TODAY LPAREN RPAREN #todayFunction
     | NOW LPAREN RPAREN #nowFunction
     | DATE_DIF LPAREN entity COMMA entity COMMA date_unit RPAREN #dateDifFunction
     | GET_YEAR LPAREN entity RPAREN #getYearFunction
     | GET_MONTH LPAREN entity RPAREN #getMonthFunction
     | GET_DAY LPAREN entity RPAREN #getDayFunction
+    | GET_HOUR LPAREN entity RPAREN #getHourFunction
+    | GET_MINUTE LPAREN entity RPAREN #getMinuteFunction
+    | ADD_YEAR LPAREN entity COMMA entity RPAREN #addYearFunction
+    | ADD_MONTH LPAREN entity COMMA entity RPAREN #addMonthFunction
+    | ADD_DAY LPAREN entity COMMA entity RPAREN #addDayFunction
+    | TRIM LPAREN entity RPAREN #trimFunction
     ;
 
 arithmetic_expression
@@ -276,8 +290,6 @@ arithmetic_expression
     | NULL                      #nullEntity
     ;
 
- 
-
     text
     : TEXT #stringEntity
     ;
@@ -293,4 +305,5 @@ arithmetic_expression
 date_unit
     : YEAR
     | MONTH
-    | DAY;
+    | DAY
+    ;

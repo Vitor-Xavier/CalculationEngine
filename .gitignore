@@ -105,3 +105,14 @@ dist
 # TernJS port file
 .tern-port
 WorkSpace-CalculationEngine.code-workspace
+/.vs/VSWorkspaceState.json
+/.vs/slnx.sqlite
+/.vs/CalculationEngine/v16/Server/sqlite3/storage.ide-wal
+/.vs/CalculationEngine/v16/Server/sqlite3/storage.ide-shm
+/.vs/CalculationEngine/v16/Server/sqlite3/storage.ide
+/.vs/CalculationEngine/v16/Server/sqlite3/db.lock
+/.vs/CalculationEngine/v16/Server/sqlite3
+/.vs/CalculationEngine/v16/.suo
+/.vs/CalculationEngine/v16
+/.vs/CalculationEngine/DesignTimeBuild/.dtbcache
+/.vs/CalculationEngine/DesignTimeBuild/.dtbcache.v2

@@ -25,7 +25,7 @@ namespace Api
         {
             Console.WriteLine("# Cálculo Tributário");
             Console.WriteLine("\n## Roteiro\n");
-            var roteiroService = new RoteiroBaseService();
+            var roteiroService = new RoteiroService();
             var roteiro = await roteiroService.GetRoteiro();
             Console.WriteLine("| Roteiro  | Valor      |");
             Console.WriteLine("|----------|------------|");
@@ -45,9 +45,9 @@ namespace Api
             var parametros = TabelaColunaHelper.GetParametros(roteiro.Eventos);
 
             var dados = await CarregarDados(roteiro.SetorOrigem, tabelas, caracteristicaTabela, caracteristica);
-            //var dadosGlobais = await CarregarDadosGlobal(roteiro.SetorOrigem, caracteristica, parametros);
+            var dadosGlobais = await CarregarDadosGlobal(roteiro.SetorOrigem, caracteristica, parametros);
 
-            //var memoryGlobal = dadosGlobais.ToDictionary(x => $"@{x.Key}", x => new GenericValueLanguage(x.Key == "Caracteristica" ? x.Value.FirstOrDefault() : x.Value.ToArray()));
+            var memoryGlobal = dadosGlobais.ToDictionary(x => $"@{x.Key}", x => new GenericValueLanguage(x.Key == "Caracteristica" ? x.Value.FirstOrDefault() : x.Value.ToArray()));
 
             #region Processamento
             Console.WriteLine("\n## Processamento\n");
@@ -70,12 +70,12 @@ namespace Api
                 memory.Add("@Roteiro", new GenericValueLanguage(new ExpandoObject()));
 
                 // Execucao das Formulas do Roteiro
+                var executeFormula = new ExecuteLanguage(memoryGlobal);
                 foreach (var evento in roteiro.Eventos)
                 {
                     try
                     {
                         // Execução
-                        var executeFormula = new ExecuteLanguage();
                         executeFormula.DefaultParserTree(evento.Formula);
                         var result = executeFormula.Execute(memory);
 
@@ -128,7 +128,7 @@ namespace Api
             var endProcessorTime = Process.GetCurrentProcess().TotalProcessorTime;
             double totalProcessorTime = (endProcessorTime - startProcessorTime).TotalMilliseconds;
 
-            //TestarFormulas(dados);
+            TestarFormulas(dados);
 
             Console.WriteLine("\n## Geral\n");
             Console.WriteLine("| Medição        | Utilização       |");
@@ -149,8 +149,6 @@ namespace Api
 
             // TODO: BuscaCaracteristica GroupBy
 
-            var database = new DatabaseConnection();
-
             // TO DO
             //Adicionar no Principal e no GetAllData para trazer os valores
             var consultasCaracteristica = CaracteristicaHelper.GetQueries(caracteristica);
@@ -160,6 +158,7 @@ namespace Api
             stopwatchPreBD.Start();
 
             // Busca por todas as listas de dados requisitadas.
+            await using var database = new DatabaseConnection();
             var keyValuePairsGlobal = await database.GetAllData(consultasCaracteristica.Union(new TabelaQuery[] { consultaParametro }));
 
             // Separa as massas de dados em principal, para a tabela principal do setor informado e suas auxiliares.
@@ -182,7 +181,7 @@ namespace Api
 
         public static async Task<IDictionary<int, IDictionary<string, object>>> CarregarDados(SetorOrigem setor, IEnumerable<TabelaColuna> tabelas, IEnumerable<CaracteristicaTabela> caracteristicaTabela, IEnumerable<Caracteristica> caracteristica)
         {
-            int idSelecao = 3;
+            int idSelecao = 1;
 
             // Diagnóstico
             var stopwatchPre = new Stopwatch();
@@ -194,8 +193,6 @@ namespace Api
 
             if (!SetorOrigemHelper.ValidarTabelasSetor(setor, tabelas.Select(g => g.Tabela)))
                 throw new Exception($"Erro ao validar tabelas utilizadas para o setor {setor.GetDescription()}");
-
-            var database = new DatabaseConnection();
 
             IEnumerable<TabelaQuery> consultas = Enumerable.Empty<TabelaQuery>();
             if(tabelas.Any() && tabelas.Count() > 0)    
@@ -213,6 +210,8 @@ namespace Api
                 // Busca por todas as listas de dados requisitadas.
             
                 IDictionary<string, IEnumerable<object>> keyValuePairs = new Dictionary<string, IEnumerable<object>>();
+
+                await using var database = new DatabaseConnection();
                 keyValuePairs = await database.GetAllData(unionTabela);
 
                 // Separa as massas de dados em principal, para a tabela principal do setor informado e suas auxiliares.

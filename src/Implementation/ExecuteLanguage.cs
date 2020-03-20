@@ -20,9 +20,7 @@ public class ExecuteLanguage
         commonToken = new CommonTokenStream(lexer);
         parser = new LanguageParser(commonToken);
 
-#if DEBUG
-        parser.Interpreter.PredictionMode = Antlr4.Runtime.Atn.PredictionMode.LL;
-#else
+#if RELEASE
         parser.Interpreter.PredictionMode = Antlr4.Runtime.Atn.PredictionMode.SLL;
 #endif
 

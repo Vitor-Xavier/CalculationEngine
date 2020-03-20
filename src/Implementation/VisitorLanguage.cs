@@ -1,5 +1,7 @@
 using Antlr4.Runtime.Misc;
+using Common.Enums;
 using Common.Extensions;
+using Common.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -8,12 +10,13 @@ using System.Linq;
 
 public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
 {
-
     private readonly IDictionary<string, GenericValueLanguage> _memory;
     private readonly IDictionary<string, GenericValueLanguage> _memoryGlobal;
     private readonly IDictionary<string, GenericValueLanguage> _memoryLocal = new Dictionary<string, GenericValueLanguage>();
 
     private readonly IDictionary<string, GenericValueLanguage> _memoryLocalArrayGlobal;
+
+    private GenericValueLanguage _switchValue;
 
 
     public VisitorLanguage(IDictionary<string, GenericValueLanguage> memory, IDictionary<string, GenericValueLanguage> memoryGlobal)
@@ -21,7 +24,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         _memory = memory ?? new Dictionary<string, GenericValueLanguage>();
         _memoryGlobal = memoryGlobal ?? new Dictionary<string, GenericValueLanguage>();
         _memoryLocalArrayGlobal = _memoryLocalArrayGlobal ?? new Dictionary<string, GenericValueLanguage>();
-  }
+    }
 
     public override GenericValueLanguage VisitVarPrimaryEntity([NotNull] LanguageParser.VarPrimaryEntityContext context)
     {
@@ -223,15 +226,15 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         if (Visit(context.if_expression()).AsBoolean())
         {
             if (context.then_block() != null)
-                Visit(context.then_block());
+                return Visit(context.then_block());
         }
         else
         {
             if (context.else_block() != null)
-                Visit(context.else_block());
+                return Visit(context.else_block());
         }
 
-        return new GenericValueLanguage(string.Empty);
+        return new GenericValueLanguage(null);
     }
 
     public override GenericValueLanguage VisitCaracteristicaTabela(LanguageParser.CaracteristicaTabelaContext context)
@@ -283,18 +286,24 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
 
     public override GenericValueLanguage VisitThenBlock([NotNull] LanguageParser.ThenBlockContext context)
     {
-        for (var index = 0; index < context.rule_block().Count(); index++)
-            Visit(context.rule_block(index));
+        foreach (var ruleBlock in context.rule_block())
+        {
+            if (Visit(ruleBlock).Value is SpecialValue specialValue && specialValue == SpecialValue.Break)
+                return new GenericValueLanguage(specialValue);
+        }
 
-        return new GenericValueLanguage(string.Empty);
+        return new GenericValueLanguage(null);
     }
 
     public override GenericValueLanguage VisitElseBlock([NotNull] LanguageParser.ElseBlockContext context)
     {
-        for (var index = 0; index < context.rule_block().Count(); index++)
-            Visit(context.rule_block(index));
+        foreach (var ruleBlock in context.rule_block())
+        {
+            if (Visit(ruleBlock).Value is SpecialValue specialValue && specialValue == SpecialValue.Break)
+                return new GenericValueLanguage(specialValue);
+        }
 
-        return new GenericValueLanguage(string.Empty);
+        return new GenericValueLanguage(null);
     }
 
     public override GenericValueLanguage VisitParenthesisIfExpression([NotNull] LanguageParser.ParenthesisIfExpressionContext context) =>
@@ -326,6 +335,46 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
 
     public override GenericValueLanguage VisitParenthesisComparisonExpression([NotNull] LanguageParser.ParenthesisComparisonExpressionContext context) =>
         Visit(context.comparison_expression());
+
+    public override GenericValueLanguage VisitSwitchExpression([NotNull] LanguageParser.SwitchExpressionContext context)
+    {
+        _switchValue = Visit(context.arithmetic_expression());
+        foreach (var caseStatement in context.case_statement())
+        {
+            if (Visit(caseStatement).Value is SpecialValue specialValue && specialValue == SpecialValue.Break)
+                return new GenericValueLanguage(null);
+        }
+
+        if (context.default_statement() != null)
+            Visit(context.default_statement());
+
+        return new GenericValueLanguage(null);
+    }
+
+    public override GenericValueLanguage VisitCaseStatement([NotNull] LanguageParser.CaseStatementContext context)
+    {
+        if (CompareGenericValues(_switchValue, Visit(context.arithmetic_expression()), "==").AsBoolean())
+        {
+            foreach (var ruleBlock in context.rule_block())
+            {
+                if (Visit(ruleBlock).Value is SpecialValue specialValue && specialValue == SpecialValue.Break)
+                    return new GenericValueLanguage(specialValue);
+            }
+        }
+
+        return new GenericValueLanguage(null);
+    }
+
+    public override GenericValueLanguage VisitDefaultStatement([NotNull] LanguageParser.DefaultStatementContext context)
+    {
+        foreach (var ruleBlock in context.rule_block())
+        {
+            if (Visit(ruleBlock).Value is SpecialValue specialValue && specialValue == SpecialValue.Break)
+                return new GenericValueLanguage(specialValue);
+        }
+
+        return new GenericValueLanguage(null);
+    }
 
     public override GenericValueLanguage VisitPlusExpression(LanguageParser.PlusExpressionContext context)
     {
@@ -413,6 +462,9 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
             case "/=" when currentValue.IsNumeric && value.IsNumeric && (decimal)value != 0:
                 _memoryLocal[identifier] = currentValue / value;
                 break;
+            case "^=" when currentValue.IsNumeric && value.IsNumeric:
+                _memoryLocal[identifier] = new GenericValueLanguage(Math.Pow((double)currentValue, (double)value));
+                break;
             default:
                 throw new InvalidOperationException("Operador de atribuição inválido");
         }
@@ -428,7 +480,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         int end = identifier.IndexOf("]", StringComparison.Ordinal) - 1;
 
         string arrayKey = identifier.Substring(0, start);
-                  
+
 
         return new GenericValueLanguage(0);
     }
@@ -520,7 +572,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         else throw new Exception("Variavel nao informada");
     }
 
-    
+
 
     public override GenericValueLanguage VisitCoalesceFunction([NotNull] LanguageParser.CoalesceFunctionContext context)
     {
@@ -537,9 +589,9 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
     public override GenericValueLanguage VisitRoundFunction([NotNull] LanguageParser.RoundFunctionContext context)
     {
         decimal number = Visit(context.arithmetic_expression(0)).AsDecimal();
-        int? decimalPlaces = context.arithmetic_expression(1) != null ? Visit(context.arithmetic_expression(1)).AsInt() : default(int?);
+        int decimalPlaces = context.arithmetic_expression(1) != null ? Visit(context.arithmetic_expression(1)).AsInt() : 0;
 
-        return new GenericValueLanguage(Math.Round(number, decimalPlaces ?? 0));
+        return new GenericValueLanguage(Math.Round(number, decimalPlaces));
     }
 
     public override GenericValueLanguage VisitWhileExpression([NotNull] LanguageParser.WhileExpressionContext context)
@@ -547,14 +599,32 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         while (Visit(context.if_expression()).AsBoolean())
         {
             foreach (var item in context.rule_block())
-                Visit(item);
+            {
+                if (Visit(item).Value is SpecialValue specialValue && specialValue == SpecialValue.Break)
+                    return new GenericValueLanguage(null);
+            }
         }
 
         return new GenericValueLanguage(null);
     }
 
+    public override GenericValueLanguage VisitRule_block([NotNull] LanguageParser.Rule_blockContext context) =>
+        context.break_statement() is null ? base.VisitRule_block(context) : new GenericValueLanguage(SpecialValue.Break);
+
     public override GenericValueLanguage VisitIsNullFunction([NotNull] LanguageParser.IsNullFunctionContext context) =>
         new GenericValueLanguage(Visit(context.arithmetic_expression()).Value is null);
+
+    public override GenericValueLanguage VisitDateFunction([NotNull] LanguageParser.DateFunctionContext context)
+    {
+        var dia = Visit(context.arithmetic_expression(0));
+        var mes = Visit(context.arithmetic_expression(1));
+        var ano = Visit(context.arithmetic_expression(2));
+
+        if (dia.IsNumeric && mes.IsNumeric && ano.IsNumeric)
+            return new GenericValueLanguage(new DateTime(ano.AsInt(), mes.AsInt(), dia.AsInt()));
+
+        throw new ArgumentException($"Não foi possível converter a entrada {dia}/{mes}/{ano} em uma data");
+    }
 
     public override GenericValueLanguage VisitTodayFunction([NotNull] LanguageParser.TodayFunctionContext context) =>
         new GenericValueLanguage(DateTime.Today);
@@ -589,6 +659,24 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
 
     public override GenericValueLanguage VisitGetYearFunction([NotNull] LanguageParser.GetYearFunctionContext context) =>
         new GenericValueLanguage(Visit(context.entity()).AsDateTime().Year);
+
+    public override GenericValueLanguage VisitGetHourFunction([NotNull] LanguageParser.GetHourFunctionContext context) =>
+        new GenericValueLanguage(Visit(context.entity()).AsDateTime().Hour);
+
+    public override GenericValueLanguage VisitGetMinuteFunction([NotNull] LanguageParser.GetMinuteFunctionContext context) =>
+        new GenericValueLanguage(Visit(context.entity()).AsDateTime().Minute);
+
+    public override GenericValueLanguage VisitAddDayFunction([NotNull] LanguageParser.AddDayFunctionContext context) =>
+        new GenericValueLanguage(Visit(context.entity(0)).AsDateTime().AddDays(Visit(context.entity(1)).AsInt()));
+
+    public override GenericValueLanguage VisitAddMonthFunction([NotNull] LanguageParser.AddMonthFunctionContext context) =>
+        new GenericValueLanguage(Visit(context.entity(0)).AsDateTime().AddMonths(Visit(context.entity(1)).AsInt()));
+
+    public override GenericValueLanguage VisitAddYearFunction([NotNull] LanguageParser.AddYearFunctionContext context) =>
+        new GenericValueLanguage(Visit(context.entity(0)).AsDateTime().AddYears(Visit(context.entity(1)).AsInt()));
+
+    public override GenericValueLanguage VisitTrimFunction([NotNull] LanguageParser.TrimFunctionContext context) =>
+        new GenericValueLanguage(StringHelper.NormalizeWhiteSpace(Visit(context.entity()).AsString()));
 
     private GenericValueLanguage CompareGenericValues(GenericValueLanguage left, GenericValueLanguage right, string op)
     {
