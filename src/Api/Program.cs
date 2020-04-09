@@ -56,13 +56,25 @@ namespace Api
             var cpuProcessamentoStart = Process.GetCurrentProcess().TotalProcessorTime;
             stopWatchProcessamento.Start();
 
+            // Avaliação das fórmulas
+            var executeLanguage = new ExecuteLanguage();
+            foreach (var evento in roteiro.Eventos)
+                evento.ParseTree = executeLanguage.DefaultParserTreeTest(evento.Formula);
+
+            // Verifica se erros de sintaxe foram identificados.
+            if (executeLanguage.LanguageErrorListener.SyntaxErrors.Any())
+            {
+                Console.WriteLine("\n## Erros de Sintaxe");
+                foreach (var error in executeLanguage.LanguageErrorListener.SyntaxErrors)
+                    Console.WriteLine($"| Linha: {error.Line} | Coluna: {error.StartColumn} | Caractere: {error.OffendingSymbol} | Mensagem: {error.Message} |");
+                return;
+            }
 
             // Principal 
             string tabelaPrincipal = SetorOrigemHelper.GetTabelaPrincipal(roteiro.SetorOrigem);
             Parallel.ForEach(dados, item =>
             {
                 var aux = item.Value.Where(x => x.Value is object[] || x.Value is ExpandoObject);
-
 
                 var memory = aux.ToDictionary(x => $"@{x.Key}", x => new GenericValueLanguage(x.Value));
                 var objPrincipal = item.Value.Except(aux).Aggregate(new ExpandoObject() as IDictionary<string, object>, (a, p) => { a.Add(p.Key, p.Value); return a; });
@@ -76,8 +88,7 @@ namespace Api
                     try
                     {
                         // Execução
-                        executeFormula.DefaultParserTree(evento.Formula);
-                        var result = executeFormula.Execute(memory);
+                        var result = executeFormula.Execute(memory, evento.ParseTree);
 
                         // Resultado
                         (memory["@Roteiro"].Value as IDictionary<string, object>).Add(evento.Nome, result.Value);
@@ -128,7 +139,7 @@ namespace Api
             var endProcessorTime = Process.GetCurrentProcess().TotalProcessorTime;
             double totalProcessorTime = (endProcessorTime - startProcessorTime).TotalMilliseconds;
 
-            TestarFormulas(dados);
+            if (!Exceptions.Value.Any()) TestarFormulas(dados);
 
             Console.WriteLine("\n## Geral\n");
             Console.WriteLine("| Medição        | Utilização       |");
@@ -195,20 +206,21 @@ namespace Api
                 throw new Exception($"Erro ao validar tabelas utilizadas para o setor {setor.GetDescription()}");
 
             IEnumerable<TabelaQuery> consultas = Enumerable.Empty<TabelaQuery>();
-            if(tabelas.Any() && tabelas.Count() > 0)    
+            if (tabelas.Any() && tabelas.Count() > 0)
                 consultas = SetorOrigemHelper.GetQueries(setor, tabelas, idSelecao);
 
             IEnumerable<TabelaQuery> consultasCaracteristicaTabela = Enumerable.Empty<TabelaQuery>();
-            if(caracteristicaTabela.Any() && tabelas.Count() > 0)    
+            if (caracteristicaTabela.Any() && tabelas.Count() > 0)
                 consultasCaracteristicaTabela = CaracteristicaHelper.GetQueries(caracteristicaTabela, idSelecao);
 
             IEnumerable<TabelaQuery> unionTabela = consultas.Union(consultasCaracteristicaTabela);
 
             Dictionary<int, IDictionary<string, object>> principal = new Dictionary<int, IDictionary<string, object>>();
-            if(unionTabela.Any()){
+            if (unionTabela.Any())
+            {
                 stopwatchPreBD.Start();
                 // Busca por todas as listas de dados requisitadas.
-            
+
                 IDictionary<string, IEnumerable<object>> keyValuePairs = new Dictionary<string, IEnumerable<object>>();
 
                 await using var database = new DatabaseConnection();
@@ -231,24 +243,24 @@ namespace Api
                             principalValue[aux.Key] = x.ToArray();
                     };
                 }
-            
-
-            stopwatchPre.Stop();
-
-            var auxiliares = keyValuePairs.Where(x => x.Key != tabelaPrincipal);
-            var totalTabelasAuxiliares = auxiliares.Count();
-            var totalRegistroTabelasAuxiliares = auxiliares.Select(x => x.Value.Select(y => y).Count()).Sum();
 
 
-            Console.WriteLine("### Dados principais e relacionados\n");
-            Console.WriteLine("| Medição              | Utilização       |");
-            Console.WriteLine("|----------------------|------------------|");
-            Console.WriteLine($"| Registros principais | {principal?.Count,-16} |");
-            Console.WriteLine($"| Registros auxiliares | {totalRegistroTabelasAuxiliares,-16} |");
+                stopwatchPre.Stop();
 
-            Console.WriteLine($"| Memória máxima       | {(Process.GetCurrentProcess().PeakWorkingSet64 / 1024f) / 1024f + "mb",-16} |");
-            Console.WriteLine($"| Tempo Banco de Dados | {stopwatchPreBD.Elapsed} |");
-            Console.WriteLine($"| Tempo Total          | {stopwatchPre.Elapsed} |\n");
+                var auxiliares = keyValuePairs.Where(x => x.Key != tabelaPrincipal);
+                var totalTabelasAuxiliares = auxiliares.Count();
+                var totalRegistroTabelasAuxiliares = auxiliares.Select(x => x.Value.Select(y => y).Count()).Sum();
+
+
+                Console.WriteLine("### Dados principais e relacionados\n");
+                Console.WriteLine("| Medição              | Utilização       |");
+                Console.WriteLine("|----------------------|------------------|");
+                Console.WriteLine($"| Registros principais | {principal?.Count,-16} |");
+                Console.WriteLine($"| Registros auxiliares | {totalRegistroTabelasAuxiliares,-16} |");
+
+                Console.WriteLine($"| Memória máxima       | {(Process.GetCurrentProcess().PeakWorkingSet64 / 1024f) / 1024f + "mb",-16} |");
+                Console.WriteLine($"| Tempo Banco de Dados | {stopwatchPreBD.Elapsed} |");
+                Console.WriteLine($"| Tempo Total          | {stopwatchPre.Elapsed} |\n");
 
             }
 
@@ -282,11 +294,11 @@ namespace Api
             Console.WriteLine("\n## Assertividade\n");
             Console.WriteLine("| Fórmula         |  %   |");
             Console.WriteLine("|-----------------|------|");
-            Console.WriteLine($"| {"Fator G",-15} | {(countFatorG / Resultados.Count) * 100:d2}% |");
-            Console.WriteLine($"| {"Fator K",-15} | {(countFatorK / Resultados.Count) * 100:d3}% |");
-            Console.WriteLine($"| {"VVT",-15} | {(countvvt / Resultados.Count) * 100:d3}% |");
-            Console.WriteLine($"| {"VVP",-15} | {(countvvp / Resultados.Count) * 100:d3}% |");
-            Console.WriteLine($"| {"IPTU",-15} | {(countIptu / Resultados.Count) * 100:d3}% |");
+            Console.WriteLine($"| {"Fator G",-15} | {(countFatorG / Resultados.Count) * 100,3}% |");
+            Console.WriteLine($"| {"Fator K",-15} | {(countFatorK / Resultados.Count) * 100,3}% |");
+            Console.WriteLine($"| {"VVT",-15} | {(countvvt / Resultados.Count) * 100,3}% |");
+            Console.WriteLine($"| {"VVP",-15} | {(countvvp / Resultados.Count) * 100,3}% |");
+            Console.WriteLine($"| {"IPTU",-15} | {(countIptu / Resultados.Count) * 100,3}% |");
         }
     }
 }

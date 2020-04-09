@@ -48,65 +48,66 @@ namespace Api.Services
             {
                 Id = 1,
                 Nome = "FatorG",
-                Formula = @"
-                    var dt1 = 14/02/2008;
-                    var dt2 = _HOJE();
-                    var dia = _DIA(dt2);
-                    var mes = _MES(dt2);
-                    var ano = _ANO(dt2);
-                    var hora = _HORA(dt2);
-                    var min = _MINUTO(dt2);
-                    var switchTeste = -1;
-                    parametro (min) {
-                        caso 08: {
-                            switchTeste = 0; 
-                            parar;
-                        }
-                        caso 09: {
-                            switchTeste = 1; 
-                            parar;
-                        }
-                        caso 10: {
-                            switchTeste = 2; 
-                            parar;
-                        }
-                        padrao: switchTeste = -2;
-                    }
-                    var dtdf = _DATADIF(dt1, dt2, MES);
-                    var percentualMinimo = 0.35;
-                    var somase = _SOMASE(@FisicoOutros.Percentual, Percentual > percentualMinimo);
-                    var countse = _CONTSE(@FisicoOutros, Percentual > percentualMinimo);
-                    var abcv = _ARREDONDAR(_COALESCE(@FacesdaQuadra.LarguraRua, 3.989898), 2);
-                    var index = 0;
-                    var somaManual = 0.0;
-                    var perc = 0.0;
-                    var maior = 0.0;
-                    enquanto (index < _CONT(@FisicoOutros)) {
-                        somaManual += _COALESCE(@FisicoOutros[index].Percentual, 0);
-                        se (maior < @FisicoOutros[index].Percentual) {
-                            maior = @FisicoOutros[index].Percentual;
-                            perc *= _COALESCE(@FisicoOutros[index].Percentual, 0);
-                        } senao {
-                            parar;
-                            perc += 1;
-                        }
-                        index +=  1;
-                    }
-                    var tst5 = 2 ^ 3;
-                    var tst6 = _RAIZ(11);
-                    var somaFunc = _SOMA(@FisicoOutros.Percentual);
-                    var maxFunc = _MAXIMO(@FisicoOutros.Percentual);
+                Formula = @"var dt1 = 14/02/2008;
+var dt2 = _HOJE();
+var dia = _DIA(dt2);
+var mes = _MES(dt2);
+var ano = _ANO(dt2);
+var hora = _HORA(dt2);
+var min = _MINUTO(dt2);
+var switchTeste = -1;
+parametro (min) {
+	caso 08: {
+		switchTeste = 0;
+		parar;
+	}
+	caso 09: {
+		switchTeste += 1;
+		parar;
+	}
+	caso 10: {
+		switchTeste = 2;
+		parar;
+	}
+	padrao: switchTeste = -2;
+}
+var dtdf = _DATADIF(dt1, dt2, MES);
+var percentualMinimo = 0.35;
+var somase = _SOMASE(@FisicoOutros.Percentual, Percentual > percentualMinimo);
+var countse = _CONTSE(@FisicoOutros, Percentual > percentualMinimo);
+var abcv = _ARREDONDAR(_COALESCE(@FacesdaQuadra.LarguraRua, 3.989898), 2);
+var index = 0;
+var somaManual = 0.0;
+var perc = 0.0;
+var maior = 0.0;
+var fisicoOutrosPercentual = 0;
+enquanto (index < _CONT(@FisicoOutros)) {
+	somaManual += _COALESCE(@FisicoOutros[index].Percentual, 0);
+    fisicoOutrosPercentual = @FisicoOutros[index].Percentual;
+	se fisicoOutrosPercentual >= maior {
+		maior = @FisicoOutros[index].Percentual;
+		perc *= _COALESCE(@FisicoOutros[index].Percentual, 0);
+	} senao {
+		parar;
+		perc += 1;
+	}
+	index += 1;
+} 
+var tst5 = 2 ^ 3;
+var tst6 = _RAIZ(11);
+var somaFunc = _SOMA(@FisicoOutros.Percentual);
+var maxFunc = _MAXIMO(@FisicoOutros.Percentual);
 
-                    var valor = 1.0;
-                    // Teste
-                    var area = _COALESCE(@FisicoAreas[0].Area, @FacesdaQuadra.LarguraRua, @FisicoOutros[0].Percentual, 9);
-                    var percentual = @FisicoOutros[0].Percentual;
-                    se (@Fisico.AreaEdificada > 0.0) {
-                        valor = @Fisico.AreaEdificada * 1.05;
-                    } senao {
-                        valor = @Fisico.AreaEdificada * @Fisico.Testada;
-                    }
-                    retorno valor * area;"
+var valor = 1.0;
+// Teste
+var area = _COALESCE(@FisicoAreas[0].Area, @FacesdaQuadra.LarguraRua, @FisicoOutros[0].Percentual, 9);
+var percentual = @FisicoOutros[0].Percentual;
+se @Fisico.AreaEdificada > 0.0 {
+	valor = @Fisico.AreaEdificada * 1.05;
+} senao {
+	valor = @Fisico.AreaEdificada * @Fisico.Testada;
+} 
+retorno valor * area;"
             };
 
             Evento fatorK = new Evento
@@ -115,7 +116,7 @@ namespace Api.Services
                 Nome = "FatorK",
                 Formula = @"
                     var valor = 1.0;
-                    se (@Roteiro.FatorG > 5725.90) {
+                    se @Roteiro.FatorG > 5725.90 {
                         valor = 5725.90;
                     } senao {
                         valor = 3775.90;
