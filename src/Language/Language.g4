@@ -85,6 +85,7 @@ PLUS_ASSIGNMENT: '+=';
 MINUS_ASSIGNMENT: '-=';
 MULT_ASSIGNMENT: '*=';
 DIV_ASSIGNMENT: '/=';
+POW_ASSIGNMENT: '^=';
 
 VAR: 'var';
 LISTA: 'lista';
@@ -195,6 +196,7 @@ assignment_operator
     | MINUS_ASSIGNMENT
     | MULT_ASSIGNMENT
     | DIV_ASSIGNMENT
+    | POW_ASSIGNMENT
     ;
 
 loop
@@ -226,27 +228,27 @@ function_signature
     | DATE_FUNCTION LPAREN arithmetic_expression COMMA arithmetic_expression COMMA arithmetic_expression RPAREN #dateFunction
     | TODAY LPAREN RPAREN #todayFunction
     | NOW LPAREN RPAREN #nowFunction
-    | DATE_DIF LPAREN entity COMMA entity COMMA date_unit RPAREN #dateDifFunction
-    | GET_YEAR LPAREN entity RPAREN #getYearFunction
-    | GET_MONTH LPAREN entity RPAREN #getMonthFunction
-    | GET_DAY LPAREN entity RPAREN #getDayFunction
-    | GET_HOUR LPAREN entity RPAREN #getHourFunction
-    | GET_MINUTE LPAREN entity RPAREN #getMinuteFunction
-    | ADD_YEAR LPAREN entity COMMA entity RPAREN #addYearFunction
-    | ADD_MONTH LPAREN entity COMMA entity RPAREN #addMonthFunction
-    | ADD_DAY LPAREN entity COMMA entity RPAREN #addDayFunction
-    | TRIM LPAREN entity RPAREN #trimFunction
+    | DATE_DIF LPAREN arithmetic_expression COMMA arithmetic_expression COMMA date_unit RPAREN #dateDifFunction
+    | GET_YEAR LPAREN arithmetic_expression RPAREN #getYearFunction
+    | GET_MONTH LPAREN arithmetic_expression RPAREN #getMonthFunction
+    | GET_DAY LPAREN arithmetic_expression RPAREN #getDayFunction
+    | GET_HOUR LPAREN arithmetic_expression RPAREN #getHourFunction
+    | GET_MINUTE LPAREN arithmetic_expression RPAREN #getMinuteFunction
+    | ADD_YEAR LPAREN arithmetic_expression COMMA arithmetic_expression RPAREN #addYearFunction
+    | ADD_MONTH LPAREN arithmetic_expression COMMA arithmetic_expression RPAREN #addMonthFunction
+    | ADD_DAY LPAREN arithmetic_expression COMMA arithmetic_expression RPAREN #addDayFunction
+    | TRIM LPAREN arithmetic_expression RPAREN #trimFunction
     ;
 
 arithmetic_expression
-    : arithmetic_expression MULT arithmetic_expression							#multExpression
+    : arithmetic_expression MULT arithmetic_expression					  #multExpression
     | arithmetic_expression DIV arithmetic_expression							#divExpression
-    | arithmetic_expression PLUS arithmetic_expression							#plusExpression
-    | arithmetic_expression MINUS arithmetic_expression							#minusExpression
+    | arithmetic_expression PLUS arithmetic_expression						#plusExpression
+    | arithmetic_expression MINUS arithmetic_expression						#minusExpression
     | arithmetic_expression POW arithmetic_expression							#powExpression
-    | LPAREN arithmetic_expression RPAREN										#parenthesisExpression
-    | function_signature                                                        #ifFunctionSignature
-    | entity																	#entityExpression
+    | LPAREN arithmetic_expression RPAREN										      #parenthesisExpression
+    | function_signature                                          #ifFunctionSignature
+    | entity																	                    #entityExpression
     ;
 
     tabela_caracteristica
@@ -264,16 +266,16 @@ arithmetic_expression
     codigo_caracteristica
     : text
     ;
-    
-    exercicio_caracteristica                                                       
+
+    exercicio_caracteristica
     : number_integer
     ;
 
-    coluna_caracteristica                                                       
+    coluna_caracteristica
     : text
     ;
 
-    coluna_valor_caracteristica                                                       
+    coluna_valor_caracteristica
     : text
     ;
 
@@ -281,7 +283,8 @@ arithmetic_expression
     : (TRUE | FALSE)            #boolEntity
     | number_decimal            #numberDecimalEntity
     | number_integer            #numberIntegerEntity
-	| DATE						#dateEntity
+    | text                      #textEntity
+	  | DATE						          #dateEntity
     | IDENTIFIER                #variableEntity
     | IDENTIFIER_ARRAY          #variableArrayEntity
     | VAR_PRIMARY               #varPrimaryEntity

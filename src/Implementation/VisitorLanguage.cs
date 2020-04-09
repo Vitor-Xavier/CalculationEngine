@@ -1,5 +1,6 @@
 using Antlr4.Runtime.Misc;
 using Common.Enums;
+using Common.Exceptions;
 using Common.Extensions;
 using Common.Helpers;
 using System;
@@ -522,8 +523,11 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         return value;
     }
 
-    public override GenericValueLanguage VisitReturnValue([NotNull] LanguageParser.ReturnValueContext context) =>
-        Visit(context.arithmetic_expression());
+    public override GenericValueLanguage VisitReturnValue([NotNull] LanguageParser.ReturnValueContext context)
+    {
+        var value = Visit(context.arithmetic_expression());
+        return value;
+    }
 
     public override GenericValueLanguage VisitBoolEntity(LanguageParser.BoolEntityContext context) =>
         new GenericValueLanguage(bool.Parse(context.GetText()));
@@ -554,11 +558,11 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
     {
         var id = context.GetText();
 
-        if (id is null) throw new NullReferenceException("Variavel nao informada");
+        if (id is null) throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column + id.Length, $"Variavel nao informada", string.Empty);
 
         if (_memoryLocal.TryGetValue(id, out GenericValueLanguage value))
             return value;
-        else throw new Exception($"Variavel '{id}' nao encontrada");
+        else throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column + id.Length, $"Variavel '{id}' nao encontrada", id);
     }
 
     public override GenericValueLanguage VisitVariableArrayEntity(LanguageParser.VariableArrayEntityContext context)
@@ -623,7 +627,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
         if (dia.IsNumeric && mes.IsNumeric && ano.IsNumeric)
             return new GenericValueLanguage(new DateTime(ano.AsInt(), mes.AsInt(), dia.AsInt()));
 
-        throw new ArgumentException($"Não foi possível converter a entrada {dia}/{mes}/{ano} em uma data");
+        throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column + context.GetText().Length, $"Não foi possível converter a entrada {dia}/{mes}/{ano} em uma data", context.GetText());
     }
 
     public override GenericValueLanguage VisitTodayFunction([NotNull] LanguageParser.TodayFunctionContext context) =>
@@ -634,8 +638,8 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
 
     public override GenericValueLanguage VisitDateDifFunction([NotNull] LanguageParser.DateDifFunctionContext context)
     {
-        var left = Visit(context.entity(0));
-        var right = Visit(context.entity(1));
+        var left = Visit(context.arithmetic_expression(0));
+        var right = Visit(context.arithmetic_expression(1));
         string unit = context.date_unit().GetText();
 
         switch (unit)
@@ -652,31 +656,31 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
     }
 
     public override GenericValueLanguage VisitGetDayFunction([NotNull] LanguageParser.GetDayFunctionContext context) =>
-        new GenericValueLanguage(Visit(context.entity()).AsDateTime().Day);
+        new GenericValueLanguage(Visit(context.arithmetic_expression()).AsDateTime().Day);
 
     public override GenericValueLanguage VisitGetMonthFunction([NotNull] LanguageParser.GetMonthFunctionContext context) =>
-        new GenericValueLanguage(Visit(context.entity()).AsDateTime().Month);
+        new GenericValueLanguage(Visit(context.arithmetic_expression()).AsDateTime().Month);
 
     public override GenericValueLanguage VisitGetYearFunction([NotNull] LanguageParser.GetYearFunctionContext context) =>
-        new GenericValueLanguage(Visit(context.entity()).AsDateTime().Year);
+        new GenericValueLanguage(Visit(context.arithmetic_expression()).AsDateTime().Year);
 
     public override GenericValueLanguage VisitGetHourFunction([NotNull] LanguageParser.GetHourFunctionContext context) =>
-        new GenericValueLanguage(Visit(context.entity()).AsDateTime().Hour);
+        new GenericValueLanguage(Visit(context.arithmetic_expression()).AsDateTime().Hour);
 
     public override GenericValueLanguage VisitGetMinuteFunction([NotNull] LanguageParser.GetMinuteFunctionContext context) =>
-        new GenericValueLanguage(Visit(context.entity()).AsDateTime().Minute);
+        new GenericValueLanguage(Visit(context.arithmetic_expression()).AsDateTime().Minute);
 
     public override GenericValueLanguage VisitAddDayFunction([NotNull] LanguageParser.AddDayFunctionContext context) =>
-        new GenericValueLanguage(Visit(context.entity(0)).AsDateTime().AddDays(Visit(context.entity(1)).AsInt()));
+        new GenericValueLanguage(Visit(context.arithmetic_expression(0)).AsDateTime().AddDays(Visit(context.arithmetic_expression(1)).AsInt()));
 
     public override GenericValueLanguage VisitAddMonthFunction([NotNull] LanguageParser.AddMonthFunctionContext context) =>
-        new GenericValueLanguage(Visit(context.entity(0)).AsDateTime().AddMonths(Visit(context.entity(1)).AsInt()));
+        new GenericValueLanguage(Visit(context.arithmetic_expression(0)).AsDateTime().AddMonths(Visit(context.arithmetic_expression(1)).AsInt()));
 
     public override GenericValueLanguage VisitAddYearFunction([NotNull] LanguageParser.AddYearFunctionContext context) =>
-        new GenericValueLanguage(Visit(context.entity(0)).AsDateTime().AddYears(Visit(context.entity(1)).AsInt()));
+        new GenericValueLanguage(Visit(context.arithmetic_expression(0)).AsDateTime().AddYears(Visit(context.arithmetic_expression(1)).AsInt()));
 
     public override GenericValueLanguage VisitTrimFunction([NotNull] LanguageParser.TrimFunctionContext context) =>
-        new GenericValueLanguage(StringHelper.NormalizeWhiteSpace(Visit(context.entity()).AsString()));
+        new GenericValueLanguage(StringHelper.NormalizeWhiteSpace(Visit(context.arithmetic_expression()).AsString()));
 
     private GenericValueLanguage CompareGenericValues(GenericValueLanguage left, GenericValueLanguage right, string op)
     {

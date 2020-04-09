@@ -544,6 +544,13 @@ public interface ILanguageVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitNumberIntegerEntity([NotNull] LanguageParser.NumberIntegerEntityContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>textEntity</c>
+	/// labeled alternative in <see cref="LanguageParser.entity"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitTextEntity([NotNull] LanguageParser.TextEntityContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>dateEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.entity"/>.
 	/// </summary>
