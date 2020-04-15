@@ -6,7 +6,7 @@ namespace Api.Dto
     {
         public int RoteiroId { get; set; }
         public string Nome { get; set; }
-        public virtual ICollection<Evento> Eventos { get; } = new HashSet<Evento>();
         public SetorOrigem SetorOrigem { get; set; }
+        public virtual ICollection<Evento> Eventos { get; } = new HashSet<Evento>();
     }
 }

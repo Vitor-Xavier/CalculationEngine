@@ -1,6 +1,7 @@
 ﻿using Api.Dto;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Dynamic;
 using System.Linq;
@@ -8,13 +9,23 @@ using System.Threading.Tasks;
 
 namespace Api.Database
 {
-  public class DatabaseConnection
+  public class DatabaseConnection : IAsyncDisposable
   {
     private readonly SqlConnection _connection;
 
-    public DatabaseConnection()
+    public DatabaseConnection() =>
+        _connection = new SqlConnection("Server=192.168.0.132,1433;Database=SMARTB_PMBotucatu;User Id=smar;Password=smarapd");
+
+    private async Task Open()
     {
-      _connection = new SqlConnection("Server=homolo.cloudapp.net,1433;Database=SMARTB_PMBotucatu;User Id=smar;Password=smarapd");
+      if (_connection.State == ConnectionState.Closed)
+        await _connection.OpenAsync();
+    }
+
+    private async Task Close()
+    {
+      if (_connection.State == ConnectionState.Open)
+        await _connection.CloseAsync();
     }
 
     public async Task<IDictionary<string, IEnumerable<IDictionary<string, GenericValueLanguage>>>> GetAllData(IEnumerable<TabelaQuery> queries)
@@ -23,7 +34,7 @@ namespace Api.Database
       SqlDataReader reader = null;
       try
       {
-        await _connection.OpenAsync();
+        await Open();
         SqlCommand command = new SqlCommand(string.Join(";", queries.Select(x => x.Consulta)), _connection);
         reader = await command.ExecuteReaderAsync();
         int j = 0;
@@ -60,7 +71,7 @@ namespace Api.Database
       finally
       {
         reader?.Close();
-        _connection.Close();
+        await Close();
       }
       return results;
     }
@@ -72,7 +83,7 @@ namespace Api.Database
       SqlDataReader reader = null;
       try
       {
-        await _connection.OpenAsync();
+        await Open();
 
         SqlCommand command = new SqlCommand(string.Join(";", queries.Select(x => x.Consulta)), _connection);
         reader = await command.ExecuteReaderAsync();
@@ -108,7 +119,7 @@ namespace Api.Database
       finally
       {
         reader?.Close();
-        _connection.Close();
+        await Close();
       }
 
       return results;
@@ -122,7 +133,7 @@ namespace Api.Database
       SqlDataReader reader = null;
       try
       {
-        await _connection.OpenAsync();
+        await Open();
 
         SqlCommand command = new SqlCommand(query, _connection);
         reader = await command.ExecuteReaderAsync();
@@ -148,10 +159,15 @@ namespace Api.Database
       finally
       {
         reader?.Close();
-        _connection.Close();
+        await Close();
       }
 
       return tableResults;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+      await _connection.DisposeAsync();
     }
   }
 }

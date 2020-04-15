@@ -269,7 +269,7 @@ namespace Api.Services
       {
         Id = 70,
         Nome = "eventoParametroUnico",
-        Formula = @"lista parametro = _PARAMETRO(""ReferenciaBaixaFebrabanMovCxIt"", 2019); retorno parametro;"
+        Formula = @"lista parametros = _PARAMETRO(""ReferenciaBaixaFebrabanMovCxIt"", 2019); retorno parametros;"
       };
 
 
