@@ -3,6 +3,9 @@ using System;
 
 namespace Common.Exceptions
 {
+    /// <summary>
+    /// Exceção padrão para erros de sintaxe e execução da Linguagem.
+    /// </summary>
     public class LanguageException : Exception
     {
         public LanguageError LanguageError { get; }

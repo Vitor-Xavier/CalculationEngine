@@ -1,7 +1,6 @@
 ﻿using Antlr4.Runtime;
 using Common.Dto;
 using Common.Helpers;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -14,19 +13,18 @@ namespace Implementation
 
         public ICollection<LanguageError> SyntaxErrors { get; } = new HashSet<LanguageError>();
 
-        public LanguageErrorListener() => SourceName = "Unknown";
-
-        public LanguageErrorListener(string sourceName) => SourceName = sourceName;
-
+        /// <summary>
+        /// Identifica erros de sintaxe na análise do código, e os adiciona a lista de erros no formato padrão.
+        /// </summary>
+        /// <param name="output"></param>
+        /// <param name="recognizer"></param>
+        /// <param name="offendingSymbol">Entrada qie causou o erro</param>
+        /// <param name="line">Linha</param>
+        /// <param name="charPositionInLine">Coluna</param>
+        /// <param name="msg">Mensagem do Antlr4</param>
+        /// <param name="e">Erro de reconhecimento</param>
         public override void SyntaxError(TextWriter output, IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
         {
-            Console.WriteLine($"\n\n# {SyntaxErrors.Count}");
-            Console.WriteLine(output);
-            Console.WriteLine(recognizer);
-            Console.WriteLine(offendingSymbol);
-            Console.WriteLine(msg);
-            Console.WriteLine(e?.GetType());
-
             string message;
             if (RegexHelper.MissingChar.Match(msg) is Match matchMissing && matchMissing.Success)
             {
@@ -49,20 +47,20 @@ namespace Implementation
                 Message = message ?? msg,
                 OffendingSymbol = offendingSymbol.Text
             });
-
-            //base.SyntaxError(output, recognizer, offendingSymbol, line, charPositionInLine, msg, e);
         }
 
-
-        private string GetExceptionMessage(RecognitionException recognitionException, string offendingSymbol)
+        /// <summary>
+        /// Trata o erro para fornecer mensagem em português conforme exceção lançada.
+        /// </summary>
+        /// <param name="recognitionException">Exceção</param>
+        /// <param name="offendingSymbol">Símbolo que ocasionou o erro</param>
+        /// <returns>Mensagem tratada</returns>
+        private string GetExceptionMessage(RecognitionException recognitionException, string offendingSymbol) => recognitionException switch
         {
-            switch (recognitionException)
-            {
-                case NoViableAltException _: return $"Expressão inválida '{offendingSymbol}'";
-                case InputMismatchException _: return $"Entrada '{offendingSymbol}' não esperada";
-                case FailedPredicateException _: return $"Semántica '{offendingSymbol}' inválida";
-                default: Console.WriteLine(recognitionException); return null;
-            };
-        }
+            NoViableAltException _ => $"Expressão inválida '{offendingSymbol}'",
+            InputMismatchException _ => $"Entrada '{offendingSymbol}' não esperada",
+            FailedPredicateException _ => $"Semántica '{offendingSymbol}' inválida",
+            _ => "Erro indefinido"
+        };
     }
 }

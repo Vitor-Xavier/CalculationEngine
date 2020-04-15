@@ -3,6 +3,7 @@ using Api.Dto;
 using Api.Helper;
 using Api.Services;
 using Common.Extensions;
+using Implementation;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -35,7 +36,11 @@ namespace Api
             var startProcessorTime = Process.GetCurrentProcess().TotalProcessorTime;
             stopwatch.Start();
 
+            #region PreProcessamento
             Console.WriteLine("\n## Pré-Processamento\n");
+            var stopwatchPreProcessamento = new Stopwatch();
+            var cpuPreProcessamentoStart = Process.GetCurrentProcess().TotalProcessorTime;
+            stopwatchPreProcessamento.Start();
 
             var tabelas = TabelaColunaHelper.GetTabelaColunas(roteiro);
             var caracteristicaTabela = TabelaColunaHelper.GetCaracteristicaTabela(roteiro.Eventos);
@@ -44,17 +49,12 @@ namespace Api
             var parametros = TabelaColunaHelper.GetParametros(roteiro.Eventos);
 
             var dados = await CarregarDados(roteiro.SetorOrigem, tabelas, caracteristicaTabela, atividadeTabela);
-            var dadosGlobais = await CarregarDadosGlobal(caracteristica, parametros);
-
-
-
-            var memoryGlobal = dadosGlobais is null ? null : dadosGlobais;
-            
+            var memoryGlobal = await CarregarDadosGlobal(caracteristica, parametros);
 
             // Avaliação das fórmulas
             var executeLanguage = new ExecuteLanguage();
             foreach (var evento in roteiro.Eventos)
-                evento.ParseTree = executeLanguage.DefaultParserTreeTest(evento.Formula);
+                evento.ParseTree = executeLanguage.DefaultParserTree(evento.Formula);
 
             // Verifica se erros de sintaxe foram identificados.
             if (executeLanguage.LanguageErrorListener.SyntaxErrors.Any())
@@ -64,6 +64,17 @@ namespace Api
                     Console.WriteLine($"| Linha: {error.Line} | Coluna: {error.StartColumn} | Caractere: {error.OffendingSymbol} | Mensagem: {error.Message} |");
                 return;
             }
+
+            stopwatchPreProcessamento.Stop();
+            var cpuPreProcessamentoEnd = Process.GetCurrentProcess().TotalProcessorTime;
+            double cpuTotalPreProcessamento = (cpuPreProcessamentoEnd - cpuPreProcessamentoStart).TotalMilliseconds;
+
+            Console.WriteLine("\n## Resultados Pré-Processamento\n");
+            Console.WriteLine("| Medição        | Utilização       |");
+            Console.WriteLine("|----------------|------------------|");
+            Console.WriteLine($"| Tempo Total    | {stopwatchPreProcessamento.Elapsed} |");
+            Console.WriteLine($"| CPU média      | {Math.Round((cpuTotalPreProcessamento / (Environment.ProcessorCount * stopwatchPreProcessamento.ElapsedMilliseconds)) * 100) + "%",-16} |\n");
+            #endregion
 
             #region Processamento
             Console.WriteLine("\n## Processamento\n");
@@ -106,8 +117,8 @@ namespace Api
                         break;
                     }
                 };
-                int i = 0;
-                Resultados.TryAdd(i++, memory["@Roteiro"].Value);
+                
+                Resultados.TryAdd((int)item.Key, memory["@Roteiro"].Value);
             });
             stopWatchProcessamento.Stop();
             var cpuProcessamentoEnd = Process.GetCurrentProcess().TotalProcessorTime;
