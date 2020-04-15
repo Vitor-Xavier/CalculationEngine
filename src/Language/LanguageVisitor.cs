@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from .\Language.g4 by ANTLR 4.8
+// Generated from Language.g4 by ANTLR 4.8
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -190,6 +190,27 @@ public interface ILanguageVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitNotParenthesisIfExpression([NotNull] LanguageParser.NotParenthesisIfExpressionContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>switchExpression</c>
+	/// labeled alternative in <see cref="LanguageParser.switch_expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitSwitchExpression([NotNull] LanguageParser.SwitchExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>caseStatement</c>
+	/// labeled alternative in <see cref="LanguageParser.case_statement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitCaseStatement([NotNull] LanguageParser.CaseStatementContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>defaultStatement</c>
+	/// labeled alternative in <see cref="LanguageParser.default_statement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDefaultStatement([NotNull] LanguageParser.DefaultStatementContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>comparisonExpression</c>
 	/// labeled alternative in <see cref="LanguageParser.comparison_expression"/>.
 	/// </summary>
@@ -222,6 +243,12 @@ public interface ILanguageVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitWhileExpression([NotNull] LanguageParser.WhileExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="LanguageParser.break_statement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitBreak_statement([NotNull] LanguageParser.Break_statementContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>atividadeTabela</c>
 	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
@@ -412,6 +439,13 @@ public interface ILanguageVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitIsNullFunction([NotNull] LanguageParser.IsNullFunctionContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>dateFunction</c>
+	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDateFunction([NotNull] LanguageParser.DateFunctionContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>todayFunction</c>
 	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
 	/// </summary>
@@ -453,6 +487,48 @@ public interface ILanguageVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitGetDayFunction([NotNull] LanguageParser.GetDayFunctionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>getHourFunction</c>
+	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitGetHourFunction([NotNull] LanguageParser.GetHourFunctionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>getMinuteFunction</c>
+	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitGetMinuteFunction([NotNull] LanguageParser.GetMinuteFunctionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>addYearFunction</c>
+	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAddYearFunction([NotNull] LanguageParser.AddYearFunctionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>addMonthFunction</c>
+	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAddMonthFunction([NotNull] LanguageParser.AddMonthFunctionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>addDayFunction</c>
+	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAddDayFunction([NotNull] LanguageParser.AddDayFunctionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>trimFunction</c>
+	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitTrimFunction([NotNull] LanguageParser.TrimFunctionContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>minusExpression</c>
 	/// labeled alternative in <see cref="LanguageParser.arithmetic_expression"/>.

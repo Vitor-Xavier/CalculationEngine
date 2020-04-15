@@ -8,9 +8,11 @@ WS: [ \r\t\u000C\n]+ -> skip;
 
 IF   : 'se' ;
 ELSE : 'senao';
-SWITCH: 'switch';
-CASE: 'case';
-DEFAULT: 'default';
+SWITCH: 'parametro';
+CASE: 'caso';
+DEFAULT: 'padrao';
+WHILE: 'enquanto';
+BREAK: 'parar';
 
 AND : '&&';
 OR  : '||';
@@ -39,33 +41,19 @@ PARAMETRO: '_PARAMETRO';
 PARAMETRO_CODIGO: '_PARAMETROCODIGO';
 PARAMETRO_INTERVALO: '_PARAMETROINTERVALO';
 ROUND: '_ARREDONDAR';
+DATE_FUNCTION: '_DATA';
 TODAY: '_HOJE';
 NOW: '_AGORA';
 DATE_DIF: '_DATADIF';
+GET_YEAR: '_ANO';
 GET_MONTH: '_MES';
 GET_DAY: '_DIA';
-GET_YEAR: '_ANO';
-
-LOOKUP_FUNC: 'lookupFunction';
-BASE_FUNC: 'baseFunction';
-TOTAL_PAYMENTS: 'totalPayments';
-TOTAL_DISCOUNTS: 'totalDiscounts';
-DIRECT_RECALCULATION: 'directRecalculation';
-PROPORTIONAL_RECALCULATION: 'proportionalRecalculation';
-CLEAR_VALUES_FUNCTION: 'clearValuesFunction';
-CLEAR_DISCOUNTS_FUNCTION: 'clearDiscountsFunction';
-CLEAR_PAYMENTS_FUNCTION: 'clearPaymentsFunction';
-ADD_DAY: 'addDay';
-ADD_MONTH: 'addMonth';
-ADD_YEAR: 'addYear';
-GET_DAY_DIFF: 'getDayDiff';
-GET_MONTH_DIFF: 'getMonthDiff';
-GET_YEAR_DIFF: 'getYearDiff';
-GET_DATE: 'getDate';
-LAST_DAY_PROCESS: 'lastDayProcess';
-DESPREZAR: 'desprezar';
-
-WHILE: 'enquanto';
+GET_HOUR: '_HORA';
+GET_MINUTE: '_MINUTO';
+ADD_DAY: '_DIA_ADICIONAR';
+ADD_MONTH: '_MES_ADICIONAR';
+ADD_YEAR: '_ANO_ADICIONAR';
+TRIM: '_ARRUMAR';
 
 LBRACKET: '[';
 RBRACKET: ']';
@@ -98,6 +86,7 @@ PLUS_ASSIGNMENT: '+=';
 MINUS_ASSIGNMENT: '-=';
 MULT_ASSIGNMENT: '*=';
 DIV_ASSIGNMENT: '/=';
+POW_ASSIGNMENT: '^=';
 
 VAR: 'var';
 LISTA: 'lista';
@@ -118,20 +107,23 @@ VAR_PRIMARY: [@][a-zA-Z_][a-zA-Z_0-9]*;
 SEMI : ';';
 COLON : ':';
 
+ERRORCHAR: .;
+
 /* Grammar rules */
 
 rule_set
-	: rule_block* return_value? 
+	: rule_block* return_value?
 	;
 
 rule_block
-    : assignment
-    | variable_declaration
+    : variable_declaration
+    | switch_expression
     | arithmetic_expression
     | conditional
     | loop
+    | break_statement
+    | assignment
     ;
-
 
 variable_declaration
     : VAR IDENTIFIER ATRIB arithmetic_expression SEMI #arithmeticDeclaration
@@ -175,6 +167,18 @@ if_expression
     | entity                            #ifEntity
     ;
 
+switch_expression
+    : SWITCH arithmetic_expression LBRACE case_statement+ default_statement? RBRACE #switchExpression
+    ;
+
+case_statement
+    : CASE arithmetic_expression COLON (LBRACE rule_block+ RBRACE | rule_block) #caseStatement
+    ;
+
+default_statement
+    : DEFAULT COLON (LBRACE rule_block+ RBRACE | rule_block) #defaultStatement
+    ;
+
 comparison_expression
     : arithmetic_expression comparison_operator arithmetic_expression   #comparisonExpression
     | LPAREN comparison_expression RPAREN                               #parenthesisComparisonExpression
@@ -195,10 +199,15 @@ assignment_operator
     | MINUS_ASSIGNMENT
     | MULT_ASSIGNMENT
     | DIV_ASSIGNMENT
+    | POW_ASSIGNMENT
     ;
 
 loop
     : WHILE LPAREN if_expression RPAREN LBRACE rule_block* RBRACE #whileExpression
+    ;
+
+break_statement
+    : BREAK SEMI
     ;
 
 function_signature
@@ -227,7 +236,7 @@ function_signature
     | LENGTH LPAREN IDENTIFIER RPAREN #lengthVariable
     
     | ROUND LPAREN arithmetic_expression (COMMA arithmetic_expression)? RPAREN #roundFunction
-    | COALESCE LPAREN entity (COMMA entity)* RPAREN #coalesceFunction
+    | COALESCE LPAREN entity (COMMA entity)+ RPAREN #coalesceFunction
     | SQRT LPAREN arithmetic_expression RPAREN #sqrtFunction
     | ABS LPAREN arithmetic_expression RPAREN #absFunction
 
@@ -238,19 +247,26 @@ function_signature
     | COUNT_IF LPAREN IDENTIFIER COMMA arithmetic_expression comparison_operator arithmetic_expression RPAREN #countIfListLocal 
     
     | ISNULL LPAREN arithmetic_expression RPAREN #isNullFunction
+    | DATE_FUNCTION LPAREN arithmetic_expression COMMA arithmetic_expression COMMA arithmetic_expression RPAREN #dateFunction
     | TODAY LPAREN RPAREN #todayFunction
     | NOW LPAREN RPAREN #nowFunction
-    | DATE_DIF LPAREN entity COMMA entity COMMA date_unit RPAREN #dateDifFunction
-    | GET_YEAR LPAREN entity RPAREN #getYearFunction
-    | GET_MONTH LPAREN entity RPAREN #getMonthFunction
-    | GET_DAY LPAREN entity RPAREN #getDayFunction
+    | DATE_DIF LPAREN arithmetic_expression COMMA arithmetic_expression COMMA date_unit RPAREN #dateDifFunction
+    | GET_YEAR LPAREN arithmetic_expression RPAREN #getYearFunction
+    | GET_MONTH LPAREN arithmetic_expression RPAREN #getMonthFunction
+    | GET_DAY LPAREN arithmetic_expression RPAREN #getDayFunction
+    | GET_HOUR LPAREN arithmetic_expression RPAREN #getHourFunction
+    | GET_MINUTE LPAREN arithmetic_expression RPAREN #getMinuteFunction
+    | ADD_YEAR LPAREN arithmetic_expression COMMA arithmetic_expression RPAREN #addYearFunction
+    | ADD_MONTH LPAREN arithmetic_expression COMMA arithmetic_expression RPAREN #addMonthFunction
+    | ADD_DAY LPAREN arithmetic_expression COMMA arithmetic_expression RPAREN #addDayFunction
+    | TRIM LPAREN arithmetic_expression RPAREN #trimFunction
     ;
 
 arithmetic_expression
-    : arithmetic_expression MULT arithmetic_expression							#multExpression
+    : arithmetic_expression MULT arithmetic_expression					        #multExpression
     | arithmetic_expression DIV arithmetic_expression							#divExpression
-    | arithmetic_expression PLUS arithmetic_expression							#plusExpression
-    | arithmetic_expression MINUS arithmetic_expression							#minusExpression
+    | arithmetic_expression PLUS arithmetic_expression						    #plusExpression
+    | arithmetic_expression MINUS arithmetic_expression						    #minusExpression
     | arithmetic_expression POW arithmetic_expression							#powExpression
     | LPAREN arithmetic_expression RPAREN										#parenthesisExpression
     | function_signature                                                        #ifFunctionSignature
@@ -272,12 +288,12 @@ arithmetic_expression
     codigo_caracteristica
     : text
     ;
-    
-    exercicio_caracteristica                                                       
+
+    exercicio_caracteristica
     : number_integer
     ;
 
-    coluna_caracteristica                                                       
+    coluna_caracteristica
     : text
     ;
 
@@ -335,5 +351,5 @@ arithmetic_expression
 date_unit
     : YEAR
     | MONTH
-    | DAY;
-
+    | DAY
+    ;
