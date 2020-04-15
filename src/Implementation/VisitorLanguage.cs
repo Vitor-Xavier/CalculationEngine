@@ -496,7 +496,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
 
         break;
       default:
-        throw new InvalidOperationException($"Operador nao reconhecido.");
+        throw new InvalidOperationException($"Memory error.");
     }
 
     return value;
