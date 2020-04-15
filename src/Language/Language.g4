@@ -33,6 +33,7 @@ AVERAGE: '_MEDIA';
 LENGTH: '_CONT';
 COALESCE: '_COALESCE';
 CARACTERISTICA_TABELA: '_CARACTERISTICATABELA';
+ATIVIDADE_TABELA: '_ATIVIDADETABELA';
 CARACTERISTICA: '_CARACTERISTICA';
 PARAMETRO: '_PARAMETRO';
 PARAMETRO_CODIGO: '_PARAMETROCODIGO';
@@ -113,9 +114,6 @@ DATE : ([0-9])+'/'([0-9])+'/'([0-9])+;
 IDENTIFIER : [a-zA-Z_][a-zA-Z_0-9]* ;
 TEXT: QUOTE (~["\\] | '\\' .)* QUOTE;
 VAR_PRIMARY: [@][a-zA-Z_][a-zA-Z_0-9]*;
-VAR_OBJECT: [@][a-zA-Z_][a-zA-Z_0-9]*[.][a-zA-Z_][a-zA-Z_0-9]*;
-VAR_ARRAY: [@][a-zA-Z_][a-zA-Z_0-9]*(LBRACKET (NUMBER | IDENTIFIER) RBRACKET)'.'[a-zA-Z_][a-zA-Z_0-9]+;
-IDENTIFIER_ARRAY: [a-zA-Z_][a-zA-Z_0-9]*(LBRACKET (NUMBER | IDENTIFIER) RBRACKET)'.'[a-zA-Z_][a-zA-Z_0-9]+;
 
 SEMI : ';';
 COLON : ':';
@@ -138,12 +136,17 @@ rule_block
 variable_declaration
     : VAR IDENTIFIER ATRIB arithmetic_expression SEMI #arithmeticDeclaration
     | VAR IDENTIFIER ATRIB comparison_expression SEMI #comparisonDeclaration
-    | LISTA IDENTIFIER_ARRAY ATRIB arithmetic_expression SEMI #arrayAssignment
+    | LISTA IDENTIFIER ATRIB arithmetic_expression SEMI #declareList
+    | LISTA IDENTIFIER ATRIB LBRACKET RBRACKET SEMI #declareListAll
     ;
 
 assignment
-    : IDENTIFIER assignment_operator arithmetic_expression SEMI #arithmeticAssignment
-    | IDENTIFIER ATRIB comparison_expression SEMI #comparisonAssignment
+    : IDENTIFIER ATRIB comparison_expression SEMI #comparisonAssignment
+    | IDENTIFIER assignment_operator arithmetic_expression SEMI #arithmeticAssignment
+    | IDENTIFIER LBRACKET (IDENTIFIER | number_integer) RBRACKET DOT IDENTIFIER assignment_operator arithmetic_expression SEMI #listAssignment
+    | VAR_PRIMARY DOT IDENTIFIER assignment_operator arithmetic_expression SEMI #varMemoryValueAssignment
+    | VAR_PRIMARY LBRACKET (IDENTIFIER | number_integer) RBRACKET DOT IDENTIFIER assignment_operator arithmetic_expression SEMI #listMemoryGlobalValueAssignment
+    | VAR_PRIMARY DOT IDENTIFIER LBRACKET (IDENTIFIER | number_integer) RBRACKET DOT IDENTIFIER assignment_operator arithmetic_expression SEMI #listMemoryValueAssignment
 	;
 
 return_value
@@ -166,7 +169,7 @@ if_expression
     : if_expression AND if_expression   #andExpression
     | if_expression OR if_expression    #orExpression
     | comparison_expression             #ifComparisonExpression
-    | NOT LPAREN if_expression RPAREN       #notParenthesisIfExpression
+    | NOT LPAREN if_expression RPAREN   #notParenthesisIfExpression
     | LPAREN if_expression RPAREN       #parenthesisIfExpression
     | NOT entity                        #notIfEntity
     | entity                            #ifEntity
@@ -199,22 +202,41 @@ loop
     ;
 
 function_signature
-	: CARACTERISTICA_TABELA LPAREN tabela_caracteristica COMMA descricao_caracteristica COMMA coluna_caracteristica COMMA exercicio_caracteristica (COMMA valor_fator_caracteristica)? RPAREN  #caracteristicaTabela
+    : ATIVIDADE_TABELA LPAREN tabela_caracteristica COMMA descricao_caracteristica COMMA coluna_caracteristica COMMA exercicio_caracteristica (COMMA coluna_filtro)? (COMMA LBRACKET (text+COMMA*)+ RBRACKET)?  RPAREN  #atividadeTabela
+	| CARACTERISTICA_TABELA LPAREN tabela_caracteristica COMMA descricao_caracteristica COMMA coluna_caracteristica COMMA exercicio_caracteristica (COMMA valor_fator_caracteristica)? RPAREN  #caracteristicaTabela
     | CARACTERISTICA LPAREN descricao_caracteristica COMMA codigo_caracteristica COMMA valor_fator_caracteristica (COMMA exercicio_caracteristica)? RPAREN  #caracteristica
-    | PARAMETRO LPAREN text (COMMA number_integer)? RPAREN #parametroFunction
-    | PARAMETRO_CODIGO LPAREN text COMMA text (COMMA number_integer)? RPAREN #parametroCodigoFunction
-    | PARAMETRO_INTERVALO LPAREN text COMMA text (COMMA number_integer)? RPAREN #parametroIntervaloFunction
-    | SUM LPAREN VAR_OBJECT RPAREN #sumFunction
-    | MAX LPAREN VAR_OBJECT RPAREN #maxFunction
-    | MIN LPAREN VAR_OBJECT RPAREN #minFunction
-    | AVERAGE LPAREN VAR_OBJECT RPAREN #averageFunction
-    | LENGTH LPAREN VAR_PRIMARY RPAREN #lengthFunction
+    | PARAMETRO LPAREN text COMMA number_integer (COMMA number_integer)? RPAREN #parametroFunction
+   
+    | SUM LPAREN VAR_PRIMARY DOT IDENTIFIER (DOT IDENTIFIER)? RPAREN #sumDatabase
+    | SUM LPAREN IDENTIFIER DOT IDENTIFIER RPAREN #sumListLocal
+    | SUM LPAREN IDENTIFIER RPAREN #sumVariable
+   
+    | MAX LPAREN VAR_PRIMARY DOT IDENTIFIER (DOT IDENTIFIER)? RPAREN #maxDatabase
+    | MAX LPAREN IDENTIFIER DOT IDENTIFIER RPAREN #maxListLocal
+    | MAX LPAREN IDENTIFIER RPAREN #maxVariable
+    
+    | MIN LPAREN VAR_PRIMARY DOT IDENTIFIER (DOT IDENTIFIER)? RPAREN #minDatabase
+    | MIN LPAREN IDENTIFIER DOT IDENTIFIER RPAREN #minListLocal
+    | MIN LPAREN IDENTIFIER RPAREN #minVariable
+    
+    | AVERAGE LPAREN VAR_PRIMARY DOT IDENTIFIER (DOT IDENTIFIER)? RPAREN #averageDatabase
+    | AVERAGE LPAREN IDENTIFIER DOT IDENTIFIER RPAREN #averageListLocal
+    | AVERAGE LPAREN IDENTIFIER RPAREN #averageVariable
+
+    | LENGTH LPAREN VAR_PRIMARY (DOT IDENTIFIER)? RPAREN #lengthDatabase
+    | LENGTH LPAREN IDENTIFIER RPAREN #lengthVariable
+    
     | ROUND LPAREN arithmetic_expression (COMMA arithmetic_expression)? RPAREN #roundFunction
     | COALESCE LPAREN entity (COMMA entity)* RPAREN #coalesceFunction
     | SQRT LPAREN arithmetic_expression RPAREN #sqrtFunction
     | ABS LPAREN arithmetic_expression RPAREN #absFunction
-    | SUM_IF LPAREN VAR_OBJECT COMMA arithmetic_expression comparison_operator arithmetic_expression RPAREN #sumIfFunction
-    | COUNT_IF LPAREN VAR_PRIMARY COMMA arithmetic_expression comparison_operator arithmetic_expression RPAREN #countIfFunction
+
+    | SUM_IF LPAREN VAR_PRIMARY DOT IDENTIFIER (DOT IDENTIFIER)? COMMA arithmetic_expression comparison_operator arithmetic_expression RPAREN #sumIfFunction           
+    | SUM_IF LPAREN IDENTIFIER DOT IDENTIFIER COMMA arithmetic_expression comparison_operator arithmetic_expression RPAREN #sumIfListLocal           
+
+    | COUNT_IF LPAREN VAR_PRIMARY (DOT IDENTIFIER)? COMMA arithmetic_expression comparison_operator arithmetic_expression RPAREN #countIfFunction
+    | COUNT_IF LPAREN IDENTIFIER COMMA arithmetic_expression comparison_operator arithmetic_expression RPAREN #countIfListLocal 
+    
     | ISNULL LPAREN arithmetic_expression RPAREN #isNullFunction
     | TODAY LPAREN RPAREN #todayFunction
     | NOW LPAREN RPAREN #nowFunction
@@ -259,6 +281,10 @@ arithmetic_expression
     : text
     ;
 
+    coluna_filtro                                                       
+    : text
+    ;
+
     coluna_valor_caracteristica                                                       
     : text
     ;
@@ -267,19 +293,35 @@ arithmetic_expression
     : (TRUE | FALSE)            #boolEntity
     | number_decimal            #numberDecimalEntity
     | number_integer            #numberIntegerEntity
+    | text                      #stringEntity    
 	| DATE						#dateEntity
     | IDENTIFIER                #variableEntity
-    | IDENTIFIER_ARRAY          #variableArrayEntity
+    | list                      #listEntity
     | VAR_PRIMARY               #varPrimaryEntity
-    | VAR_ARRAY                 #varArrayEntity
-    | VAR_OBJECT                #varObjectEntity
+    | varMemory                 #varMemoryEntity
+    | listMemory                #listMemoryEntity
+    | listMemoryGlobal          #listMemoryGlobalEntity
     | NULL                      #nullEntity
     ;
 
- 
+    varMemory
+    : VAR_PRIMARY DOT IDENTIFIER #varMemoryValue
+    ;
+    
+    listMemoryGlobal
+    : VAR_PRIMARY LBRACKET (IDENTIFIER | number_integer) RBRACKET DOT IDENTIFIER #listMemoryGlobalValue
+    ;
+
+    listMemory
+    : VAR_PRIMARY DOT IDENTIFIER LBRACKET (IDENTIFIER | number_integer) RBRACKET DOT IDENTIFIER #listMemoryValue
+    ;
+
+    list
+    : IDENTIFIER LBRACKET (IDENTIFIER | number_integer) RBRACKET (DOT IDENTIFIER)? #listValue
+    ;
 
     text
-    : TEXT #stringEntity
+    : TEXT #string
     ;
 
     number_integer
@@ -294,3 +336,4 @@ date_unit
     : YEAR
     | MONTH
     | DAY;
+

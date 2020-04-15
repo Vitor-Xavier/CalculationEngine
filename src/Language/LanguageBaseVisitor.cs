@@ -76,7 +76,7 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// <return>The visitor result.</return>
 	public virtual Result VisitComparisonDeclaration([NotNull] LanguageParser.ComparisonDeclarationContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by the <c>arrayAssignment</c>
+	/// Visit a parse tree produced by the <c>declareList</c>
 	/// labeled alternative in <see cref="LanguageParser.variable_declaration"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -85,7 +85,29 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitArrayAssignment([NotNull] LanguageParser.ArrayAssignmentContext context) { return VisitChildren(context); }
+	public virtual Result VisitDeclareList([NotNull] LanguageParser.DeclareListContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>declareListAll</c>
+	/// labeled alternative in <see cref="LanguageParser.variable_declaration"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitDeclareListAll([NotNull] LanguageParser.DeclareListAllContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>comparisonAssignment</c>
+	/// labeled alternative in <see cref="LanguageParser.assignment"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitComparisonAssignment([NotNull] LanguageParser.ComparisonAssignmentContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by the <c>arithmeticAssignment</c>
 	/// labeled alternative in <see cref="LanguageParser.assignment"/>.
@@ -98,7 +120,7 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// <return>The visitor result.</return>
 	public virtual Result VisitArithmeticAssignment([NotNull] LanguageParser.ArithmeticAssignmentContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by the <c>comparisonAssignment</c>
+	/// Visit a parse tree produced by the <c>listAssignment</c>
 	/// labeled alternative in <see cref="LanguageParser.assignment"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -107,7 +129,40 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitComparisonAssignment([NotNull] LanguageParser.ComparisonAssignmentContext context) { return VisitChildren(context); }
+	public virtual Result VisitListAssignment([NotNull] LanguageParser.ListAssignmentContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>varMemoryValueAssignment</c>
+	/// labeled alternative in <see cref="LanguageParser.assignment"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitVarMemoryValueAssignment([NotNull] LanguageParser.VarMemoryValueAssignmentContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>listMemoryGlobalValueAssignment</c>
+	/// labeled alternative in <see cref="LanguageParser.assignment"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitListMemoryGlobalValueAssignment([NotNull] LanguageParser.ListMemoryGlobalValueAssignmentContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>listMemoryValueAssignment</c>
+	/// labeled alternative in <see cref="LanguageParser.assignment"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitListMemoryValueAssignment([NotNull] LanguageParser.ListMemoryValueAssignmentContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by the <c>returnValue</c>
 	/// labeled alternative in <see cref="LanguageParser.return_value"/>.
@@ -282,6 +337,17 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// <return>The visitor result.</return>
 	public virtual Result VisitWhileExpression([NotNull] LanguageParser.WhileExpressionContext context) { return VisitChildren(context); }
 	/// <summary>
+	/// Visit a parse tree produced by the <c>atividadeTabela</c>
+	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitAtividadeTabela([NotNull] LanguageParser.AtividadeTabelaContext context) { return VisitChildren(context); }
+	/// <summary>
 	/// Visit a parse tree produced by the <c>caracteristicaTabela</c>
 	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
 	/// <para>
@@ -315,7 +381,7 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// <return>The visitor result.</return>
 	public virtual Result VisitParametroFunction([NotNull] LanguageParser.ParametroFunctionContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by the <c>parametroCodigoFunction</c>
+	/// Visit a parse tree produced by the <c>sumDatabase</c>
 	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -324,9 +390,9 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitParametroCodigoFunction([NotNull] LanguageParser.ParametroCodigoFunctionContext context) { return VisitChildren(context); }
+	public virtual Result VisitSumDatabase([NotNull] LanguageParser.SumDatabaseContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by the <c>parametroIntervaloFunction</c>
+	/// Visit a parse tree produced by the <c>sumListLocal</c>
 	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -335,9 +401,9 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitParametroIntervaloFunction([NotNull] LanguageParser.ParametroIntervaloFunctionContext context) { return VisitChildren(context); }
+	public virtual Result VisitSumListLocal([NotNull] LanguageParser.SumListLocalContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by the <c>sumFunction</c>
+	/// Visit a parse tree produced by the <c>sumVariable</c>
 	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -346,9 +412,9 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitSumFunction([NotNull] LanguageParser.SumFunctionContext context) { return VisitChildren(context); }
+	public virtual Result VisitSumVariable([NotNull] LanguageParser.SumVariableContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by the <c>maxFunction</c>
+	/// Visit a parse tree produced by the <c>maxDatabase</c>
 	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -357,9 +423,9 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitMaxFunction([NotNull] LanguageParser.MaxFunctionContext context) { return VisitChildren(context); }
+	public virtual Result VisitMaxDatabase([NotNull] LanguageParser.MaxDatabaseContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by the <c>minFunction</c>
+	/// Visit a parse tree produced by the <c>maxListLocal</c>
 	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -368,9 +434,9 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitMinFunction([NotNull] LanguageParser.MinFunctionContext context) { return VisitChildren(context); }
+	public virtual Result VisitMaxListLocal([NotNull] LanguageParser.MaxListLocalContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by the <c>averageFunction</c>
+	/// Visit a parse tree produced by the <c>maxVariable</c>
 	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -379,9 +445,9 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitAverageFunction([NotNull] LanguageParser.AverageFunctionContext context) { return VisitChildren(context); }
+	public virtual Result VisitMaxVariable([NotNull] LanguageParser.MaxVariableContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by the <c>lengthFunction</c>
+	/// Visit a parse tree produced by the <c>minDatabase</c>
 	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -390,7 +456,84 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitLengthFunction([NotNull] LanguageParser.LengthFunctionContext context) { return VisitChildren(context); }
+	public virtual Result VisitMinDatabase([NotNull] LanguageParser.MinDatabaseContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>minListLocal</c>
+	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitMinListLocal([NotNull] LanguageParser.MinListLocalContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>minVariable</c>
+	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitMinVariable([NotNull] LanguageParser.MinVariableContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>averageDatabase</c>
+	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitAverageDatabase([NotNull] LanguageParser.AverageDatabaseContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>averageListLocal</c>
+	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitAverageListLocal([NotNull] LanguageParser.AverageListLocalContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>averageVariable</c>
+	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitAverageVariable([NotNull] LanguageParser.AverageVariableContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>lengthDatabase</c>
+	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitLengthDatabase([NotNull] LanguageParser.LengthDatabaseContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>lengthVariable</c>
+	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitLengthVariable([NotNull] LanguageParser.LengthVariableContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by the <c>roundFunction</c>
 	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
@@ -447,6 +590,17 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// <return>The visitor result.</return>
 	public virtual Result VisitSumIfFunction([NotNull] LanguageParser.SumIfFunctionContext context) { return VisitChildren(context); }
 	/// <summary>
+	/// Visit a parse tree produced by the <c>sumIfListLocal</c>
+	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitSumIfListLocal([NotNull] LanguageParser.SumIfListLocalContext context) { return VisitChildren(context); }
+	/// <summary>
 	/// Visit a parse tree produced by the <c>countIfFunction</c>
 	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
 	/// <para>
@@ -457,6 +611,17 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	public virtual Result VisitCountIfFunction([NotNull] LanguageParser.CountIfFunctionContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>countIfListLocal</c>
+	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitCountIfListLocal([NotNull] LanguageParser.CountIfListLocalContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by the <c>isNullFunction</c>
 	/// labeled alternative in <see cref="LanguageParser.function_signature"/>.
@@ -683,6 +848,16 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// <return>The visitor result.</return>
 	public virtual Result VisitColuna_caracteristica([NotNull] LanguageParser.Coluna_caracteristicaContext context) { return VisitChildren(context); }
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="LanguageParser.coluna_filtro"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitColuna_filtro([NotNull] LanguageParser.Coluna_filtroContext context) { return VisitChildren(context); }
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="LanguageParser.coluna_valor_caracteristica"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -726,6 +901,17 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// <return>The visitor result.</return>
 	public virtual Result VisitNumberIntegerEntity([NotNull] LanguageParser.NumberIntegerEntityContext context) { return VisitChildren(context); }
 	/// <summary>
+	/// Visit a parse tree produced by the <c>stringEntity</c>
+	/// labeled alternative in <see cref="LanguageParser.entity"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitStringEntity([NotNull] LanguageParser.StringEntityContext context) { return VisitChildren(context); }
+	/// <summary>
 	/// Visit a parse tree produced by the <c>dateEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.entity"/>.
 	/// <para>
@@ -748,7 +934,7 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// <return>The visitor result.</return>
 	public virtual Result VisitVariableEntity([NotNull] LanguageParser.VariableEntityContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by the <c>variableArrayEntity</c>
+	/// Visit a parse tree produced by the <c>listEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.entity"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -757,7 +943,7 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVariableArrayEntity([NotNull] LanguageParser.VariableArrayEntityContext context) { return VisitChildren(context); }
+	public virtual Result VisitListEntity([NotNull] LanguageParser.ListEntityContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by the <c>varPrimaryEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.entity"/>.
@@ -770,7 +956,7 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// <return>The visitor result.</return>
 	public virtual Result VisitVarPrimaryEntity([NotNull] LanguageParser.VarPrimaryEntityContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by the <c>varArrayEntity</c>
+	/// Visit a parse tree produced by the <c>varMemoryEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.entity"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -779,9 +965,9 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVarArrayEntity([NotNull] LanguageParser.VarArrayEntityContext context) { return VisitChildren(context); }
+	public virtual Result VisitVarMemoryEntity([NotNull] LanguageParser.VarMemoryEntityContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by the <c>varObjectEntity</c>
+	/// Visit a parse tree produced by the <c>listMemoryEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.entity"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -790,7 +976,18 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitVarObjectEntity([NotNull] LanguageParser.VarObjectEntityContext context) { return VisitChildren(context); }
+	public virtual Result VisitListMemoryEntity([NotNull] LanguageParser.ListMemoryEntityContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>listMemoryGlobalEntity</c>
+	/// labeled alternative in <see cref="LanguageParser.entity"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitListMemoryGlobalEntity([NotNull] LanguageParser.ListMemoryGlobalEntityContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by the <c>nullEntity</c>
 	/// labeled alternative in <see cref="LanguageParser.entity"/>.
@@ -803,7 +1000,51 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// <return>The visitor result.</return>
 	public virtual Result VisitNullEntity([NotNull] LanguageParser.NullEntityContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by the <c>stringEntity</c>
+	/// Visit a parse tree produced by the <c>varMemoryValue</c>
+	/// labeled alternative in <see cref="LanguageParser.varMemory"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitVarMemoryValue([NotNull] LanguageParser.VarMemoryValueContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>listMemoryGlobalValue</c>
+	/// labeled alternative in <see cref="LanguageParser.listMemoryGlobal"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitListMemoryGlobalValue([NotNull] LanguageParser.ListMemoryGlobalValueContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>listMemoryValue</c>
+	/// labeled alternative in <see cref="LanguageParser.listMemory"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitListMemoryValue([NotNull] LanguageParser.ListMemoryValueContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>listValue</c>
+	/// labeled alternative in <see cref="LanguageParser.list"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitListValue([NotNull] LanguageParser.ListValueContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>string</c>
 	/// labeled alternative in <see cref="LanguageParser.text"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -812,7 +1053,7 @@ public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Resu
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitStringEntity([NotNull] LanguageParser.StringEntityContext context) { return VisitChildren(context); }
+	public virtual Result VisitString([NotNull] LanguageParser.StringContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by the <c>numberInteger</c>
 	/// labeled alternative in <see cref="LanguageParser.number_integer"/>.
