@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections;
+﻿using Antlr4.Runtime;
+using Api.Dto;
+using Common.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Antlr4.Runtime;
-using Api.Dto;
 
 namespace Api.Helper
 {
-  public static class TabelaColunaHelper
+    public static class TabelaColunaHelper
   {
     public static IEnumerable<TabelaColuna> GetTabelaColunas(Roteiro roteiro)
     {
@@ -108,11 +107,11 @@ namespace Api.Helper
       caracteristicaTabela = caracteristicaTabela
       .GroupBy(x => new
       {
-        Descricao = x.Descricao,
-        Coluna = x.Coluna,
-        Exercicio = x.Exercicio,
-        Tabela = x.Tabela,
-        ColunaFiltro = x.ColunaFiltro,
+          x.Descricao,
+          x.Coluna,
+          x.Exercicio,
+          x.Tabela,
+          x.ColunaFiltro,
       })
       .Select(x => new AtividadeTabela
       {
@@ -151,10 +150,10 @@ namespace Api.Helper
       caracteristica = caracteristica
           .GroupBy(x => new
           {
-            Descricao = x.Descricao,
-            Codigo = x.Codigo,
-            Exercicio = x.Exercicio,
-            ValorFator = x.ValorFator
+            x.Descricao,
+            x.Codigo,
+            x.Exercicio,
+            x.ValorFator
           })
           .Select(x => new Caracteristica
           {

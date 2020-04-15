@@ -19,7 +19,7 @@ namespace Api
 
         public static ConcurrentDictionary<int, object> Resultados { get; } = new ConcurrentDictionary<int, object>();
 
-        static async Task Main(string[] args)
+        static async Task Main()
         {
             Console.WriteLine("# Cálculo Tributário");
             Console.WriteLine("\n## Roteiro\n");
@@ -43,8 +43,8 @@ namespace Api
             var caracteristica = TabelaColunaHelper.GetCaracteristica(roteiro.Eventos);
             var parametros = TabelaColunaHelper.GetParametros(roteiro.Eventos);
 
-            var dados = await CarregarDados(roteiro.SetorOrigem, tabelas, caracteristicaTabela, caracteristica, atividadeTabela);
-            var dadosGlobais = await CarregarDadosGlobal(roteiro.SetorOrigem, caracteristica, parametros);
+            var dados = await CarregarDados(roteiro.SetorOrigem, tabelas, caracteristicaTabela, atividadeTabela);
+            var dadosGlobais = await CarregarDadosGlobal(caracteristica, parametros);
 
 
 
@@ -159,7 +159,7 @@ namespace Api
 
 
 
-        public static async Task<IDictionary<string, GenericValueLanguage>> CarregarDadosGlobal(SetorOrigem setor, IEnumerable<Caracteristica> caracteristica, IEnumerable<Parametro> parametros)
+        public static async Task<IDictionary<string, GenericValueLanguage>> CarregarDadosGlobal(IEnumerable<Caracteristica> caracteristica, IEnumerable<Parametro> parametros)
         {
 
             // Diagnóstico
@@ -220,7 +220,7 @@ namespace Api
             return global;
         }
 
-        public static async Task<Dictionary<GenericValueLanguage, IDictionary<string, GenericValueLanguage>>> CarregarDados(SetorOrigem setor, IEnumerable<TabelaColuna> tabelas, IEnumerable<CaracteristicaTabela> caracteristicaTabela, IEnumerable<Caracteristica> caracteristica, List<AtividadeTabela> atividadeTabela)
+        public static async Task<Dictionary<GenericValueLanguage, IDictionary<string, GenericValueLanguage>>> CarregarDados(SetorOrigem setor, IEnumerable<TabelaColuna> tabelas, IEnumerable<CaracteristicaTabela> caracteristicaTabela, List<AtividadeTabela> atividadeTabela)
         {
             int idSelecao = 2;
 
