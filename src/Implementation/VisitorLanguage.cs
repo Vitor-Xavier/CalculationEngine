@@ -175,8 +175,6 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
       else
       {
         indexDictonaryStringGeneric.TryGetValue(propertyArrayKey, out GenericValueLanguage objectProperty);
-        if (objectProperty.IsNull())
-          throw new ArgumentException($"Propriedade {propertyArrayKey} nao foi encontrada");
         return objectProperty;
       }
 
@@ -954,7 +952,7 @@ public class VisitorLanguage : LanguageBaseVisitor<GenericValueLanguage>
       _memoryLocalList[identifier] = new GenericValueLanguage(value.Value);
     }
     else
-      throw new ArgumentException($"Nao e lista.");
+      _memoryLocalList[identifier] = new GenericValueLanguage(new Dictionary<int, IDictionary<string, GenericValueLanguage>>());
 
     return empty;
 

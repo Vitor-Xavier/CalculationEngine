@@ -14,7 +14,7 @@ namespace Api.Database
 
     public DatabaseConnection()
     {
-      _connection = new SqlConnection("Server=192.168.0.132,1433;Database=Smartb_pmbotucatu;User Id=smar;Password=smarapd");
+      _connection = new SqlConnection("Server=homolo.cloudapp.net,1433;Database=SMARTB_PMBotucatu;User Id=smar;Password=smarapd");
     }
 
     public async Task<IDictionary<string, IEnumerable<IDictionary<string, GenericValueLanguage>>>> GetAllData(IEnumerable<TabelaQuery> queries)

@@ -144,7 +144,7 @@ namespace Api.Services
       {
         Id = 60,
         Nome = "CARACTERISTICA",
-        Formula = string.Format("retorno _ARREDONDAR(_CARACTERISTICA( {0},{1},{2},{3}),2);"
+        Formula = string.Format("retorno _CARACTERISTICA( {0},{1},{2},{3});"
             , "\"ESGOTO\""
             , "\"01\""
             , "\"Valor\""
