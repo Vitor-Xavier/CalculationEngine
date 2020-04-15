@@ -25,7 +25,7 @@ namespace Api
     {
       Console.WriteLine("# Cálculo Tributário");
       Console.WriteLine("\n## Roteiro\n");
-      var roteiroService = new RoteiroBaseServiceTest();
+      var roteiroService = new RoteiroService();
       var roteiro = await roteiroService.GetRoteiro();
       Console.WriteLine("| Roteiro  | Valor      |");
       Console.WriteLine("|----------|------------|");

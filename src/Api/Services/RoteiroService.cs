@@ -44,46 +44,163 @@ namespace Api.Services
         SetorOrigem = SetorOrigem.Imobiliario,
       };
 
+      Evento AtividadeTabelaRetorno = new Evento
+      {
+        Id = 1,
+        Nome = "AtividadeTabelaRetorno",
+        Formula = string.Format("retorno _ATIVIDADETABELA(\"CCMAtividades\", \"SERVIÇOS116\", \"ccm\", 2019, \"IdAtividade\", [\"Atividades.VlrAtividade\",\"Atividades.Aliquota\",\"AtividadesVlrs.Valor\",\"AtividadesVlrs.DtInicio\"]);")
+      };
+      roteiro.Eventos.Add(AtividadeTabelaRetorno);
+
+      Evento AtividadeTabelaRetornoTeste = new Evento
+      {
+        Id = 1,
+        Nome = "AtividadeTabelaRetornoTeste",
+        Formula = string.Format("lista listaTeste= _ATIVIDADETABELA(\"CCMAtividades\", \"SERVIÇOS116\", \"ccm\", 2019, \"IdAtividade\", [\"Atividades.VlrAtividade\",\"Atividades.Aliquota\",\"AtividadesVlrs.Valor\",\"AtividadesVlrs.DtInicio\"]); retorno _ARREDONDAR(_SOMASE(listaTeste.Valor, Valor > 100),6); ")
+      };
+      roteiro.Eventos.Add(AtividadeTabelaRetornoTeste);
+
+      Evento Soma_Retorno_AtividadeTabelaRetorno = new Evento
+      {
+        Id = 1,
+        Nome = "Soma_Retorno_AtividadeTabelaRetorno",
+        Formula = string.Format("retorno _SOMASE(@Roteiro.AtividadeTabelaRetorno.Valor, Valor > 100);")
+      };
+      roteiro.Eventos.Add(Soma_Retorno_AtividadeTabelaRetorno);
+
+      Evento Soma_AtividadeTabelaRetorno = new Evento
+      {
+        Id = 1,
+        Nome = "Soma_AtividadeTabelaRetorno",
+        Formula = string.Format("lista Soma_AtividadeTabelaRetorno = _ATIVIDADETABELA(\"CCMAtividades\", \"SERVIÇOS116\", \"ccm\", 2019, \"IdAtividade\", [\"Atividades.VlrAtividade\",\"Atividades.Aliquota\",\"AtividadesVlrs.Valor\",\"AtividadesVlrs.DtInicio\"]); retorno _ARREDONDAR(_SOMA(Soma_AtividadeTabelaRetorno.Valor),2);")
+      };
+      roteiro.Eventos.Add(Soma_AtividadeTabelaRetorno);
+
+      Evento Soma_da_Soma_Retorno_AtividadeTabelaRetorno = new Evento
+      {
+        Id = 1,
+        Nome = "Soma_da_Soma_Retorno_AtividadeTabelaRetorno",
+        Formula = string.Format("retorno _SOMA(@Roteiro.Soma_Retorno_AtividadeTabelaRetorno);")
+      };
+      roteiro.Eventos.Add(Soma_da_Soma_Retorno_AtividadeTabelaRetorno);
+
+      Evento Soma_Lista = new Evento
+      {
+        Id = 1,
+        Nome = "Soma_Lista",
+        Formula = string.Format("lista somaLista =[]; somaLista[0].Valor = 10; somaLista[1].Valor = 50; somaLista[3].Valor = 10; somaLista[1].Claudio = 10; retorno _SOMA(somaLista.Valor);")
+      };
+      roteiro.Eventos.Add(Soma_Lista);
+
+      Evento Retorno_Lista = new Evento
+      {
+        Id = 1,
+        Nome = "Retorno_Lista",
+        Formula = string.Format("lista somaLista =[]; somaLista[0].Valor = 10; somaLista[1].Valor = 50; somaLista[3].Valor = 10; somaLista[1].Claudio = 10; retorno somaLista[0];")
+      };
+      roteiro.Eventos.Add(Retorno_Lista);
+
+      Evento Soma_Retorno_Lista = new Evento
+      {
+        Id = 1,
+        Nome = "Soma_Retorno_Lista",
+        Formula = string.Format("retorno _SOMA(@Roteiro.Retorno_Lista.Valor);")
+      };
+      roteiro.Eventos.Add(Soma_Retorno_Lista);
+
+      Evento TesteVarMemoryValue = new Evento
+      {
+        Id = 1,
+        Nome = "TesteVarMemoryValue",
+        Formula = string.Format("var fisicoOutros = 10; lista retornoLista = []; var index= 0; retornoLista[0].Crc = 666; retornoLista[1].Crc = 888;  retorno retornoLista;")
+      };
+      roteiro.Eventos.Add(TesteVarMemoryValue);
+
+      Evento TesteRetornoVarMemoryValue = new Evento
+      {
+        Id = 1,
+        Nome = "TesteRetornoVarMemoryValue",
+        Formula = string.Format("var teste = @Roteiro.TesteVarMemoryValue[0].Crc + @Fisico.CrcProprietario; retorno teste; ")
+      };
+      roteiro.Eventos.Add(TesteRetornoVarMemoryValue);
+
+      Evento TesteoListMemoryValue = new Evento
+      {
+        Id = 1,
+        Nome = "TesteoListMemoryValue",
+        Formula = string.Format("lista testeClaudio = @FisicoOutros; retorno 10;")
+      };
+      roteiro.Eventos.Add(TesteoListMemoryValue);
+
+      Evento TesteRetornoListMemoryValue = new Evento
+      {
+        Id = 1,
+        Nome = "TesteRetornoListMemoryValue",
+        Formula = string.Format("var teste = @Roteiro.TesteoListMemoryValue; retorno teste; ")
+      };
+      roteiro.Eventos.Add(TesteRetornoListMemoryValue);
+
+      Evento caracteristica = new Evento
+      {
+        Id = 60,
+        Nome = "CARACTERISTICA",
+        Formula = string.Format("retorno _ARREDONDAR(_CARACTERISTICA( {0},{1},{2},{3}),2);"
+            , "\"ESGOTO\""
+            , "\"01\""
+            , "\"Valor\""
+            , 2019)
+      };
+
+      roteiro.Eventos.Add(caracteristica);
+
       Evento fatorG = new Evento
       {
         Id = 1,
         Nome = "FatorG",
         Formula = @"
-                     var dt1 = 14/02/2008;
+                      var dt1 = 14/02/2008;
                      var dt2 = _HOJE();
                      var dia = _DIA(dt2);
                      var mes = _MES(dt2);
                      var ano = _ANO(dt2);
                      var dtdf = _DATADIF(dt1, dt2, MES);
-                     var percentualMinimo = 0.35;
+                     var percentualMinimo = 100;
+                     lista listaSomaCont = [];
+
+                     listaSomaCont[0].Percentual = 123;
+                     listaSomaCont[1].Percentual = 345;
+
+                     var somaseLista = _SOMASE(@Roteiro.TesteVarMemoryValue.Crc, Crc > percentualMinimo);
+                     var countseLista = _CONTSE(@Roteiro.TesteVarMemoryValue, Crc > percentualMinimo);
+
                      var somase = _SOMASE(@FisicoOutros.Percentual, Percentual > percentualMinimo);
                      var countse = _CONTSE(@FisicoOutros, Percentual > percentualMinimo);
-                     var abcv = _ARREDONDAR(_COALESCE(@FacesdaQuadra.LarguraRua, 3.989898), 2);
+                     var abcv = _ARREDONDAR(_COALESCE(@FisicoOutros[0].Crc, 3.989898), 2);
                      var index = 0;
                      var somaManual = 0.0;
                      var perc = 0.0;
                      var maior = 0.0;
-                     lista listaValor[0].total = 0;
-                     listaValor[0].totalSoma = 0;
+                     lista listaValor = [];
+                     var tst5 = 2 ^ 3;
                      enquanto (index < _CONT(@FisicoOutros)) {
                          somaManual += _COALESCE(@FisicoOutros[index].Percentual, 0);
                          se (maior < @FisicoOutros[index].Percentual) {
                              maior = @FisicoOutros[index].Percentual;
-                             perc *= _COALESCE(@FisicoOutros[index].Percentual, 0);
+                             perc *= _COALESCE(@FisicoOutros[index].Percentual, 5);
                          } senao {
                              perc += 1;
                          }
                           listaValor[index].total = @FisicoOutros[index].Crc;
-                          listaValor[index].totalSoma = @FisicoOutros[index].Crc * abcv;
+                          listaValor[index].totalSoma = @FisicoOutros[index].Crc * 3.989898 * tst5 + index;
                          index +=  1;
                      }
-                     var tst5 = 2 ^ 3;
+                     
                      var tst6 = _RAIZ(11);
                      var somaFunc = _SOMA(@FisicoOutros.Crc);
-                     var somaList = _SOMA(listaValor.total);
-                     var maxFunc = _MAXIMO(@FisicoOutros.Percentual);
+                     var somaList = _SOMA(listaValor.totalSoma);
+                     var maxFunc = _MAXIMO(@Roteiro.TesteVarMemoryValue.Crc);
                      //Aqui faz tal coisa
-                     //var contList = _CONT(valor);
+                     var contList = _MEDIA(listaValor.totalSoma);
                     var valor = 1.0;
                      
                     var area = _COALESCE(@FisicoAreas[0].Area, @FacesdaQuadra.LarguraRua, @FisicoOutros[0].Percentual, 9);
@@ -93,45 +210,27 @@ namespace Api.Services
                     } senao {
                         valor = @Fisico.AreaEdificada * @Fisico.Testada;
                     }
-                    retorno @Fisico.AreaEdificada;"
-      };
-
-
-
-      Evento fatorK = new Evento
-      {
-        Id = 2,
-        Nome = "FatorK",
-        Formula = @"
-                    var valor = 1.0;
-                    var teste = @Roteiro.FatorG;
-                    se (@Roteiro.FatorG > 5725.90) {
-                        valor = 5725.90;
-                    } senao {
-                        valor = 3775.90;
-                    }
-                    // Retorna valor
-                    retorno valor;"
-      };
-
-      Evento vvt = new Evento
-      {
-        Id = 3,
-        Nome = "vvt",
-        Formula = @"retorno @Roteiro.FatorG * @Roteiro.FatorK + @Fisico.AreaTerreno;"
-      };
-
-      Evento vvp = new Evento
-      {
-        Id = 4,
-        Nome = "vvp",
-        Formula = @"retorno @Fisico.AreaTerreno * 100;"
+                    retorno _MEDIA(@Roteiro.CARACTERISTICA);
+                     "
       };
 
       roteiro.Eventos.Add(fatorG);
-      roteiro.Eventos.Add(fatorK);
-      roteiro.Eventos.Add(vvt);
-      roteiro.Eventos.Add(vvp);
+
+      Evento UsandoFatorG = new Evento
+      {
+        Id = 1,
+        Nome = "UsandoFatorG",
+        Formula = string.Format("var teste = @Roteiro.FatorG[0].total; retorno _CONT(@Roteiro.Retorno_Lista); ")
+      };
+      roteiro.Eventos.Add(UsandoFatorG);
+
+      Evento TesteContLista = new Evento
+      {
+        Id = 1,
+        Nome = "TesteContLista",
+        Formula = string.Format("var fisicoOutros = 10; lista retornoLista = []; var index= 0; retornoLista[0].Crc = @FisicoOutros[0].Crc; retornoLista[1].Crc = @FisicoOutros[1].Crc*2;  retorno _CONT(retornoLista);")
+      };
+      roteiro.Eventos.Add(TesteContLista);
 
       string FisicoCaracteristicas = "\"FisicoCaracteristicas\"";
       string DescricaoCaracteristica = "\"Planta de Valor Construção\"";
@@ -153,6 +252,7 @@ namespace Api.Services
         {
           Id = 5,
           Nome = Nome,
+          //Formula = string.Format("var teste = 1.0; var teste_claudio{5} = _CARACTERISTICA({1},{6},{4}, {3}); retorno _CARACTERISTICATABELA({0},{1},{2},{3}, {4});"
           Formula = string.Format("retorno _CARACTERISTICATABELA({0},{1},{2},{3},{4});"
                   , FisicoCaracteristicas
                   , DescricaoCaracteristica
@@ -168,144 +268,29 @@ namespace Api.Services
       Evento eventoParametroUnico = new Evento
       {
         Id = 70,
-        Nome = "createParametro2",
-        Formula = @"retorno _PARAMETRO(""createParametro2"", 2016);"
+        Nome = "eventoParametroUnico",
+        Formula = @"lista parametro = _PARAMETRO(""ReferenciaBaixaFebrabanMovCxIt"", 2019); retorno parametro;"
       };
 
-      Evento eventoParametroIntervalo = new Evento
-      {
-        Id = 71,
-        Nome = "TabelaEmpregados",
-        Formula = @"retorno _PARAMETROINTERVALO(""TabelaEmpregados"", ""12"");"
-      };
-
-      Evento eventoParametroCodigo = new Evento
-      {
-        Id = 72,
-        Nome = "AjuizamentosFases",
-        Formula = @"retorno _PARAMETROCODIGO(""AjuizamentosFases"", ""2"");"
-      };
 
       roteiro.Eventos.Add(eventoParametroUnico);
-      roteiro.Eventos.Add(eventoParametroIntervalo);
-      roteiro.Eventos.Add(eventoParametroCodigo);
 
-      Evento iptu = new Evento
+      Evento eventoParametroUnico2 = new Evento
       {
-        Id = 60,
-        Nome = "IPTU",
-        Formula = @"
-                    
-                    var iptu_base = @Roteiro.vvt * @Roteiro.vvp - @Fisico.AreaEdificada;
-
-                    se (@Roteiro.ILUMINAO > 0.0 && @Roteiro.ILUMINAO < 100.0) {
-                        iptu_base = iptu_base + @Roteiro.ILUMINAO;
-                    } senao {
-                        iptu_base = iptu_base + @Roteiro.ILUMINAO + @Roteiro.ESGOTO;
-                    }
-
-                    se (@Roteiro.LIXO == 100.0 || @Roteiro.ESQUINA > 50.0) {
-                        iptu_base = iptu_base - @Roteiro.REFORMADO;
-                    } senao {
-                        iptu_base = iptu_base + 5000;
-                    }
-
-                    retorno iptu_base * 0.5;"
+        Id = 70,
+        Nome = "eventoParametroUnico2",
+        Formula = @"retorno @Roteiro.eventoParametroUnico[0].Valor;"
       };
+      roteiro.Eventos.Add(eventoParametroUnico2);
 
-      roteiro.Eventos.Add(iptu);
 
-      Evento caracteristica = new Evento
+      Evento eventoParametroUnico3 = new Evento
       {
-        Id = 60,
-        Nome = "CARACTERISTICA",
-        Formula = string.Format("retorno _CARACTERISTICA( {0},{1},{2},{3});"
-            , "\"ESGOTO\""
-            , "\"01\""
-            , "\"Valor\""
-            , 2019)
+        Id = 70,
+        Nome = "eventoParametroUnico3",
+        Formula = @"retorno _SOMA(@Roteiro.eventoParametroUnico.Valor);"
       };
-
-      roteiro.Eventos.Add(caracteristica);
-
-
-      Evento basicoListaAtividade = new Evento
-      {
-        Id = 60,
-        Nome = "basicoListaAtividade",
-        Formula = string.Format("lista listaAtividade = _ATIVIDADETABELA(\"CCMAtividades\", \"SERVIÇOS116\", \"ccm\", 2019, \"IdAtividade\", [\"Atividades.VlrAtividade\",\"Atividades.Aliquota\",\"AtividadesVlrs.Valor\",\"AtividadesVlrs.DtInicio\"]); listaAtividade[0].Valor = 10; listaAtividade[0].ValorClaudio = 10; listaAtividade[20].Teste = 10; retorno listaAtividade;")
-      };
-
-      Evento basicoListaInicioColchete = new Evento
-      {
-        Id = 60,
-        Nome = "basicoListaInicioColchete",
-        Formula = string.Format("lista listaInicioColchete = [\"BaseDoisValue01\",\"BaseDoisValue02\", 12]; listaInicioColchete[3] = \"Valor Novo\"; listaInicioColchete[6] = 100; var claudio = @Roteiro.basicoListaAtividade[0].Aliquota; retorno listaInicioColchete[3];")
-      };
-
-      Evento basicoListaInicioColcheteProperty = new Evento
-      {
-        Id = 60,
-        Nome = "basicoListaInicioColcheteProperty",
-        Formula = string.Format("lista listaInicioColcheteProperty[0].Nome = \"Claudio\"; listaInicioColcheteProperty[0].Sobrenome = \"Spinelli\";listaInicioColcheteProperty[1].Nome = \"Neide\"; listaInicioColcheteProperty[1].Sobrenome = \"Clemente\"; retorno listaInicioColcheteProperty;")
-      };
-
-      Evento basicoDois = new Evento
-      {
-        Id = 60,
-        Nome = "BaseDois",
-        Formula = string.Format("lista BaseDois = [\"BaseDoisValue01\",\"BaseDoisValue02\", 12]; BaseDois[0] = 40 + BaseDois[2]; var valor = @Roteiro.basicoListaInicioColcheteProperty[1].Sobrenome; retorno BaseDois;")
-      };
-
-      Evento basicoTres = new Evento
-      {
-        Id = 60,
-        Nome = "BaseTres",
-        Formula = string.Format("lista BaseTres[0].PropriedadeTres = @Roteiro.BaseDois[2]; retorno BaseTres[0].PropriedadeTres;")
-      };
-
-
-      Evento basicoQuarto = new Evento
-      {
-        Id = 60,
-        Nome = "BaseQuarto",
-        Formula = string.Format("lista teste = _ATIVIDADETABELA(\"CCMAtividades\", \"SERVIÇOS116\", \"ccm\", 2019, \"IdAtividade\", [\"Atividades.VlrAtividade\",\"Atividades.Aliquota\",\"AtividadesVlrs.Valor\",\"AtividadesVlrs.DtInicio\"]); retorno teste; ")
-      };
-
-      Evento basicoCinco = new Evento
-      {
-        Id = 1,
-        Nome = "BaseCinco",
-        Formula = @"var testeTT = 1; retorno @Roteiro.BaseQuarto[0].Valor;"
-      };
-
-      string formulaTeste = "lista teste = _ATIVIDADETABELA(\"CCMAtividades\", \"SERVIÇOS116\", \"ccm\", 2019, \"IdAtividade\", [\"Atividades.VlrAtividade\",\"Atividades.Aliquota\",\"AtividadesVlrs.Valor\",\"AtividadesVlrs.DtInicio\"]);";
-      Evento basicoSeis = new Evento
-      {
-        Id = 1,
-        Nome = "BaseSeis",
-        Formula = "var index = 0; var somaManual = 0.0; lista claudio = [100,200,300];lista BaseSeis = _ATIVIDADETABELA(\"CCMAtividades\", \"SERVIÇOS116\", \"ccm\", 2019, \"IdAtividade\", [\"Atividades.VlrAtividade\",\"Atividades.Aliquota\",\"AtividadesVlrs.Valor\",\"AtividadesVlrs.DtInicio\"]); enquanto (index < _CONT(BaseSeis)) { somaManual += index + BaseSeis[index].Valor; index +=  1; } retorno somaManual;"
-      };
-
-      Evento basicoSete = new Evento
-      {
-        Id = 1,
-        Nome = "BaseSete",
-        Formula = @"lista listaCompleta[0].teste = 10;listaCompleta[0].testeDois = 20;listaCompleta[1].teste = 30; var somaTotal = listaCompleta[0].teste + listaCompleta[0].testeDois + listaCompleta[1].teste; retorno _CONT(listaCompleta);"
-      };
-
-
-
-      roteiro.Eventos.Add(basicoListaAtividade);
-      roteiro.Eventos.Add(basicoListaInicioColchete);
-      roteiro.Eventos.Add(basicoListaInicioColcheteProperty);
-      roteiro.Eventos.Add(basicoDois);
-      roteiro.Eventos.Add(basicoTres);
-      roteiro.Eventos.Add(basicoQuarto);
-      roteiro.Eventos.Add(basicoCinco);
-      roteiro.Eventos.Add(basicoSeis);
-      roteiro.Eventos.Add(basicoSete);
-
+      roteiro.Eventos.Add(eventoParametroUnico3);
 
       await Task.Delay(100);
       return roteiro;
