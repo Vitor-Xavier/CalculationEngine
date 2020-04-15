@@ -14,7 +14,7 @@ namespace Api.Database
     private readonly SqlConnection _connection;
 
     public DatabaseConnection() =>
-        _connection = new SqlConnection("Server=192.168.0.132,1433;Database=SMARTB_PMBotucatu;User Id=smar;Password=smarapd");
+        _connection = new SqlConnection("");
 
     private async Task Open()
     {
