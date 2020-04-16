@@ -153,6 +153,41 @@ namespace Api.Services
 
       roteiro.Eventos.Add(caracteristica);
 
+
+      string FisicoCaracteristicas = "\"FisicoCaracteristicas\"";
+      string DescricaoCaracteristica = "\"Planta de Valor Construção\"";
+      string ColunaCaracteristica = "\"IdFisico\"";
+      int ExercicioCaracteristica = 2019;
+      string Codigo = "\"01\"";
+      string ValorFatorCaracteristica = "\"Valor\"";
+
+      List<Evento> evt = new List<Evento>();
+      for (var i = 0; i < 27; i++)
+      {
+
+
+
+        DescricaoCaracteristica = arrayCaracteristica[i];
+        string Nome = Regex.Replace(DescricaoCaracteristica, "[^a-zA-Z0-9_.]+", "", RegexOptions.Compiled);
+
+        Evento eventoBusca = new Evento
+        {
+          Id = 5,
+          Nome = "Teste" + i,
+          //Formula = string.Format("var teste = 1.0; var teste_claudio{5} = _CARACTERISTICA({1},{6},{4}, {3}); retorno _CARACTERISTICATABELA({0},{1},{2},{3}, {4});"
+          Formula = string.Format("retorno _CARACTERISTICATABELA({0},{1},{2},{3},{4});"
+                  , FisicoCaracteristicas
+                  , DescricaoCaracteristica
+                  , ColunaCaracteristica
+                  , ExercicioCaracteristica
+                  , ValorFatorCaracteristica, i, Codigo)
+        };
+        evt.Add(eventoBusca);
+      };
+
+      evt.ForEach(item => roteiro.Eventos.Add(item));
+
+
       Evento fatorG = new Evento
       {
         Id = 1,
@@ -175,14 +210,26 @@ namespace Api.Services
 
                      var somase = _SOMASE(@FisicoOutros.Percentual, Percentual > percentualMinimo);
                      var countse = _CONTSE(@FisicoOutros, Percentual > percentualMinimo);
-                     var abcv = _ARREDONDAR(_COALESCE(@FisicoOutros[0].Crc, 3.989898), 2);
+                     
                      var index = 0;
                      var somaManual = 0.0;
                      var perc = 0.0;
                      var maior = 0.0;
                      lista listaValor = [];
                      var tst5 = 2 ^ 3;
+
+                    var Teste1 = 0;
+                    var Teste2 = 0;
+                    var Teste3 = 0;
+                    var Teste4 = 0;
                      enquanto (index < _CONT(@FisicoOutros)) {
+
+                         Teste1 = _ARREDONDAR(_COALESCE(@Roteiro.Teste1, 1), 2);
+                         Teste2 = _ARREDONDAR(_COALESCE(@Roteiro.Teste2, 2), 2);
+                         Teste3 = _ARREDONDAR(_COALESCE(@Roteiro.Teste3, 3), 2);
+                         Teste4 = _ARREDONDAR(_COALESCE(@Roteiro.Teste4, 4), 2);
+
+                         listaValor[index].TotalCaracteristica = Teste1 + Teste2 + Teste3 + Teste4;
                          somaManual += _COALESCE(@FisicoOutros[index].Percentual, 0);
                          se (maior < @FisicoOutros[index].Percentual) {
                              maior = @FisicoOutros[index].Percentual;
@@ -192,6 +239,9 @@ namespace Api.Services
                          }
                           listaValor[index].total = @FisicoOutros[index].Crc;
                           listaValor[index].totalSoma = @FisicoOutros[index].Crc * 3.989898 * tst5 + index;
+                                      
+                          listaValor[index].PercentualCoalesce = _COALESCE(@FisicoAreas[index].Area, @FacesdaQuadra.LarguraRua, @FisicoOutros[index].Percentual, 9);
+                          listaValor[index].Percentual = @FisicoOutros[index].Percentual;
                          index +=  1;
                      }
                      
@@ -202,15 +252,13 @@ namespace Api.Services
                      //Aqui faz tal coisa
                      var contList = _MEDIA(listaValor.totalSoma);
                     var valor = 1.0;
-                     
-                    var area = _COALESCE(@FisicoAreas[0].Area, @FacesdaQuadra.LarguraRua, @FisicoOutros[0].Percentual, 9);
-                    var percentual = @FisicoOutros[0].Percentual;
+              
                     se (@Fisico.AreaEdificada > 0.0) {
                         valor = @Fisico.AreaEdificada * 1.05;
                     } senao {
                         valor = @Fisico.AreaEdificada * @Fisico.Testada;
                     }
-                    retorno _MEDIA(@Roteiro.CARACTERISTICA);
+                    retorno _MEDIA(listaValor.TotalSoma);
                      "
       };
 
@@ -220,7 +268,7 @@ namespace Api.Services
       {
         Id = 1,
         Nome = "UsandoFatorG",
-        Formula = string.Format("var teste = @Roteiro.FatorG[0].total; retorno _CONT(@Roteiro.Retorno_Lista); ")
+        Formula = string.Format("var teste = @Roteiro.FatorG; retorno _CONT(@Roteiro.Retorno_Lista); ")
       };
       roteiro.Eventos.Add(UsandoFatorG);
 
@@ -228,42 +276,11 @@ namespace Api.Services
       {
         Id = 1,
         Nome = "TesteContLista",
-        Formula = string.Format("var fisicoOutros = 10; lista retornoLista = []; var index= 0; retornoLista[0].Crc = @FisicoOutros[0].Crc; retornoLista[1].Crc = @FisicoOutros[1].Crc*2;  retorno _CONT(retornoLista);")
+        Formula = string.Format("var fisicoOutros = 10; lista retornoLista = []; var index= 0; retornoLista[0].Crc = @Roteiro.FatorG + 444; retornoLista[1].Crc = @Roteiro.FatorG + 444 * 2;  retorno _CONT(retornoLista);")
       };
       roteiro.Eventos.Add(TesteContLista);
 
-      string FisicoCaracteristicas = "\"FisicoCaracteristicas\"";
-      string DescricaoCaracteristica = "\"Planta de Valor Construção\"";
-      string ColunaCaracteristica = "\"IdFisico\"";
-      int ExercicioCaracteristica = 2019;
-      string Codigo = "\"01\"";
-      string ValorFatorCaracteristica = "\"Valor\"";
 
-      List<Evento> evt = new List<Evento>();
-      for (var i = 0; i < 27; i++)
-      {
-
-
-
-        DescricaoCaracteristica = arrayCaracteristica[i];
-        string Nome = Regex.Replace(DescricaoCaracteristica, "[^a-zA-Z0-9_.]+", "", RegexOptions.Compiled);
-
-        Evento eventoBusca = new Evento
-        {
-          Id = 5,
-          Nome = Nome,
-          //Formula = string.Format("var teste = 1.0; var teste_claudio{5} = _CARACTERISTICA({1},{6},{4}, {3}); retorno _CARACTERISTICATABELA({0},{1},{2},{3}, {4});"
-          Formula = string.Format("retorno _CARACTERISTICATABELA({0},{1},{2},{3},{4});"
-                  , FisicoCaracteristicas
-                  , DescricaoCaracteristica
-                  , ColunaCaracteristica
-                  , ExercicioCaracteristica
-                  , ValorFatorCaracteristica, i, Codigo)
-        };
-        evt.Add(eventoBusca);
-      };
-
-      evt.ForEach(item => roteiro.Eventos.Add(item));
 
       Evento eventoParametroUnico = new Evento
       {
@@ -279,7 +296,7 @@ namespace Api.Services
       {
         Id = 70,
         Nome = "eventoParametroUnico2",
-        Formula = @"retorno @Roteiro.eventoParametroUnico[0].Valor;"
+        Formula = @"retorno _CONT(@Roteiro.eventoParametroUnico);"
       };
       roteiro.Eventos.Add(eventoParametroUnico2);
 
