@@ -2,6 +2,8 @@
 {
     public class LanguageError
     {
+        public string Source { get; set; }
+
         public int Line { get; set; }
 
         public int StartColumn { get; set; }

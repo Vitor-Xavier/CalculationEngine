@@ -8,6 +8,10 @@ namespace Implementation
     {
         public readonly static GenericValueLanguage VOID = new GenericValueLanguage(new object());
 
+        public readonly static GenericValueLanguage NULL = new GenericValueLanguage(null);
+
+        public readonly static GenericValueLanguage Empty = new GenericValueLanguage(0);
+
         public readonly object Value;
 
         public bool IsNumeric => Value?.IsNumericType() ?? false;

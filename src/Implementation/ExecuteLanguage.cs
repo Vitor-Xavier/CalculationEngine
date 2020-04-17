@@ -24,7 +24,7 @@ namespace Implementation
             parser = new LanguageParser(commonToken);
 
 #if RELEASE
-        parser.Interpreter.PredictionMode = Antlr4.Runtime.Atn.PredictionMode.SLL;
+            parser.Interpreter.PredictionMode = Antlr4.Runtime.Atn.PredictionMode.SLL;
 #else
             parser.Interpreter.PredictionMode = Antlr4.Runtime.Atn.PredictionMode.LL;
 #endif

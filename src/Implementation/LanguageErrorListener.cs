@@ -9,8 +9,6 @@ namespace Implementation
 {
     public class LanguageErrorListener : BaseErrorListener
     {
-        public string SourceName { get; }
-
         public ICollection<LanguageError> SyntaxErrors { get; } = new HashSet<LanguageError>();
 
         /// <summary>

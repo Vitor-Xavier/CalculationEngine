@@ -2,7 +2,7 @@
 
 namespace Api.Dto
 {
-    public struct TabelaRelacionada
+    public class TabelaRelacionada
     {
         public string Tabela { get; set; }
 

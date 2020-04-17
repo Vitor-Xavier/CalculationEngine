@@ -2,6 +2,7 @@
 using Api.Dto;
 using Api.Helper;
 using Api.Services;
+using Common.Exceptions;
 using Common.Extensions;
 using Implementation;
 using System;
@@ -69,7 +70,7 @@ namespace Api
             var cpuPreProcessamentoEnd = Process.GetCurrentProcess().TotalProcessorTime;
             double cpuTotalPreProcessamento = (cpuPreProcessamentoEnd - cpuPreProcessamentoStart).TotalMilliseconds;
 
-            Console.WriteLine("\n## Resultados Pré-Processamento\n");
+            Console.WriteLine("\n### Resultados Pré-Processamento\n");
             Console.WriteLine("| Medição        | Utilização       |");
             Console.WriteLine("|----------------|------------------|");
             Console.WriteLine($"| Tempo Total    | {stopwatchPreProcessamento.Elapsed} |");
@@ -87,16 +88,8 @@ namespace Api
             string tabelaPrincipal = SetorOrigemHelper.GetTabelaPrincipal(roteiro.SetorOrigem);
             Parallel.ForEach(dados, item =>
             {
-                //var aux = item.Value.Where(x => x.Value is object[] || x.Value is ExpandoObject);
-
-                //  var aux2 = item.Value.Where(x => x.Any(u => u.Value is IDictionary<string, GenericValueLanguage>));
-
-                Dictionary<string, GenericValueLanguage> aux = new Dictionary<string, GenericValueLanguage>();
-                //var memory = item.Value.ToDictionary(x => $"@{x.Key}", x => new GenericValueLanguage(x.Value));
-                //var objPrincipal = item.Value.Except(aux).Aggregate(new ExpandoObject() as IDictionary<string, object>, (a, p) => { a.Add(p.Key, p.Value); return a; });
                 var memory = item.Value;
-                var objPrincipal = item.Value;
-                //memory.Add($"@{tabelaPrincipal}", new GenericValueLanguage(objPrincipal));
+
                 memory.Add("@Roteiro", new GenericValueLanguage(new Dictionary<string, GenericValueLanguage>()));
 
                 // Execucao das Formulas do Roteiro
@@ -113,6 +106,7 @@ namespace Api
                     }
                     catch (Exception e)
                     {
+                        if (e is LanguageException languageException) languageException.LanguageError.Source = evento.Nome;
                         Exceptions.Value.Enqueue(e);
                         break;
                     }
@@ -132,13 +126,24 @@ namespace Api
 
             #region Resultados
             Console.WriteLine($"\n## Resultados\n");
-            Console.WriteLine("| Resultados                | Valor           |");
-            Console.WriteLine("|---------------------------|-----------------|");
+            Console.WriteLine("| Resultados                     | Valor           |");
+            Console.WriteLine("|--------------------------------|-----------------|");
             if (Resultados.Count <= 1)
+            {
                 foreach (var result in Resultados)
                     foreach (var result2 in result.Value as IDictionary<string, GenericValueLanguage>)
-                        Console.WriteLine($"| {result2.Key,-25} | {result2.Value,-15} |");
-            Console.WriteLine($"| {"Total",-25} | {Resultados.Count,-15} |");
+                    {
+                        if (result2.Value.IsDictionaryIntDictionaryStringGeneric())
+                            Console.WriteLine($"| {result2.Key,-30} | [ {string.Join(", ", result2.Value.AsDictionaryIntDictionaryStringGeneric().Select(x => $"{x.Key}: {{ {string.Join(", ", x.Value.Select(y => $"{y.Key}: {y.Value}"))} }}"))} ] |");
+                        else if (result2.Value.IsDictionaryStringGeneric())
+                            Console.WriteLine($"| {result2.Key,-30} | {{ {string.Join(", ", result2.Value.AsDictionaryStringGeneric().Select(x => $"{x.Key}: {x.Value}"))} }} |");
+                        else if (result2.Value.IsDictionaryIntGeneric())
+                            Console.WriteLine($"| {result2.Key,-30} | [ {string.Join(", ", result2.Value.AsDictionaryIntGeneric())} ] |");
+                        else
+                            Console.WriteLine($"| {result2.Key,-30} | {result2.Value,-15} |");
+                    }
+            }
+            Console.WriteLine($"| {"Total",-30} | {Resultados.Count,-15} |");
             #endregion
 
             #region Erros
@@ -148,7 +153,10 @@ namespace Api
                 Console.WriteLine($"| {"Erros",-20} | {"Valor",-15} |");
                 Console.WriteLine($"|----------------------|-----------------|");
                 foreach (var exception in Exceptions.Value)
-                    Console.WriteLine($"Exceção: {exception.Message}");
+                    if (exception is LanguageException languageException)
+                        Console.WriteLine($"Exceção: {languageException}");
+                    else
+                        Console.WriteLine($"Exceção: {exception.Message}");
                 Console.WriteLine($"| {"Total",-20} | {Exceptions.Value.Count,-15} |");
             }
             #endregion
@@ -158,7 +166,7 @@ namespace Api
             var endProcessorTime = Process.GetCurrentProcess().TotalProcessorTime;
             double totalProcessorTime = (endProcessorTime - startProcessorTime).TotalMilliseconds;
 
-            //if (!Exceptions.Value.Any()) TestarFormulas(dados);
+            if (!Exceptions.Value.Any()) TestarFormulas(dados);
 
             Console.WriteLine("\n## Geral\n");
             Console.WriteLine("| Medição        | Utilização       |");
@@ -168,21 +176,13 @@ namespace Api
             Console.WriteLine($"| CPU média      | {Math.Round((totalProcessorTime / (Environment.ProcessorCount * stopwatch.ElapsedMilliseconds)) * 100) + "%",-16:d2} |\n");
         }
 
-
-
         public static async Task<IDictionary<string, GenericValueLanguage>> CarregarDadosGlobal(IEnumerable<Caracteristica> caracteristica, IEnumerable<Parametro> parametros)
         {
-
             // Diagnóstico
             var stopwatchPre = new Stopwatch();
             stopwatchPre.Start();
 
             var stopwatchPreBD = new Stopwatch();
-
-            // TODO: BuscaCaracteristica GroupBy
-
-            var database = new DatabaseConnection();
-
 
             //Adicionar no Principal e no GetAllData para trazer os valores
             var consultasCaracteristica = CaracteristicaHelper.GetQueries(caracteristica);
@@ -193,7 +193,11 @@ namespace Api
             IDictionary<string, IEnumerable<IDictionary<string, GenericValueLanguage>>> keyValuePairsGlobal = new Dictionary<string, IEnumerable<IDictionary<string, GenericValueLanguage>>>();
             // Busca por todas as listas de dados requisitadas.
             IEnumerable<TabelaQuery> queries = consultaParametro != null ? consultasCaracteristica.Union(new TabelaQuery[] { consultaParametro }) : consultasCaracteristica;
-            keyValuePairsGlobal = queries.Count() == 0 ? null : await database.GetAllData(queries);
+
+            await using (var database = new DatabaseConnection())
+            {
+                keyValuePairsGlobal = queries.Count() == 0 ? null : await database.GetAllData(queries);
+            }
 
             // Separa as massas de dados em principal, para a tabela principal do setor informado e suas auxiliares.
 
@@ -204,7 +208,6 @@ namespace Api
 
             Dictionary<GenericValueLanguage, IDictionary<string, GenericValueLanguage>> principal = new Dictionary<GenericValueLanguage, IDictionary<string, GenericValueLanguage>>();
             IDictionary<int, IDictionary<string, GenericValueLanguage>> array = new Dictionary<int, IDictionary<string, GenericValueLanguage>>();
-
 
             foreach (var item in global2)
             {
@@ -224,7 +227,7 @@ namespace Api
             Console.WriteLine("### Dados Globais\n");
             Console.WriteLine("| Medição              | Utilização       |");
             Console.WriteLine("|----------------------|------------------|");
-            Console.WriteLine($"| Registros globais    | {(keyValuePairsGlobal is null ? 0 : keyValuePairsGlobal.Count),-16} |");
+            Console.WriteLine($"| Registros globais    | {keyValuePairsGlobal?.Count ?? 0,-16} |");
             Console.WriteLine($"| Tempo Banco de Dados | {stopwatchPreBD.Elapsed} |");
             Console.WriteLine($"| Tempo Total          | {stopwatchPre.Elapsed} |");
 
@@ -246,7 +249,7 @@ namespace Api
             if (!SetorOrigemHelper.ValidarTabelasSetor(setor, tabelas.Select(g => g.Tabela)))
                 throw new Exception($"Erro ao validar tabelas utilizadas para o setor {setor.GetDescription()}");
 
-            var database = new DatabaseConnection();
+            await using var database = new DatabaseConnection();
 
             IEnumerable<TabelaQuery> consultas = Enumerable.Empty<TabelaQuery>();
             if (tabelas.Any() && tabelas.Count() > 0)
@@ -267,7 +270,6 @@ namespace Api
 
             IEnumerable<TabelaQuery> unionTabela = consultas.Union(consultasCaracteristicaTabela).Union(consultasAtividadeTabelas);
 
-
             Dictionary<GenericValueLanguage, IDictionary<string, GenericValueLanguage>> principal = new Dictionary<GenericValueLanguage, IDictionary<string, GenericValueLanguage>>();
             Dictionary<GenericValueLanguage, IDictionary<string, GenericValueLanguage>> principalNovo = new Dictionary<GenericValueLanguage, IDictionary<string, GenericValueLanguage>>();
             IDictionary<string, IEnumerable<IDictionary<string, GenericValueLanguage>>> keyValuePairs = new Dictionary<string, IEnumerable<IDictionary<string, GenericValueLanguage>>>();
@@ -283,9 +285,7 @@ namespace Api
                 IDictionary<string, IEnumerable<IDictionary<string, GenericValueLanguage>>> principalTeste = new Dictionary<string, IEnumerable<IDictionary<string, GenericValueLanguage>>>();
 
                 principal = keyValuePairs.FirstOrDefault(x => x.Key == tabelaPrincipal).Value
-                .ToDictionary(u => u.Where(x => x.Key == "Id")
-                .Select(x => x.Value)
-                .FirstOrDefault());
+                    .ToDictionary(u => u.Where(x => x.Key == "Id").Select(x => x.Value).FirstOrDefault());
 
                 foreach (var item in principal)
                 {
@@ -301,7 +301,7 @@ namespace Api
 
                 foreach (var aux in keyValuePairs.Where(x => x.Key != tabelaPrincipal))
                 {
-                    foreach (var x in aux.Value.GroupBy(x => (GenericValueLanguage)(x as IDictionary<string, GenericValueLanguage>)["IdOrigem"]))
+                    foreach (var x in aux.Value.GroupBy(x => (x as IDictionary<string, GenericValueLanguage>)["IdOrigem"]))
                     {
 
                         if (principal.TryGetValue(x.Key, out IDictionary<string, GenericValueLanguage> principalValue2))
@@ -318,14 +318,11 @@ namespace Api
 
                     };
                 }
-
-
                 stopwatchPre.Stop();
 
                 var auxiliares = keyValuePairs.Where(x => x.Key != tabelaPrincipal);
                 var totalTabelasAuxiliares = auxiliares.Count();
                 var totalRegistroTabelasAuxiliares = auxiliares.Select(x => x.Value.Select(y => y).Count()).Sum();
-
 
                 Console.WriteLine("### Dados principais e relacionados\n");
                 Console.WriteLine("| Medição              | Utilização       |");
@@ -336,44 +333,80 @@ namespace Api
                 Console.WriteLine($"| Memória máxima       | {(Process.GetCurrentProcess().PeakWorkingSet64 / 1024f) / 1024f + "mb",-16} |");
                 Console.WriteLine($"| Tempo Banco de Dados | {stopwatchPreBD.Elapsed} |");
                 Console.WriteLine($"| Tempo Total          | {stopwatchPre.Elapsed} |\n");
-
             }
-
             stopwatchPre.Stop();
 
             return principal;
         }
 
-        private static void TestarFormulas(IDictionary<int, IDictionary<string, object>> dados)
+        private static void TestarFormulas(IDictionary<GenericValueLanguage, IDictionary<string, GenericValueLanguage>> dados)
         {
             int countFatorG = 0;
-            int countFatorK = 0;
-            int countvvt = 0;
-            int countvvp = 0;
-            int countIptu = 0;
+            int countTesteoListMemoryValue = 0;
+            int countTesteContLista = 0;
+            int countRetornoLista = 0;
+            int countTesteRetornoVarMemoryValue = 0;
+            int countUsandoFatorG = 0;
+            var countCaracteristicas = new int[RoteiroService.arrayCaracteristica.Length];
+
+            //int countFatorK = 0;
+            //int countvvt = 0;
+            //int countvvp = 0;
+            //int countIptu = 0;
+
             foreach (var item in dados)
             {
-                var fatorG = decimal.Parse((Resultados[item.Key] as IDictionary<string, object>)["FatorG"].ToString());
-                var fatorK = decimal.Parse((Resultados[item.Key] as IDictionary<string, object>)["FatorK"].ToString());
-                var vvt = decimal.Parse((Resultados[item.Key] as IDictionary<string, object>)["vvt"].ToString());
-                var vvp = decimal.Parse((Resultados[item.Key] as IDictionary<string, object>)["vvp"].ToString());
-                var iptu = decimal.Parse((Resultados[item.Key] as IDictionary<string, object>)["IPTU"].ToString());
+                var fatorG = (Resultados[(int)item.Key] as IDictionary<string, GenericValueLanguage>)["FatorG"].ToString().ToNullable<decimal>();
+                var testeoListMemoryValue = (Resultados[(int)item.Key] as IDictionary<string, GenericValueLanguage>)["TesteoListMemoryValue"].ToString().ToNullable<decimal>();
+                var testeContLista = (Resultados[(int)item.Key] as IDictionary<string, GenericValueLanguage>)["TesteContLista"].ToString().ToNullable<decimal>();
+                var retornoLista = (Resultados[(int)item.Key] as IDictionary<string, GenericValueLanguage>)["Retorno_Lista"].AsDictionaryIntDictionaryStringGeneric();
+                var testeRetornoVarMemoryValue = (Resultados[(int)item.Key] as IDictionary<string, GenericValueLanguage>)["TesteRetornoVarMemoryValue"].ToString().ToNullable<decimal>();
+                var usandoFatorG = (Resultados[(int)item.Key] as IDictionary<string, GenericValueLanguage>)["UsandoFatorG"].ToString().ToNullable<decimal>();
 
-                var areaTerreno = decimal.Parse((item.Value as IDictionary<string, object>)["AreaTerreno"].ToString());
-                if (TesteLanguage.TesteFatorG(item.Value, fatorG)) countFatorG++;
-                if (TesteLanguage.TesteFatorK(fatorG, fatorK)) countFatorK++;
-                if (TesteLanguage.TesteVVT(areaTerreno, fatorG, fatorK, vvt)) countvvt++;
-                if (TesteLanguage.TesteVVP(areaTerreno, vvp)) countvvp++;
-                if (TesteLanguage.TesteIPTU(item.Value, Resultados[item.Key], iptu)) countIptu++;
+                for (int i = 0; i < RoteiroService.arrayCaracteristica.Length; i++)
+                {
+                    var caracteristicaValor = item.Value.ContainsKey($"@FisicoCaracteristicas.{RoteiroService.arrayCaracteristica[i].Replace("\"", string.Empty)}") ? item.Value[$"@FisicoCaracteristicas.{RoteiroService.arrayCaracteristica[i].Replace("\"", string.Empty)}"].AsDictionaryIntDictionaryStringGeneric()[0]["Valor"].ToString().ToNullable<decimal>() ?? 0 : 0;
+                    if (TesteLanguage.TesteCaracteristica(caracteristicaValor,
+                        (Resultados[(int)item.Key] as IDictionary<string, GenericValueLanguage>)[$"Teste{i}"].ToString().ToNullable<decimal>()))
+                        countCaracteristicas[i]++;
+                }
+
+                //var fatorK = decimal.Parse((Resultados[(int)item.Key] as IDictionary<string, GenericValueLanguage>)["FatorK"].ToString());
+                //var vvt = decimal.Parse((Resultados[(int)item.Key] as IDictionary<string, GenericValueLanguage>)["vvt"].ToString());
+                //var vvp = decimal.Parse((Resultados[(int)item.Key] as IDictionary<string, GenericValueLanguage>)["vvp"].ToString());
+                //var iptu = decimal.Parse((Resultados[(int)item.Key] as IDictionary<string, GenericValueLanguage>)["IPTU"].ToString());
+
+                //var areaTerreno = decimal.Parse((item.Value as IDictionary<string, object>)["AreaTerreno"].ToString());
+                if (TesteLanguage.TesteFatorG(item.Value, Resultados[(int)item.Key], fatorG)) countFatorG++;
+                if (TesteLanguage.TesteoListMemoryValue(item.Value, testeoListMemoryValue)) countTesteoListMemoryValue++;
+                if (TesteLanguage.TesteContLista(Resultados[(int)item.Key], testeContLista)) countTesteContLista++;
+                if (TesteLanguage.RetornoLista(retornoLista)) countRetornoLista++;
+                if (TesteLanguage.TesteRetornoVarMemoryValue(item.Value, Resultados[(int)item.Key], testeRetornoVarMemoryValue)) countTesteRetornoVarMemoryValue++;
+                if (TesteLanguage.UsandoFatorG(Resultados[(int)item.Key], usandoFatorG)) countUsandoFatorG++;
+
+                //if (TesteLanguage.TesteFatorK(fatorG, fatorK)) countFatorK++;
+                //if (TesteLanguage.TesteVVT(areaTerreno, fatorG, fatorK, vvt)) countvvt++;
+                //if (TesteLanguage.TesteVVP(areaTerreno, vvp)) countvvp++;
+                //if (TesteLanguage.TesteIPTU(item.Value, Resultados[item.Key], iptu)) countIptu++;
             }
             Console.WriteLine("\n## Assertividade\n");
-            Console.WriteLine("| Fórmula         |  %   |");
-            Console.WriteLine("|-----------------|------|");
-            Console.WriteLine($"| {"Fator G",-15} | {(countFatorG / Resultados.Count) * 100:d2}% |");
-            Console.WriteLine($"| {"Fator K",-15} | {(countFatorK / Resultados.Count) * 100:d3}% |");
-            Console.WriteLine($"| {"VVT",-15} | {(countvvt / Resultados.Count) * 100:d3}% |");
-            Console.WriteLine($"| {"VVP",-15} | {(countvvp / Resultados.Count) * 100:d3}% |");
-            Console.WriteLine($"| {"IPTU",-15} | {(countIptu / Resultados.Count) * 100:d3}% |");
+            Console.WriteLine("| Fórmula                        |  %   |");
+            Console.WriteLine("|--------------------------------|------|");
+            Console.WriteLine($"| {"FatorG",-30} | {(countFatorG / Resultados.Count) * 100:d2}% |");
+            Console.WriteLine($"| {"TesteoListMemoryValue",-30} | {(countTesteoListMemoryValue / Resultados.Count) * 100:d2}% |");
+            Console.WriteLine($"| {"TesteContLista",-30} | {(countTesteContLista / Resultados.Count) * 100:d2}% |");
+            Console.WriteLine($"| {"Retorno_Lista",-30} | {(countRetornoLista / Resultados.Count) * 100:d2}% |");
+            Console.WriteLine($"| {"TesteRetornoVarMemoryValue",-30} | {(countTesteRetornoVarMemoryValue / Resultados.Count) * 100:d2}% |");
+            Console.WriteLine($"| {"UsandoFatorG",-30} | {(countUsandoFatorG / Resultados.Count) * 100:d2}% |");
+            for (int i = 0; i < countCaracteristicas.Length; i++)
+            {
+                Console.WriteLine($"| {$"Teste{i}",-30} | {(countCaracteristicas[i] / Resultados.Count) * 100:d2}% |");
+            }
+
+            //Console.WriteLine($"| {"Fator K",-22} | {(countFatorK / Resultados.Count) * 100:d3}% |");
+            //Console.WriteLine($"| {"VVT",-22} | {(countvvt / Resultados.Count) * 100:d3}% |");
+            //Console.WriteLine($"| {"VVP",-22} | {(countvvp / Resultados.Count) * 100:d3}% |");
+            //Console.WriteLine($"| {"IPTU",-22} | {(countIptu / Resultados.Count) * 100:d3}% |");
         }
     }
 }

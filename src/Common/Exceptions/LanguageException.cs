@@ -16,6 +16,6 @@ namespace Common.Exceptions
             LanguageError = new LanguageError { Line = line, StartColumn = startColumn, EndColumn = endColumn, Message = message, OffendingSymbol = offendingSymbol };
 
         public override string ToString() =>
-            $"Linha: {LanguageError.Line}, Coluna Inicial: {LanguageError.StartColumn}, Coluna Final: {LanguageError.EndColumn}, Mensagem: {LanguageError.Message}, Texto: '{LanguageError.OffendingSymbol}'";
+            $"Linha: {LanguageError.Line}, Coluna Inicial: {LanguageError.StartColumn}, Coluna Final: {LanguageError.EndColumn}, Mensagem: {LanguageError.Message}, Texto: '{LanguageError.OffendingSymbol}', Origem: {LanguageError.Source ?? "Desconhecida"}";
     }
 }

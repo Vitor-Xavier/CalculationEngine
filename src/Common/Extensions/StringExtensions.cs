@@ -44,7 +44,7 @@ namespace Common.Extensions
                 if (!string.IsNullOrEmpty(s) && s.Trim().Length > 0)
                 {
                     TypeConverter conv = TypeDescriptor.GetConverter(typeof(T));
-                    result = (T)conv.ConvertFrom(s);
+                    result = (T)conv.ConvertFromInvariantString(s);
                 }
             }
             catch { }
