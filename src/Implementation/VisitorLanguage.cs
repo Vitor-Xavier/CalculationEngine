@@ -37,7 +37,7 @@ namespace Implementation
 
         /// <summary>
         /// Metodo retorna um valor da lista _MEMORY ou _MEMORYGLOBAL
-        /// Essas variaveis na foruma inicia com @
+        /// Essas variaveis na formula inicia com @
         /// Tambem retorna Formulas anteriores
         /// VAR_PRIMARY DOT IDENTIFIER #varMemoryValue
         /// </summary>
@@ -90,7 +90,6 @@ namespace Implementation
                 return GetListValue(valueMemory, index, propertyArray, context);
             }
             return GenericValueLanguage.NULL;
-
         }
 
         /// <summary>
@@ -484,7 +483,7 @@ namespace Implementation
                     var left = item.TryGetValue(context.arithmetic_expression(0).GetText(), out GenericValueLanguage leftValue) ? leftValue : Visit(context.arithmetic_expression(0));
                     var right = item.TryGetValue(context.arithmetic_expression(1).GetText(), out GenericValueLanguage rightValue) ? rightValue : Visit(context.arithmetic_expression(1));
 
-                    if (CompareGenericValues(left, right, op).AsBoolean())
+                    if (CompareGenericValues(left, right, op, context).AsBoolean())
                         sum += !item[propertyArrayKey].IsNull() ? decimal.Parse(item[propertyArrayKey].IsNull() ? "0" : item[propertyArrayKey].Value.ToString()) : 0m;
                 }
             }
@@ -501,7 +500,7 @@ namespace Implementation
                         var left = item.TryGetValue(context.arithmetic_expression(0).GetText(), out GenericValueLanguage leftValue) ? leftValue : Visit(context.arithmetic_expression(0));
                         var right = item.TryGetValue(context.arithmetic_expression(1).GetText(), out GenericValueLanguage rightValue) ? rightValue : Visit(context.arithmetic_expression(1));
 
-                        if (CompareGenericValues(left, right, op).AsBoolean())
+                        if (CompareGenericValues(left, right, op, context).AsBoolean())
                             sum += !item[propertyArrayKey2].IsNull() ? decimal.Parse(item[propertyArrayKey2].IsNull() ? "0" : item[propertyArrayKey2].Value.ToString()) : 0m;
                     }
                 }
@@ -526,7 +525,7 @@ namespace Implementation
                     var left = item.TryGetValue(context.arithmetic_expression(0).GetText(), out GenericValueLanguage leftValue) ? leftValue : Visit(context.arithmetic_expression(0));
                     var right = item.TryGetValue(context.arithmetic_expression(1).GetText(), out GenericValueLanguage rightValue) ? rightValue : Visit(context.arithmetic_expression(1));
 
-                    if (CompareGenericValues(left, right, op).AsBoolean())
+                    if (CompareGenericValues(left, right, op, context).AsBoolean())
                         sum += !item[propertyArrayKey].IsNull() ? decimal.Parse(item[propertyArrayKey].IsNull() ? "0" : item[propertyArrayKey].Value.ToString()) : 0m;
                 }
             }
@@ -553,7 +552,7 @@ namespace Implementation
                     var left = item.TryGetValue(context.arithmetic_expression(0).GetText(), out GenericValueLanguage leftValue) ? leftValue : Visit(context.arithmetic_expression(0));
                     var right = item.TryGetValue(context.arithmetic_expression(1).GetText(), out GenericValueLanguage rightValue) ? rightValue : Visit(context.arithmetic_expression(1));
 
-                    if (CompareGenericValues(left, right, op).AsBoolean())
+                    if (CompareGenericValues(left, right, op, context).AsBoolean())
                         count++;
                 }
             }
@@ -568,7 +567,7 @@ namespace Implementation
                     var left = item.TryGetValue(context.arithmetic_expression(0).GetText(), out GenericValueLanguage leftValue) ? leftValue : Visit(context.arithmetic_expression(0));
                     var right = item.TryGetValue(context.arithmetic_expression(1).GetText(), out GenericValueLanguage rightValue) ? rightValue : Visit(context.arithmetic_expression(1));
 
-                    if (CompareGenericValues(left, right, op).AsBoolean())
+                    if (CompareGenericValues(left, right, op, context).AsBoolean())
                         count++;
                 }
             }
@@ -592,7 +591,7 @@ namespace Implementation
                     var left = item.TryGetValue(context.arithmetic_expression(0).GetText(), out GenericValueLanguage leftValue) ? leftValue : Visit(context.arithmetic_expression(0));
                     var right = item.TryGetValue(context.arithmetic_expression(1).GetText(), out GenericValueLanguage rightValue) ? rightValue : Visit(context.arithmetic_expression(1));
 
-                    if (CompareGenericValues(left, right, op).AsBoolean())
+                    if (CompareGenericValues(left, right, op, context).AsBoolean())
                         count++;
                 }
             }
@@ -738,7 +737,7 @@ namespace Implementation
             var right = Visit(context.arithmetic_expression(1));
             string op = context.comparison_operator().GetText();
 
-            return CompareGenericValues(left, right, op);
+            return CompareGenericValues(left, right, op, context);
         }
 
         public override GenericValueLanguage VisitNotParenthesisIfExpression([NotNull] LanguageParser.NotParenthesisIfExpressionContext context) =>
@@ -764,7 +763,7 @@ namespace Implementation
 
         public override GenericValueLanguage VisitCaseStatement([NotNull] LanguageParser.CaseStatementContext context)
         {
-            if (CompareGenericValues(_switchValue, Visit(context.arithmetic_expression()), "==").AsBoolean())
+            if (CompareGenericValues(_switchValue, Visit(context.arithmetic_expression()), "==", context).AsBoolean())
             {
                 foreach (var ruleBlock in context.rule_block())
                 {
@@ -1137,7 +1136,6 @@ namespace Implementation
         /// <returns>
         /// Tipo GenericValueLanguage com o valor ou array definido.
         /// </returns>
-        /// 
         public override GenericValueLanguage VisitListValue(LanguageParser.ListValueContext context)
         {
             string nameArray = context.IDENTIFIER(0).GetText();
@@ -1304,17 +1302,31 @@ namespace Implementation
         public override GenericValueLanguage VisitTrimFunction([NotNull] LanguageParser.TrimFunctionContext context) =>
             new GenericValueLanguage(StringHelper.NormalizeWhiteSpace(Visit(context.arithmetic_expression()).AsString()));
 
-        private GenericValueLanguage CompareGenericValues(GenericValueLanguage left, GenericValueLanguage right, string op) => op switch
+        /// <summary>
+        /// Realiza comparações entre duas propriedades.
+        /// </summary>
+        /// <param name="left">Valor à esquerda da comparação</param>
+        /// <param name="right">Valor à direita da comparação</param>
+        /// <param name="op">Operador de comparação</param>
+        /// <param name="context">Contexto da execução</param>
+        /// <returns>Resultado da comparação</returns>
+        private GenericValueLanguage CompareGenericValues(GenericValueLanguage left, GenericValueLanguage right, string op, ParserRuleContext context) => op switch
         {
             "==" => Equal(left, right),
             "!=" => NotEqual(left, right),
-            ">" => GreaterThan(left, right),
-            "<" => LessThan(left, right),
-            ">=" => GreaterThanOrEqual(left, right),
-            "<=" => LessThanOrEqual(left, right),
-            _ => throw new InvalidOperationException($"Operador '{op}' nao reconhecido."),
+            ">" => GreaterThan(left, right, context),
+            "<" => LessThan(left, right, context),
+            ">=" => GreaterThanOrEqual(left, right, context),
+            "<=" => LessThanOrEqual(left, right, context),
+            _ => throw new LanguageException(context.Start.Line, context.Start.Column, context.Stop.Column, $"Operador '{op}' nao reconhecido.", context.GetText())
         };
 
+        /// <summary>
+        /// Comparação de igualdade entre duas propriedades.
+        /// </summary>
+        /// <param name="left">Valor à esquerda da comparação</param>
+        /// <param name="right">Valor à direita da comparação</param>
+        /// <returns>Resultado da comparação</returns>
         private GenericValueLanguage Equal(GenericValueLanguage left, GenericValueLanguage right)
         {
             if (left.IsNumeric && right.IsNumeric)
@@ -1325,6 +1337,12 @@ namespace Implementation
             return new GenericValueLanguage(left.Value == right.Value);
         }
 
+        /// <summary>
+        /// Comparação de não igualdade entre duas propriedades.
+        /// </summary>
+        /// <param name="left">Valor à esquerda da comparação</param>
+        /// <param name="right">Valor à direita da comparação</param>
+        /// <returns>Resultado da comparação</returns>
         private GenericValueLanguage NotEqual(GenericValueLanguage left, GenericValueLanguage right)
         {
             if (left.IsNumeric && right.IsNumeric)
@@ -1335,7 +1353,13 @@ namespace Implementation
             return new GenericValueLanguage(left.Value != right.Value);
         }
 
-        private GenericValueLanguage GreaterThan(GenericValueLanguage left, GenericValueLanguage right)
+        /// <summary>
+        /// Comparação de maior que entre duas propriedades.
+        /// </summary>
+        /// <param name="left">Valor à esquerda da comparação</param>
+        /// <param name="right">Valor à direita da comparação</param>
+        /// <returns>Resultado da comparação</returns>
+        private GenericValueLanguage GreaterThan(GenericValueLanguage left, GenericValueLanguage right, ParserRuleContext context)
         {
             if (left.IsNumeric && right.IsNumeric)
                 return new GenericValueLanguage(left.AsDecimal() > right.AsDecimal());
@@ -1346,10 +1370,16 @@ namespace Implementation
             if (left.Value is null || right.Value is null)
                 return new GenericValueLanguage(false);
 
-            throw new InvalidOperationException("Comparando valores incompatíveis.");
+            throw new LanguageException(context.Start.Line, context.Start.Column, context.Stop.Column, "Comparando valores incompatíveis.", context.GetText());
         }
 
-        private GenericValueLanguage LessThan(GenericValueLanguage left, GenericValueLanguage right)
+        /// <summary>
+        /// Comparação de menor que entre duas propriedades.
+        /// </summary>
+        /// <param name="left">Valor à esquerda da comparação</param>
+        /// <param name="right">Valor à direita da comparação</param>
+        /// <returns>Resultado da comparação</returns>
+        private GenericValueLanguage LessThan(GenericValueLanguage left, GenericValueLanguage right, ParserRuleContext context)
         {
             if (left.IsNumeric && right.IsNumeric)
                 return new GenericValueLanguage(left.AsDecimal() < right.AsDecimal());
@@ -1360,10 +1390,16 @@ namespace Implementation
             if (left.Value is null || right.Value is null)
                 return new GenericValueLanguage(false);
 
-            throw new InvalidOperationException("Comparando valores incompatíveis.");
+            throw new LanguageException(context.Start.Line, context.Start.Column, context.Stop.Column, "Comparando valores incompatíveis.", context.GetText());
         }
 
-        private GenericValueLanguage GreaterThanOrEqual(GenericValueLanguage left, GenericValueLanguage right)
+        /// <summary>
+        /// Comparação de maior que ou igual entre duas propriedades.
+        /// </summary>
+        /// <param name="left">Valor à esquerda da comparação</param>
+        /// <param name="right">Valor à direita da comparação</param>
+        /// <returns>Resultado da comparação</returns>
+        private GenericValueLanguage GreaterThanOrEqual(GenericValueLanguage left, GenericValueLanguage right, ParserRuleContext context)
         {
             if (left.IsNumeric && right.IsNumeric)
                 return new GenericValueLanguage(left.AsDecimal() >= right.AsDecimal());
@@ -1374,10 +1410,16 @@ namespace Implementation
             if (left.Value is null || right.Value is null)
                 return new GenericValueLanguage(false);
 
-            throw new InvalidOperationException("Comparando valores incompatíveis.");
+            throw new LanguageException(context.Start.Line, context.Start.Column, context.Stop.Column, "Comparando valores incompatíveis.", context.GetText());
         }
 
-        private GenericValueLanguage LessThanOrEqual(GenericValueLanguage left, GenericValueLanguage right)
+        /// <summary>
+        /// Comparação de menor que ou igual entre duas propriedades.
+        /// </summary>
+        /// <param name="left">Valor à esquerda da comparação</param>
+        /// <param name="right">Valor à direita da comparação</param>
+        /// <returns>Resultado da comparação</returns>
+        private GenericValueLanguage LessThanOrEqual(GenericValueLanguage left, GenericValueLanguage right, ParserRuleContext context)
         {
             if (left.IsNumeric && right.IsNumeric)
                 return new GenericValueLanguage(left.AsDecimal() <= right.AsDecimal());
@@ -1388,7 +1430,7 @@ namespace Implementation
             if (left.Value is null || right.Value is null)
                 return new GenericValueLanguage(false);
 
-            throw new InvalidOperationException("Comparando valores incompatíveis.");
+            throw new LanguageException(context.Start.Line, context.Start.Column, context.Stop.Column, "Comparando valores incompatíveis.", context.GetText());
         }
     }
 }
