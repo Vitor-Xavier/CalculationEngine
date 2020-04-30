@@ -12,7 +12,7 @@ namespace Implementation
 
         public readonly static GenericValueLanguage Empty = new GenericValueLanguage(0);
 
-        public readonly object Value;
+        public readonly object Value { get; }
 
         public bool IsNumeric => Value?.IsNumericType() ?? false;
 

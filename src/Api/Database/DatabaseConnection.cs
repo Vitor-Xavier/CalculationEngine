@@ -1,4 +1,5 @@
 ﻿using Api.Dto;
+using Common.Extensions;
 using Implementation;
 using System;
 using System.Collections.Generic;
@@ -128,7 +129,6 @@ namespace Api.Database
 
         public async Task<List<IDictionary<string, object>>> Sql(string query)
         {
-            var results = new Dictionary<string, IEnumerable<object>>();
             var tableResults = new List<IDictionary<string, object>>();
 
             SqlDataReader reader = null;
@@ -138,8 +138,6 @@ namespace Api.Database
 
                 SqlCommand command = new SqlCommand(query, _connection);
                 reader = await command.ExecuteReaderAsync();
-                int j = 0;
-
 
                 while (await reader.ReadAsync())
                 {
@@ -164,6 +162,27 @@ namespace Api.Database
             }
 
             return tableResults;
+        }
+
+        public async Task BulkInsert<T>(string table, IEnumerable<T> entities, int batchSize = 1000)
+        {
+            var bulkCopy = new SqlBulkCopy(_connection, SqlBulkCopyOptions.TableLock | SqlBulkCopyOptions.UseInternalTransaction, null)
+            {
+                DestinationTableName = table,
+                BatchSize = batchSize,
+                BulkCopyTimeout = 120
+            };
+
+            try
+            {
+                await Open();
+                await bulkCopy.WriteToServerAsync(entities.ToDataTable());
+            }
+            finally
+            {
+                bulkCopy.Close();
+                await Close();
+            }
         }
 
         public async ValueTask DisposeAsync()

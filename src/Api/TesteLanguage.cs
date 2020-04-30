@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Common.Extensions;
+using Implementation;
+using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
-using Common.Extensions;
-using Implementation;
 
 namespace Api
 {
@@ -162,7 +162,7 @@ namespace Api
                 FatorG = (resultados as IDictionary<string, GenericValueLanguage>)["FatorG"].ToString().ToNullable<decimal>(),
             };
 
-            var fisicoOutros = 10; 
+            var fisicoOutros = 10;
             var retornoLista = new Dictionary<int, ExpandoObject>();
             var index = 0;
 
@@ -211,7 +211,7 @@ namespace Api
                     }).ToArray(),
             };
 
-            var teste = roteiro.TesteVarMemoryValue[0].Crc + fisico.CrcProprietario; 
+            var teste = roteiro.TesteVarMemoryValue[0].Crc + fisico.CrcProprietario;
             var retorno = teste;
 
             return retorno == antlrResult;
@@ -230,7 +230,7 @@ namespace Api
                 RetornoLista = (resultados as IDictionary<string, GenericValueLanguage>)["Retorno_Lista"].AsDictionaryIntDictionaryStringGeneric(),
             };
 
-            var teste = roteiro.FatorG; 
+            var teste = roteiro.FatorG;
             var retorno = roteiro.RetornoLista.Count;
 
 

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Api
@@ -111,7 +112,7 @@ namespace Api
                         break;
                     }
                 };
-                
+
                 Resultados.TryAdd((int)item.Key, memory["@Roteiro"].Value);
             });
             stopWatchProcessamento.Stop();
@@ -165,6 +166,8 @@ namespace Api
             stopwatch.Stop();
             var endProcessorTime = Process.GetCurrentProcess().TotalProcessorTime;
             double totalProcessorTime = (endProcessorTime - startProcessorTime).TotalMilliseconds;
+
+            await SaveResults();
 
             if (!Exceptions.Value.Any()) TestarFormulas(dados);
 
@@ -330,13 +333,61 @@ namespace Api
                 Console.WriteLine($"| Registros principais | {principal?.Count,-16} |");
                 Console.WriteLine($"| Registros auxiliares | {totalRegistroTabelasAuxiliares,-16} |");
 
-                Console.WriteLine($"| Memória máxima       | {(Process.GetCurrentProcess().PeakWorkingSet64 / 1024f) / 1024f + "mb",-16} |");
+                Console.WriteLine($"| Memória máxima       | {Process.GetCurrentProcess().PeakWorkingSet64 / 1024f / 1024f + "mb",-16} |");
                 Console.WriteLine($"| Tempo Banco de Dados | {stopwatchPreBD.Elapsed} |");
                 Console.WriteLine($"| Tempo Total          | {stopwatchPre.Elapsed} |\n");
             }
             stopwatchPre.Stop();
 
             return principal;
+        }
+
+        private static async Task SaveResults()
+        {
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            var testesJson = Resultados.Select(x => new TesteJson
+            {
+                OrigemId = x.Key,
+                SetorOrigem = "Imobiliario",
+                Resultado = JsonSerializer.Serialize(new
+                {
+                    Soma_Retorno_AtividadeTabelaRetorno = (x.Value as IDictionary<string, GenericValueLanguage>)["Soma_Retorno_AtividadeTabelaRetorno"].Value,
+                    AtividadeTabelaRetornoTeste = (x.Value as IDictionary<string, GenericValueLanguage>)["AtividadeTabelaRetornoTeste"].Value,
+                    Soma_da_Soma_Retorno_AtividadeTabelaRetorno = (x.Value as IDictionary<string, GenericValueLanguage>)["Soma_da_Soma_Retorno_AtividadeTabelaRetorno"].Value,
+                    Soma_Lista = (x.Value as IDictionary<string, GenericValueLanguage>)["Soma_Lista"].Value,
+                    Soma_Retorno_Lista = (x.Value as IDictionary<string, GenericValueLanguage>)["Soma_Retorno_Lista"].Value,
+                    TesteRetornoVarMemoryValue = (x.Value as IDictionary<string, GenericValueLanguage>)["TesteRetornoVarMemoryValue"].Value,
+                    TesteoListMemoryValue = (x.Value as IDictionary<string, GenericValueLanguage>)["TesteoListMemoryValue"].Value,
+                    TesteRetornoListMemoryValue = (x.Value as IDictionary<string, GenericValueLanguage>)["TesteRetornoListMemoryValue"].Value,
+                    CARACTERISTICA = (x.Value as IDictionary<string, GenericValueLanguage>)["CARACTERISTICA"].Value,
+                    FatorG = (x.Value as IDictionary<string, GenericValueLanguage>)["FatorG"].Value,
+                    UsandoFatorG = (x.Value as IDictionary<string, GenericValueLanguage>)["UsandoFatorG"].Value,
+                    TesteContLista = (x.Value as IDictionary<string, GenericValueLanguage>)["TesteContLista"].Value,
+                    eventoParametroUnico2 = (x.Value as IDictionary<string, GenericValueLanguage>)["eventoParametroUnico2"].Value,
+                    eventoParametroUnico3 = (x.Value as IDictionary<string, GenericValueLanguage>)["eventoParametroUnico3"].Value,
+                })
+            });
+
+            await using var database = new DatabaseConnection();
+            await database.BulkInsert("TesteJson", testesJson, 5000);
+
+            //string docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+            //using StreamWriter outputFile = new StreamWriter(Path.Combine(docPath, "WriteLines2.json"));
+
+            //outputFile.WriteLine("[");
+            //foreach (var result in testesJson)
+            //    outputFile.WriteLine(result.Resultado + ",");
+            //outputFile.WriteLine("]");
+
+            stopwatch.Stop();
+
+            Console.WriteLine("\n### Gravação de dados\n");
+            Console.WriteLine("| Medição              | Utilização       |");
+            Console.WriteLine("|----------------------|------------------|");
+            Console.WriteLine($"| Tempo Total          | {stopwatch.Elapsed} |\n");
         }
 
         private static void TestarFormulas(IDictionary<GenericValueLanguage, IDictionary<string, GenericValueLanguage>> dados)

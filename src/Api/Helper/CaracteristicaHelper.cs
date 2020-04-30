@@ -1,7 +1,5 @@
 ﻿using Api.Dto;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Api.Helper
 {
@@ -18,7 +16,7 @@ namespace Api.Helper
                 yield return new TabelaQuery { Tabela = tabela, Consulta = sql };
             }
         }
-    
+
         public static IEnumerable<TabelaQuery> GetQueries(IEnumerable<Caracteristica> caracteristicas)
         {
             foreach (var caracteristica in caracteristicas)

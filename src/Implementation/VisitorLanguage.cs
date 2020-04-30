@@ -116,7 +116,7 @@ namespace Implementation
                 var listMemoryProperty = listMemory.AsDictionaryStringGeneric()[propertyArray];
                 return GetListValue(listMemoryProperty, index, propertyArrayKey, context);
             }
-            else throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column, $"Variável '{nameArray}' não encontrada.", nameArray);
+            else throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column + nameArray.Length, $"Variável '{nameArray}' não encontrada.", nameArray);
         }
 
         #endregion
@@ -147,7 +147,7 @@ namespace Implementation
             if (listProperty.IsDictionaryIntDictionaryStringGeneric())
             {
                 if (!listProperty.AsDictionaryIntDictionaryStringGeneric().TryGetValue(index, out IDictionary<string, GenericValueLanguage> indexDictonaryStringGeneric))
-                    throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column, $"Índice '{index}' excede o limite da lista.", context.GetText());
+                    throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column + context.GetText().Length, $"Índice '{index}' excede o limite da lista.", context.GetText());
 
                 // Retorna todas as propriedades do index
                 if (string.IsNullOrEmpty(propertyArrayKey))
@@ -302,7 +302,7 @@ namespace Implementation
             else
             {
                 if (!TryGetMemory(varPrimary, EnumMemory.MemoryOrMemoryGlobal, out GenericValueLanguage value))
-                    throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column, $"Varíavel '{varPrimary + "." + identifier}' não foi declarada", identifier);
+                    throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column + identifier.Length, $"Varíavel '{varPrimary + "." + identifier}' não foi declarada", identifier);
 
                 if (value.IsDictionaryStringGeneric())
                 {
@@ -327,7 +327,7 @@ namespace Implementation
             string identifier = context.IDENTIFIER().GetText();
 
             if (!TryGetMemory(identifier, EnumMemory.MemoryLocalOrMemoryLocalList, out GenericValueLanguage currentValue))
-                throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column, $"Varíavel '{identifier}' não foi declarada", identifier);
+                throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column + identifier.Length, $"Varíavel '{identifier}' não foi declarada", identifier);
 
             if (currentValue.IsDictionaryIntDictionaryStringGeneric())
             {
@@ -383,7 +383,7 @@ namespace Implementation
         private GenericValueLanguage OperatorFunctionVariable(string identifier, EnumOperation enumOperator, ParserRuleContext context)
         {
             if (!TryGetMemory(identifier, EnumMemory.MemoryLocalOrMemoryLocalList, out GenericValueLanguage currentValue))
-                throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column, $"Varíavel '{identifier}' não foi declarada", identifier);
+                throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column + identifier.Length, $"Varíavel '{identifier}' não foi declarada", identifier);
 
             if (currentValue.IsDictionaryIntGeneric())
             {
@@ -816,7 +816,7 @@ namespace Implementation
             var right = Visit(context.arithmetic_expression(1));
 
             if (right.AsDecimal() == 0)
-                throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column, $"Não é possivel dividir por zero.", context.GetText());
+                throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column + context.GetText().Length, $"Não é possivel dividir por zero.", context.GetText());
 
             return left / right;
         }
@@ -828,7 +828,7 @@ namespace Implementation
 
             if (left.IsNumeric && right.IsNumeric)
                 return new GenericValueLanguage(Math.Pow((double)left, (double)right));
-            throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column, $"Não é possível elevar o valor {left} a {right}", context.GetText());
+            throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column + context.GetText().Length, $"Não é possível elevar o valor {left} a {right}", context.GetText());
         }
 
         public override GenericValueLanguage VisitSqrtFunction([NotNull] LanguageParser.SqrtFunctionContext context)
@@ -837,7 +837,7 @@ namespace Implementation
 
             if (number.IsNumeric)
                 return new GenericValueLanguage(Math.Sqrt((double)number));
-            throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column, $"Não foi possível calcular a raiz de {number}", context.GetText());
+            throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column + context.GetText().Length, $"Não foi possível calcular a raiz de {number}", context.GetText());
         }
 
         public override GenericValueLanguage VisitParenthesisExpression([NotNull] LanguageParser.ParenthesisExpressionContext context) =>
@@ -850,7 +850,7 @@ namespace Implementation
             var value = Visit(context.arithmetic_expression());
 
             if (_memoryLocal.ContainsKey(id) || _memoryLocalList.ContainsKey(id))
-                throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column, $"Variável '{id}' já foi declarada", id);
+                throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column + id.Length, $"Variável '{id}' já foi declarada", id);
 
             _memoryLocal.Add(id, value);
 
@@ -863,7 +863,7 @@ namespace Implementation
             var value = Visit(context.comparison_expression());
 
             if (_memoryLocal.ContainsKey(id) || _memoryLocalList.ContainsKey(id))
-                throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column, $"Variável '{id}' já foi declarada", id);
+                throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column + id.Length, $"Variável '{id}' já foi declarada", id);
 
             _memoryLocal.Add(id, value);
 
@@ -897,7 +897,7 @@ namespace Implementation
             var value = Visit(context.arithmetic_expression());
 
             if (_memoryLocalList.ContainsKey(identifier))
-                throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column, $"Lista '{identifier}' já foi declarada", identifier);
+                throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column + identifier.Length, $"Lista '{identifier}' já foi declarada", identifier);
 
             /// <example>
             /// Recebe de outra lista criada pelo usuario
@@ -943,7 +943,7 @@ namespace Implementation
             string nameArray = context.IDENTIFIER().GetText();
 
             if (_memoryLocalList.ContainsKey(nameArray))
-                throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column, $"Lista '{nameArray}' já foi declarada", nameArray);
+                throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column + nameArray.Length, $"Lista '{nameArray}' já foi declarada", nameArray);
 
             IDictionary<int, IDictionary<string, GenericValueLanguage>> _dicIndexIntWithDic = new Dictionary<int, IDictionary<string, GenericValueLanguage>>();
 
@@ -962,7 +962,7 @@ namespace Implementation
             var value = Visit(context.comparison_expression());
 
             if (!_memoryLocal.ContainsKey(identifier))
-                throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column, $"Varíavel '{identifier}' não foi declarada", context.GetText());
+                throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column + context.GetText().Length, $"Varíavel '{identifier}' não foi declarada", context.GetText());
 
             _memoryLocal[identifier] = value;
 
@@ -983,14 +983,14 @@ namespace Implementation
                         _memoryLocalList[identifier] = value;
                         return GenericValueLanguage.Empty;
                     default:
-                        throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column, $"Operador de atribuição inválido para tipo lista.", context.GetText());
+                        throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column + context.GetText().Length, $"Operador de atribuição inválido para tipo lista.", context.GetText());
                 }
             }
             else if (_memoryLocal.ContainsKey(identifier))
             {
                 _memoryLocal[identifier] = OperadorAtribuicao(_memoryLocal[identifier], value, op, context);
             }
-            else throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column, $"Varíavel '{identifier}' não foi declarada", context.GetText());
+            else throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column + context.GetText().Length, $"Varíavel '{identifier}' não foi declarada", context.GetText());
 
             return GenericValueLanguage.Empty;
         }
@@ -1042,7 +1042,7 @@ namespace Implementation
             var value = Visit(context.arithmetic_expression());
 
             if (!_memoryLocalList.TryGetValue(nameArray, out GenericValueLanguage array))
-                throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column, $"Lista '{nameArray}' não foi declarada", context.GetText());
+                throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column + context.GetText().Length, $"Lista '{nameArray}' não foi declarada", context.GetText());
 
             // IDictionary<int, IDictionary<string, GenericValueLanguage>>
             // Ocorre quando a lista vem de com Index e Property
@@ -1078,7 +1078,7 @@ namespace Implementation
             }
             else
             {
-                throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column, $"Propriedade não informada", context.GetText());
+                throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column + context.GetText().Length, $"Propriedade não informada", context.GetText());
             }
 
             return value;
@@ -1100,17 +1100,17 @@ namespace Implementation
             "-=" when currentValue.IsNumeric && value.IsNumeric => currentValue - value,
             "*=" when currentValue.IsNumeric && value.IsNumeric => currentValue * value,
             "/=" when currentValue.IsNumeric && value.IsNumeric && (decimal)value != 0 => currentValue / value,
-            _ => throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column, "Atribuição inválida", context.GetText()),
+            _ => throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column + context.GetText().Length, "Atribuição de valor incompatível", context.GetText()),
         };
 
         public override GenericValueLanguage VisitVarMemoryValueAssignment([NotNull] LanguageParser.VarMemoryValueAssignmentContext context) =>
-            throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column, $"Não é possível atribuir valores a constantes globais", context.GetText());
+            throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column + context.GetText().Length, $"Não é possível atribuir valores a constantes globais", context.GetText());
 
         public override GenericValueLanguage VisitListMemoryGlobalValueAssignment([NotNull] LanguageParser.ListMemoryGlobalValueAssignmentContext context) =>
-            throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column, $"Não é possível atribuir valores a constantes globais", context.GetText());
+            throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column + context.GetText().Length, $"Não é possível atribuir valores a constantes globais", context.GetText());
 
         public override GenericValueLanguage VisitListMemoryValueAssignment([NotNull] LanguageParser.ListMemoryValueAssignmentContext context) =>
-            throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column, $"Não é possível atribuir valores a constantes globais", context.GetText());
+            throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column + context.GetText().Length, $"Não é possível atribuir valores a constantes globais", context.GetText());
 
         #endregion
 
@@ -1147,7 +1147,7 @@ namespace Implementation
             {
                 return GetListValue(arrayGlobal, index, propertyArray, context);
             }
-            throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column, $"Lista '{nameArray}' não encontrada", context.GetText());
+            throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column + context.GetText().Length, $"Lista '{nameArray}' não encontrada", context.GetText());
 
         }
 
@@ -1156,7 +1156,7 @@ namespace Implementation
             if (!int.TryParse(number, out int index) || index < 0)
             {
                 if (!_memoryLocal.TryGetValue(property, out GenericValueLanguage currentValue))
-                    throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column, $"'{property}' não foi declarada", property);
+                    throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column + property.Length, $"'{property}' não foi declarada", property);
 
                 return currentValue.IsNumeric ? (int)currentValue : -1;
             }
@@ -1199,11 +1199,11 @@ namespace Implementation
         {
             var id = context.GetText();
 
-            if (id is null) throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column, $"Variável não informada", context.GetText());
+            if (id is null) throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column + context.GetText().Length, $"Variável não informada", context.GetText());
 
             if (_memoryLocal.TryGetValue(id, out GenericValueLanguage value) || _memoryLocalList.TryGetValue(id, out value))
                 return value;
-            else throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column, $"Variável '{id}' não encontrada", context.GetText());
+            else throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column + context.GetText().Length, $"Variável '{id}' não encontrada", context.GetText());
         }
 
         //TODO
@@ -1271,7 +1271,7 @@ namespace Implementation
                 "ANO" => new GenericValueLanguage(Math.Abs((right.AsDateTime() - left.AsDateTime()).Days / 365)),
                 "MES" => new GenericValueLanguage(Math.Abs(right.AsDateTime().MonthDifference(left.AsDateTime()))),
                 "DIA" => new GenericValueLanguage((right.AsDateTime() - left.AsDateTime()).Days),
-                _ => throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column, $"Unidade '{unit}' inválida", context.GetText())
+                _ => throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column + context.GetText().Length, $"Unidade '{unit}' inválida", context.GetText())
             };
         }
 
@@ -1318,7 +1318,7 @@ namespace Implementation
             "<" => LessThan(left, right, context),
             ">=" => GreaterThanOrEqual(left, right, context),
             "<=" => LessThanOrEqual(left, right, context),
-            _ => throw new LanguageException(context.Start.Line, context.Start.Column, context.Stop.Column, $"Operador '{op}' nao reconhecido.", context.GetText())
+            _ => throw new LanguageException(context.Start.Line, context.Start.Column, context.Stop.Column + context.GetText().Length, $"Operador '{op}' nao reconhecido.", context.GetText())
         };
 
         /// <summary>
@@ -1370,7 +1370,7 @@ namespace Implementation
             if (left.Value is null || right.Value is null)
                 return new GenericValueLanguage(false);
 
-            throw new LanguageException(context.Start.Line, context.Start.Column, context.Stop.Column, "Comparando valores incompatíveis.", context.GetText());
+            throw new LanguageException(context.Start.Line, context.Start.Column, context.Stop.Column + context.GetText().Length, "Comparando valores incompatíveis.", context.GetText());
         }
 
         /// <summary>
@@ -1390,7 +1390,7 @@ namespace Implementation
             if (left.Value is null || right.Value is null)
                 return new GenericValueLanguage(false);
 
-            throw new LanguageException(context.Start.Line, context.Start.Column, context.Stop.Column, "Comparando valores incompatíveis.", context.GetText());
+            throw new LanguageException(context.Start.Line, context.Start.Column, context.Stop.Column + context.GetText().Length, "Comparando valores incompatíveis.", context.GetText());
         }
 
         /// <summary>
@@ -1410,7 +1410,7 @@ namespace Implementation
             if (left.Value is null || right.Value is null)
                 return new GenericValueLanguage(false);
 
-            throw new LanguageException(context.Start.Line, context.Start.Column, context.Stop.Column, "Comparando valores incompatíveis.", context.GetText());
+            throw new LanguageException(context.Start.Line, context.Start.Column, context.Stop.Column + context.GetText().Length, "Comparando valores incompatíveis.", context.GetText());
         }
 
         /// <summary>
@@ -1430,7 +1430,7 @@ namespace Implementation
             if (left.Value is null || right.Value is null)
                 return new GenericValueLanguage(false);
 
-            throw new LanguageException(context.Start.Line, context.Start.Column, context.Stop.Column, "Comparando valores incompatíveis.", context.GetText());
+            throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column + context.GetText().Length, "Comparando valores incompatíveis.", context.GetText());
         }
     }
 }
