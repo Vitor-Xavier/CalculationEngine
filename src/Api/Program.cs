@@ -162,12 +162,12 @@ namespace Api
             }
             #endregion
 
+            await SaveResults();
+
             // Diagnostic results
             stopwatch.Stop();
             var endProcessorTime = Process.GetCurrentProcess().TotalProcessorTime;
             double totalProcessorTime = (endProcessorTime - startProcessorTime).TotalMilliseconds;
-
-            await SaveResults();
 
             if (!Exceptions.Value.Any()) TestarFormulas(dados);
 
@@ -189,7 +189,6 @@ namespace Api
 
             //Adicionar no Principal e no GetAllData para trazer os valores
             var consultasCaracteristica = CaracteristicaHelper.GetQueries(caracteristica);
-            //var consultasParametro = ParametroHelper.GetQueries(parametros);
             var consultaParametro = ParametroHelper.GetQuery(parametros);
 
             stopwatchPreBD.Start();
@@ -347,31 +346,37 @@ namespace Api
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            var testesJson = Resultados.Select(x => new TesteJson
-            {
-                OrigemId = x.Key,
-                SetorOrigem = "Imobiliario",
-                Resultado = JsonSerializer.Serialize(new
-                {
-                    Soma_Retorno_AtividadeTabelaRetorno = (x.Value as IDictionary<string, GenericValueLanguage>)["Soma_Retorno_AtividadeTabelaRetorno"].Value,
-                    AtividadeTabelaRetornoTeste = (x.Value as IDictionary<string, GenericValueLanguage>)["AtividadeTabelaRetornoTeste"].Value,
-                    Soma_da_Soma_Retorno_AtividadeTabelaRetorno = (x.Value as IDictionary<string, GenericValueLanguage>)["Soma_da_Soma_Retorno_AtividadeTabelaRetorno"].Value,
-                    Soma_Lista = (x.Value as IDictionary<string, GenericValueLanguage>)["Soma_Lista"].Value,
-                    Soma_Retorno_Lista = (x.Value as IDictionary<string, GenericValueLanguage>)["Soma_Retorno_Lista"].Value,
-                    TesteRetornoVarMemoryValue = (x.Value as IDictionary<string, GenericValueLanguage>)["TesteRetornoVarMemoryValue"].Value,
-                    TesteoListMemoryValue = (x.Value as IDictionary<string, GenericValueLanguage>)["TesteoListMemoryValue"].Value,
-                    TesteRetornoListMemoryValue = (x.Value as IDictionary<string, GenericValueLanguage>)["TesteRetornoListMemoryValue"].Value,
-                    CARACTERISTICA = (x.Value as IDictionary<string, GenericValueLanguage>)["CARACTERISTICA"].Value,
-                    FatorG = (x.Value as IDictionary<string, GenericValueLanguage>)["FatorG"].Value,
-                    UsandoFatorG = (x.Value as IDictionary<string, GenericValueLanguage>)["UsandoFatorG"].Value,
-                    TesteContLista = (x.Value as IDictionary<string, GenericValueLanguage>)["TesteContLista"].Value,
-                    eventoParametroUnico2 = (x.Value as IDictionary<string, GenericValueLanguage>)["eventoParametroUnico2"].Value,
-                    eventoParametroUnico3 = (x.Value as IDictionary<string, GenericValueLanguage>)["eventoParametroUnico3"].Value,
-                })
-            });
+            await using var database = new DatabaseConnection(true);
+            var ultimoResultado = await database.Sql("SELECT TOP 1 ResultadoId FROM Resultado ORDER BY ResultadoId DESC");
+            int ultimoResultadoId = int.Parse((ultimoResultado[0] as IDictionary<string, object>)["ResultadoId"].ToString());
 
-            await using var database = new DatabaseConnection();
-            await database.BulkInsert("TesteJson", testesJson, 5000);
+            var ultimaExecucao = await database.Sql("SELECT TOP 1 ExecucaoId FROM Resultado ORDER BY ExecucaoId DESC");
+            int ultimaExecucaoId = int.Parse((ultimaExecucao[0] as IDictionary<string, object>)["ExecucaoId"].ToString());
+
+            var resultados = new List<Resultado>();
+            var resultadosEventos = new List<ResultadoEvento>();
+            int i = ultimoResultadoId + 1;
+            foreach (var r in Resultados)
+            {
+                resultados.Add(new Resultado
+                {
+                    ResultadoId = i,
+                    OrigemId = r.Key,
+                    SetorOrigem = SetorOrigem.Imobiliario.GetDescription(),
+                    ExecucaoId = ultimaExecucaoId + 1,
+                });
+
+                int j = 1;
+                foreach (var item in (r.Value as IDictionary<string, GenericValueLanguage>).Where(x => x.Value.IsNumeric))
+                {
+                    resultadosEventos.Add(new ResultadoEvento { ResultadoId = i, EventoId = j, Evento = item.Key, Retorno = item.Value.AsString() });
+                    j++;
+                }
+                i++;
+            }
+
+            await database.BulkInsert("Resultado", resultados, 10000);
+            await database.BulkInsert("ResultadoEvento", resultadosEventos, 50000);
 
             //string docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
@@ -387,6 +392,7 @@ namespace Api
             Console.WriteLine("\n### Gravação de dados\n");
             Console.WriteLine("| Medição              | Utilização       |");
             Console.WriteLine("|----------------------|------------------|");
+            Console.WriteLine($"| Total Resultados     | {resultadosEventos.Count + resultados.Count,-16} |");
             Console.WriteLine($"| Tempo Total          | {stopwatch.Elapsed} |\n");
         }
 

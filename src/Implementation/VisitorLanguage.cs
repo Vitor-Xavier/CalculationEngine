@@ -1143,7 +1143,7 @@ namespace Implementation
             string propertyArray = context.number_integer() is null ? context.IDENTIFIER(2)?.GetText() : context.IDENTIFIER(1)?.GetText();
 
             // Valida se nameArray contém na varial global _memoryLocalArrayGlobal
-            if (_memoryLocalList.TryGetValue(nameArray, out GenericValueLanguage arrayGlobal) && arrayGlobal.Value is object)
+            if (_memoryLocalList.TryGetValue(nameArray, out GenericValueLanguage arrayGlobal))
             {
                 return GetListValue(arrayGlobal, index, propertyArray, context);
             }
