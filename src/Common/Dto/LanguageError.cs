@@ -13,5 +13,7 @@
         public string Message { get; set; }
 
         public string OffendingSymbol { get; set; }
+
+        public override string ToString() => $"Fórmula: {Source}, Linha: {Line}, Entre as colunas: {StartColumn} e {EndColumn}, Caractere: {OffendingSymbol}, {Message}";
     }
 }

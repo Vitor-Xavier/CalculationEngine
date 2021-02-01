@@ -346,7 +346,7 @@ namespace Api
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            await using var database = new DatabaseConnection(true);
+            await using var database = new DatabaseConnection();
             var ultimoResultado = await database.Sql("SELECT TOP 1 ResultadoId FROM Resultado ORDER BY ResultadoId DESC");
             int ultimoResultadoId = int.Parse((ultimoResultado[0] as IDictionary<string, object>)["ResultadoId"].ToString());
 
