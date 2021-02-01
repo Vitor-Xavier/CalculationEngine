@@ -1,0 +1,10 @@
+version: '3.4'
+
+services:
+  calculationengine-api:
+    image: calculationengine-image
+    build:
+      context: .
+      dockerfile: src/Interface/Dockerfile
+    ports:
+      - 9402:9402
