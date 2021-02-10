@@ -21,7 +21,6 @@
 
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
-using IToken = Antlr4.Runtime.IToken;
 
 /// <summary>
 /// This interface defines a complete generic visitor for a parse tree produced
@@ -29,7 +28,6 @@ using IToken = Antlr4.Runtime.IToken;
 /// </summary>
 /// <typeparam name="Result">The return type of the visit operation.</typeparam>
 [System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.8")]
-[System.CLSCompliant(false)]
 public interface ILanguageVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="LanguageParser.rule_set"/>.

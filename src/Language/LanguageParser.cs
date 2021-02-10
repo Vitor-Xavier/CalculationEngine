@@ -19,19 +19,15 @@
 // Ambiguous reference in cref attribute
 #pragma warning disable 419
 
-using System;
-using System.IO;
-using System.Text;
-using System.Diagnostics;
-using System.Collections.Generic;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
+using System;
+using System.IO;
 using DFA = Antlr4.Runtime.Dfa.DFA;
 
 [System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.8")]
-[System.CLSCompliant(false)]
 public partial class LanguageParser : Parser {
 	protected static DFA[] decisionToDFA;
 	protected static PredictionContextCache sharedContextCache = new PredictionContextCache();

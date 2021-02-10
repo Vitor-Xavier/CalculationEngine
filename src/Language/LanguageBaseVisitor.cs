@@ -21,8 +21,6 @@
 
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
-using IToken = Antlr4.Runtime.IToken;
-using ParserRuleContext = Antlr4.Runtime.ParserRuleContext;
 
 /// <summary>
 /// This class provides an empty implementation of <see cref="ILanguageVisitor{Result}"/>,
@@ -31,7 +29,6 @@ using ParserRuleContext = Antlr4.Runtime.ParserRuleContext;
 /// </summary>
 /// <typeparam name="Result">The return type of the visit operation.</typeparam>
 [System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.8")]
-[System.CLSCompliant(false)]
 public partial class LanguageBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, ILanguageVisitor<Result> {
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="LanguageParser.rule_set"/>.
