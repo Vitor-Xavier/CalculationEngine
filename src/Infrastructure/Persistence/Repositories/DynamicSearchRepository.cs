@@ -1,6 +1,7 @@
 ﻿using Crosscutting.DTO.DynamicSearch;
 using Infrastructure.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using System;
 using System.Linq;
 
@@ -24,7 +25,7 @@ namespace Infrastructure.Persistence.Repositories
                 Class = type.Name,
                 Columns = entityType.GetProperties().Select(p => new Column
                 {
-                    Name = p.GetColumnName(),
+                    Name = p.GetColumnName(StoreObjectIdentifier.Table(entityType.GetTableName(), null)),
                     IsPrimaryKey = p.IsPrimaryKey(),
                     Property = p.Name
                 }).ToList()
