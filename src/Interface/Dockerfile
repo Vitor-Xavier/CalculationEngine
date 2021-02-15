@@ -1,10 +1,10 @@
-FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:5.0-focal AS base
 WORKDIR /app
 
 ENV ASPNETCORE_URLS http://*:9402
 EXPOSE 9402
 
-FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:5.0-focal AS build
 WORKDIR /source
 COPY ["src/Interface/Interface.csproj", "source/Interface/"]
 RUN dotnet restore "source/Interface/Interface.csproj"

@@ -1,15 +1,24 @@
 version: '3.4'
 
 services:
-  calculationengine-api:
+  calculationengine:
     image: calculationengine-image
     build:
       context: .
       dockerfile: src/Interface/Dockerfile
-    ports:
-      - 9402
+    expose:
+      - "9402"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:9402
     volumes:
       - ~/.vsdbg:/remote_debugger:rw
+  nginx:
+    image: nginx-image
+    build:
+        context: .
+        dockerfile: src/nginx/Dockerfile
+    depends_on:
+      - calculationengine
+    ports:
+        - "92:80"

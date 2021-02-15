@@ -1,10 +1,19 @@
 version: '3.4'
 
 services:
-  calculationengine-api:
+  calculationengine:
     image: calculationengine-image
     build:
       context: .
       dockerfile: src/Interface/Dockerfile
+    expose:
+      - "9402"
+  nginx:
+    image: nginx-image
+    build:
+        context: .
+        dockerfile: src/nginx/Dockerfile
+    depends_on:
+      - calculationengine
     ports:
-      - 9402:9402
+        - "92:80"

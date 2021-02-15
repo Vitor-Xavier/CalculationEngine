@@ -4,6 +4,7 @@ using Interface.Extensions;
 using Interface.Middlewares;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -24,6 +25,7 @@ namespace Interface
             services.Configure<Authentication.Authentication>(Configuration.GetSection("Authentication"));
 
             services.AddControllers();
+            services.ConfigureCors();
             services.ConfigureSwagger();
 
             services.AddAuthentication(options =>
@@ -39,14 +41,19 @@ namespace Interface
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
 
+            app.UseCors("CorsPolicy");
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.RoutePrefix = string.Empty;
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Interface v1");
+                c.SwaggerEndpoint(env.IsDevelopment() ? "/swagger/v1/swagger.json" : "/calculationserver/swagger/v1/swagger.json", "Interface v1");
             });
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
 
             app.UseRouting();
             app.UseMiddleware<ErrorHandlingMiddleware>();
