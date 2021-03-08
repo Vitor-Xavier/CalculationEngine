@@ -24,6 +24,7 @@ namespace Interface
 
             services.Configure<Authentication.Authentication>(Configuration.GetSection("Authentication"));
 
+            services.AddResponseCompression();
             services.AddControllers();
             services.ConfigureCors();
             services.ConfigureSwagger();
@@ -40,6 +41,8 @@ namespace Interface
         {
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
+
+            app.UseResponseCompression();
 
             app.UseCors("CorsPolicy");
             app.UseSwagger();
