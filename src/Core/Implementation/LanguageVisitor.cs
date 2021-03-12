@@ -459,8 +459,15 @@ namespace Core.Implementation
         private static IEnumerable<decimal> ExtractIEnumrable(IDictionary<int, IDictionary<string, GenericValueLanguage>> dictionary, string identifier) =>
             dictionary.Select(x => x.Value.ToList().Where(p => p.Key == identifier).Select(p => p.Value.TryDecimal()).FirstOrDefault());
 
-        public override GenericValueLanguage VisitAbsFunction([NotNull] LanguageParser.AbsFunctionContext context) =>
-            new GenericValueLanguage(Math.Abs(Visit(context.arithmetic_expression()).AsDecimal()));
+        public override GenericValueLanguage VisitAbsFunction([NotNull] LanguageParser.AbsFunctionContext context)
+        {
+            var genericValue = Visit(context.arithmetic_expression());
+
+            if (genericValue.Value is null)
+                throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column + context.GetText().Length, $"Não foi possível encontrar o valor absoluto da entrada {genericValue.Value}", context.GetText());
+            
+            return new GenericValueLanguage(Math.Abs(genericValue.AsDecimal()));
+        }
 
         public override GenericValueLanguage VisitSumIfFunction([NotNull] LanguageParser.SumIfFunctionContext context)
         {
@@ -1147,6 +1154,10 @@ namespace Core.Implementation
         public override GenericValueLanguage VisitRoundFunction([NotNull] LanguageParser.RoundFunctionContext context)
         {
             var obj = Visit(context.arithmetic_expression(0));
+
+            if (obj.Value is null)
+                throw new LanguageException(context.Start.Line, context.Start.Column, context.Start.Column + context.GetText().Length, $"Não foi arredondar a entrada {obj}", context.GetText());
+
             decimal number = obj.IsNull() && !obj.IsDecimal() && !obj.IsInt() ? 0 : obj.AsDecimal();
             int? decimalPlaces = context.arithmetic_expression(1) != null ? Visit(context.arithmetic_expression(1)).AsInt() : default(int?);
 
