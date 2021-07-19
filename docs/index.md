@@ -6,13 +6,13 @@ A linguagem do cálculo do Sistema Tributário foi arquitetada para auxiliar a c
 
 Se trata de uma linguagem simples, sem tipagem de variáveis, e com foco em disponibilizar recursos para facilitar o trabalho de implantação, contando com operações aritméticas e condicionais, instruções lógicas e de repetição, funções comuns para o tratamento de valores e específicas da regra do Sistema Tributário.
 
-O sistema provém também acesso simplificado aos dados do registro em execução, que disponibiliza os dados através do uso do caractere '@' seguido do nome da tabela, e então o caractere '.', e em seguida o nome da coluna, estrutura essa que pode sofrer alterações conforme o tipo de acesso realizado, representado no item de [constantes de suporte](#Constantes-de-Suporte).
+O sistema provém também acesso simplificado aos dados do registro em execução, que disponibiliza os dados através do uso do caractere '@' seguido do nome da tabela, e então o caractere '.', e em seguida o nome da coluna, estrutura essa que pode sofrer alterações conforme o tipo de acesso realizado, representado no item de [constantes de suporte](#constantes-de-suporte).
 
 Os demais itens neste documento descrevem as funcionalidades essenciais da linguagem de cálculo, com exemplos de sua utilização, dentre outros recursos.
 
 ## 📑 Estrutura
 
-A estrutura definida para a linguagem de cálculo dita que todas as fórmulas devem se encerrar com uma [instrução `retorno`](#Instrução-Retorno), opcionalmente informando um valor de retorno, sendo assim, após esse nenhum comando será executado. Antes da finalização no entanto, é possível a utilização de todos os demais recursos definidos na linguagem presentes neste documento.
+A estrutura definida para a linguagem de cálculo dita que todas as fórmulas devem se encerrar com uma [instrução `retorno`](#instrução-retorno), opcionalmente informando um valor de retorno, sendo assim, após esse nenhum comando será executado. Antes da finalização no entanto, é possível a utilização de todos os demais recursos definidos na linguagem presentes neste documento.
 
 Exemplo de estrutura simples de uma fórmula na linguagem de cálculo, utilizando comentários, variáveis locais, constantes de suporte, e uma estrutura lógica, além da instrução retorno, obrigatória:
 
@@ -60,7 +60,7 @@ retorno resultado; // Retorna 0.375
 
 ### Instrução Caso
 
-A instrução `caso` é utilizada exclusivamente dentro do bloco de uma instrução `parametro`, para informações sobre [instrução parâmetro](#Instrução-Parâmetro) na seção de Palavras-chave.
+A instrução `caso` é utilizada exclusivamente dentro do bloco de uma instrução `parametro`, para informações sobre [instrução parâmetro](#instrução-parâmetro) na seção de Palavras-chave.
 
 Cada instrução `caso` especifica um padrão a ser comparado com a expressão do `parametro`. Se houver correspondência, o bloco de código equivalente ao primeiro caso correspondente. Se nenhuma correspondência de caso for encontrada, o bloco de código da instrução `padrao` será executado, caso existir. No exemplo abaixo, como nenhum dos casos definidos no `parametro` existe correspondência, o bloco da instrução `padrao` será executado. No exemplo a seguir o valor da variável `numero` é comparado aos valores 1, 2 e 3 definidos nas instruções `caso`, e ao atingir o valor correspondente executa o bloco de código equivalente e então o comando `parar` para terminar as comparações da instrução `parametro`.
 
