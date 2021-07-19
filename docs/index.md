@@ -89,7 +89,7 @@ retorno resultado; // Retorna 0.25
 
 ### Instrução Padrão
 
-A instrução `padrao` é utilizada exclusivamente dentro do bloco de uma instrução `parametro`, para informações sobre [instrução parâmetro](#Instrução-Parâmetro) na seção de Palavras-chave.
+A instrução `padrao` é utilizada exclusivamente dentro do bloco de uma instrução `parametro`, para informações sobre [instrução parâmetro](#instrução-parâmetro) na seção de Palavras-chave.
 
 Uma instrução `padrao` especifica a seção `parametro` a ser executada se a expressão de correspondência não corresponder a nenhum outro caso especificado. Se um `padrao` não estiver presente e a expressão de correspondência não corresponder a nenhum outro caso, nenhum bloco da expressão `parametro` será executado. No exemplo a seguir, como não há correspondência entre a expressão de `parametro` e os valores definidos nos casos de comparação, o trecho de código da instrução `padrao` será executado.
 
