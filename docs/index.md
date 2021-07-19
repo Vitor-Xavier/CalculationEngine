@@ -6,7 +6,7 @@ A linguagem do cálculo do Sistema Tributário foi arquitetada para auxiliar a c
 
 Se trata de uma linguagem simples, sem tipagem de variáveis, e com foco em disponibilizar recursos para facilitar o trabalho de implantação, contando com operações aritméticas e condicionais, instruções lógicas e de repetição, funções comuns para o tratamento de valores e específicas da regra do Sistema Tributário.
 
-O sistema provém também acesso simplificado aos dados do registro em execução, que disponibiliza os dados através do uso do caractere '@' seguido do nome da tabela, e então o caractere '.', e em seguida o nome da coluna, estrutura essa que pode sofrer alterações conforme o tipo de acesso realizado, representado no item de [constantes de suporte](#constantes-de-suporte).
+O sistema provém também acesso simplificado aos dados do registro em execução, que disponibiliza os dados através do uso do caractere '@' seguido do nome da tabela, e então o caractere '.', e em seguida o nome da coluna, estrutura essa que pode sofrer alterações conforme o tipo de acesso realizado, representado no item de [constantes de suporte](#-constantes-de-suporte).
 
 Os demais itens neste documento descrevem as funcionalidades essenciais da linguagem de cálculo, com exemplos de sua utilização, dentre outros recursos.
 
